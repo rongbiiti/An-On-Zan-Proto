@@ -7,6 +7,9 @@ public class EnemyMove : MonoBehaviour
 {
 
     public Transform[] points;
+    public GameObject player;
+    private Vector3 playerTransform;
+    private AudioSource playerAudioSource;
     private int destPoint = 0;
     private NavMeshAgent agent;
     private Animator animator;
@@ -19,6 +22,8 @@ public class EnemyMove : MonoBehaviour
 
     void Start()
     {
+        playerTransform = player.transform.position;
+        playerAudioSource = player.GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -51,10 +56,26 @@ public class EnemyMove : MonoBehaviour
 
     void Update()
     {
+        if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, playerTransform) < 4f) {
+            playerTransform = player.transform.position;
+            agent.destination = playerTransform;
+            Debug.Log("はっけｎ");
+            Debug.Log(agent.destination);
+            Debug.Log(playerTransform);
+        }
         // エージェントが現目標地点に近づいてきたら、
         // 次の目標地点を選択します
-        if (!agent.pathPending && agent.remainingDistance < 0.5f)
-            GotoNextPoint();
+        if (!agent.pathPending && agent.remainingDistance < 1f) {
+            if(Vector3.Distance(transform.position, playerTransform) < 1f) {
+                animator.SetTrigger("Attack");
+                Debug.Log("あたっく");
+                GotoNextPoint();
+            } else {
+                GotoNextPoint();
+                Debug.Log("つぎへ");
+            }
+        }
+            
     }
 
     private void FixedUpdate()
