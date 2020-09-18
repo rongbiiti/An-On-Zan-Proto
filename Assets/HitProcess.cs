@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.AI;
 
 public class HitProcess : MonoBehaviour
 {
@@ -52,6 +53,7 @@ public class HitProcess : MonoBehaviour
             Vector3 vec = new Vector3(other.transform.position.x, other.transform.position.y + 1f, other.transform.position.z);
             var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
             b.transform.SetParent(other.transform);
+            
         }
     }
 }
