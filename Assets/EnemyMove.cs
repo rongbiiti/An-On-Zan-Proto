@@ -67,7 +67,7 @@ public class EnemyMove : MonoBehaviour
         // 次の目標地点を選択します
         if (!agent.pathPending && agent.remainingDistance < 1f) {
             if(Vector3.Distance(transform.position, playerTransform) < 1f) {
-                animator.SetTrigger("Attack");
+                animator.SetBool("Attack", true);
                 Debug.Log("あたっく");
                 GotoNextPoint();
             } else {

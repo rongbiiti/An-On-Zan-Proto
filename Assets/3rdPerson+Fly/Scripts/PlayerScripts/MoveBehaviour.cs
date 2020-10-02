@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 
 // MoveBehaviour inherits from GenericBehaviour. This class corresponds to basic walk and run behaviour, it is the default behaviour.
 public class MoveBehaviour : GenericBehaviour
@@ -29,7 +32,8 @@ public class MoveBehaviour : GenericBehaviour
 		behaviourManager.SubscribeBehaviour(this);
 		behaviourManager.RegisterDefaultBehaviour(this.behaviourCode);
 		speedSeeker = runSpeed;
-	}
+        Application.targetFrameRate = 60;
+    }
 
 	// Update is used to set features regardless the active behaviour.
 	void Update()
@@ -39,10 +43,11 @@ public class MoveBehaviour : GenericBehaviour
 		{
 			jump = true;
 		}
-
         // Attackボタンを押したら、攻撃モーション再生
-        if (Input.GetButtonDown(attackButton) && !behaviourManager.GetAnim.GetBool(jumpBool) && behaviourManager.IsGrounded()) {
-            behaviourManager.GetAnim.SetTrigger("Attack");
+        // ジャンプ中でない、boolがfalse、攻撃アニメ再生していないときにboolをtrueにできる
+        if (Input.GetButtonDown(attackButton) && !behaviourManager.GetAnim.GetBool(jumpBool) && behaviourManager.IsGrounded() && !behaviourManager.GetAnim.GetBool(Animator.StringToHash("Attack")) && !behaviourManager.GetAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+            behaviourManager.GetAnim.SetBool("Attack", true);
+            StartCoroutine("AttackBoolControll");
         }
     }
 
@@ -191,4 +196,10 @@ public class MoveBehaviour : GenericBehaviour
 		GetComponent<CapsuleCollider>().material.dynamicFriction = 0.6f;
 		GetComponent<CapsuleCollider>().material.staticFriction = 0.6f;
 	}
+
+    private IEnumerator AttackBoolControll()
+    {
+        yield return new WaitForSeconds(0.9f);
+        behaviourManager.GetAnim.SetBool("Attack", false);
+    }
 }

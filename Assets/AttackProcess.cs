@@ -11,9 +11,12 @@ public class AttackProcess : MonoBehaviour
     [SerializeField]
     private GameObject effect;
 
+    private Animator animator;
+
     private void Start()
     {
         effect.SetActive(false);
+        animator = GetComponent<Animator>();
     }
 
     void AttackStart()
@@ -28,5 +31,6 @@ public class AttackProcess : MonoBehaviour
         weaponCollider.enabled = false;
         Debug.Log("攻撃判定OFF");
         effect.SetActive(false);
+        animator.SetBool("Attack", false);
     }
 }
