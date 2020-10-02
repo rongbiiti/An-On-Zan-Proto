@@ -35,11 +35,12 @@ public class GameManagerScript : MonoBehaviour
             time += Time.deltaTime;
             _directionalLight.intensity -= 1 / _fadeTime * Time.deltaTime;
             _camera.transform.position -= new Vector3(0, zoomValue / _fadeTime * Time.deltaTime, 0);
-        } else {
-            _player.GetComponent<MoveBehaviour>().enabled = true;
-            _enemy.GetComponent<NavMeshAgent>().enabled = true;
-            _enemy.GetComponent<EnemyMove>().enabled = true;
-            _camera.GetComponent<ThirdPersonOrbitCamBasic>().enabled = true;
+            if(_fadeTime <= time) {
+                _player.GetComponent<MoveBehaviour>().enabled = true;
+                _enemy.GetComponent<NavMeshAgent>().enabled = true;
+                _enemy.GetComponent<EnemyMove>().enabled = true;
+                _camera.GetComponent<ThirdPersonOrbitCamBasic>().enabled = true;
+            }
         }
     }
 }

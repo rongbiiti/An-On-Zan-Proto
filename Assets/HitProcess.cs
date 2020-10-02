@@ -22,6 +22,8 @@ public class HitProcess : MonoBehaviour
     [SerializeField]
     private GameObject blood;
 
+    private bool hitFlg = false;
+
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -42,18 +44,18 @@ public class HitProcess : MonoBehaviour
         if (other.CompareTag("Player")) {
             PlaydeathVoice();
             PlayHit();
-            //other.gameObject.SetActive(false);
             Vector3 vec = new Vector3(other.transform.position.x, other.transform.position.y + 1f, other.transform.position.z);
             var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
             b.transform.SetParent(other.transform);
         } else if (other.CompareTag("Enemy")) {
             PlaydeathVoice();
             PlayHit();
-            //other.gameObject.SetActive(false);
-            Vector3 vec = new Vector3(other.transform.position.x, other.transform.position.y + 1f, other.transform.position.z);
+            other.GetComponent<RagdollController>().RadollActive(transform.root.forward);
+        } else if (other.gameObject.layer == LayerMask.NameToLayer("EnemyRagdoll") && !hitFlg) {
+            Vector3 vec = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
             var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
             b.transform.SetParent(other.transform);
-            
+            hitFlg = false;
         }
     }
 }
