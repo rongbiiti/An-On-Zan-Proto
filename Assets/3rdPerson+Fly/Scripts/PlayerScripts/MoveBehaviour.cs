@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 
 // MoveBehaviour inherits from GenericBehaviour. This class corresponds to basic walk and run behaviour, it is the default behaviour.
@@ -19,9 +21,12 @@ public class MoveBehaviour : GenericBehaviour
 	private int groundedBool;                       // Animator variable related to whether or not the player is on ground.
 	private bool jump;                              // Boolean to determine whether or not the player started a jump.
 	private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
+    private Vector3 networkPosition;
+    private Quaternion networkRotation;
+    private PhotonView photonView;
 
-	// Start is always called after any Awake functions.
-	void Start()
+    // Start is always called after any Awake functions.
+    void Start()
 	{
 		// Set up the references.
 		jumpBool = Animator.StringToHash("Jump");
@@ -33,6 +38,9 @@ public class MoveBehaviour : GenericBehaviour
 		behaviourManager.RegisterDefaultBehaviour(this.behaviourCode);
 		speedSeeker = runSpeed;
         Application.targetFrameRate = 60;
+        networkPosition = Vector3.zero;
+        networkRotation = Quaternion.identity;
+        photonView = GetComponent<PhotonView>();
     }
 
 	// Update is used to set features regardless the active behaviour.
@@ -51,15 +59,36 @@ public class MoveBehaviour : GenericBehaviour
         }
     }
 
-	// LocalFixedUpdate overrides the virtual function of the base class.
-	public override void LocalFixedUpdate()
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting) {
+            stream.SendNext(behaviourManager.GetRigidBody.position);
+            stream.SendNext(behaviourManager.GetRigidBody.rotation);
+            stream.SendNext(behaviourManager.GetRigidBody.velocity);
+        } else {
+            networkPosition = (Vector3)stream.ReceiveNext();
+            networkRotation = (Quaternion)stream.ReceiveNext();
+            behaviourManager.GetRigidBody.velocity = (Vector3)stream.ReceiveNext();
+
+            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+            networkPosition += (behaviourManager.GetRigidBody.velocity * lag);
+        }
+    }
+
+    // LocalFixedUpdate overrides the virtual function of the base class.
+    public override void LocalFixedUpdate()
 	{
 		// Call the basic movement manager.
 		MovementManagement(behaviourManager.GetH, behaviourManager.GetV);
 
 		// Call the jump manager.
 		JumpManagement();
-	}
+
+        if (!photonView.IsMine) {
+            behaviourManager.GetRigidBody.position = Vector3.MoveTowards(behaviourManager.GetRigidBody.position, networkPosition, Time.fixedDeltaTime);
+            behaviourManager.GetRigidBody.rotation = Quaternion.RotateTowards(behaviourManager.GetRigidBody.rotation, networkRotation, Time.fixedDeltaTime * 100.0f);
+        }
+    }
 
 	// Execute the idle and walk/run jump movements.
 	void JumpManagement()
@@ -121,7 +150,7 @@ public class MoveBehaviour : GenericBehaviour
 		}
 
 		// Call function that deals with player orientation.
-		Rotating(horizontal, vertical);
+		if(!behaviourManager.GetAnim.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !behaviourManager.GetAnim.GetBool(Animator.StringToHash("Attack"))) Rotating(horizontal, vertical);
 
 		// Set proper speed.
 		Vector2 dir = new Vector2(horizontal, vertical);
@@ -149,6 +178,7 @@ public class MoveBehaviour : GenericBehaviour
 	// Rotate the player to match correct orientation, according to camera and key pressed.
 	Vector3 Rotating(float horizontal, float vertical)
 	{
+
 		// Get camera forward direction, without vertical component.
 		Vector3 forward = behaviourManager.playerCamera.TransformDirection(Vector3.forward);
 
