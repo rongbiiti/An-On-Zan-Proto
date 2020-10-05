@@ -5,6 +5,9 @@ using Photon.Realtime;
 
 public class SimplePun : MonoBehaviourPunCallbacks
 {
+
+    [SerializeField] private byte maxPlayer = 2;
+
     RoomOptions roomOptions = new RoomOptions
     {
         MaxPlayers = 2
@@ -24,12 +27,11 @@ public class SimplePun : MonoBehaviourPunCallbacks
         GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());
     }
 
-
     //ルームに入室前に呼び出される
     public override void OnConnectedToMaster()
     {
         // "room"という名前のルームに参加する（ルームが無ければ作成してから参加する）
-        
+        roomOptions.MaxPlayers = maxPlayer;
         PhotonNetwork.JoinOrCreateRoom("An-On-Zan", roomOptions, TypedLobby.Default);
         Debug.Log("OnConnectedToMaster");
     }
@@ -52,7 +54,6 @@ public class SimplePun : MonoBehaviourPunCallbacks
             camera.enabled = true;
         }
 
-
         Debug.Log("キャラ作成成功");
 
         Room myroom = PhotonNetwork.CurrentRoom;　//myroom変数にPhotonnetworkの部屋の現在状況を入れる。
@@ -60,7 +61,6 @@ public class SimplePun : MonoBehaviourPunCallbacks
         Debug.Log("ルーム名:" + myroom.Name);
         Debug.Log("PlayerNo" + player.ActorNumber);
         Debug.Log("プレイヤーID" + player.UserId);
-
 
         //この部分はニックネームを決めるためのもので、入力は不要です。
         if (player.ActorNumber == 1) {

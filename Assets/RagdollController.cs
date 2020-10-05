@@ -10,18 +10,23 @@ public class RagdollController : MonoBehaviour
     Animator animator;
     NavMeshAgent meshAgent;
     Rigidbody[] ragdollRigidbodies;
+    Collider[] colliders;
     Rigidbody rb;
     CapsuleCollider capsule;
     EnemyMove enemyMove;
+    MoveBehaviour moveBehaviour;
+    [SerializeField] BoxCollider swordCollider;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         meshAgent = GetComponent<NavMeshAgent>();
         ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
+        colliders = GetComponentsInChildren<Collider>();
         enemyMove = GetComponent<EnemyMove>();
         rb = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
+        moveBehaviour = GetComponent<MoveBehaviour>();
         SetRagdoll(false, Vector3.zero);
     }
 
@@ -29,18 +34,31 @@ public class RagdollController : MonoBehaviour
     {
         foreach (Rigidbody rigidbody in ragdollRigidbodies) {
             rigidbody.isKinematic = !isEnabled;
-            rigidbody.AddForce(direction * 5f, ForceMode.Impulse);
+            rigidbody.AddForce(direction * 16f, ForceMode.Impulse);
         }
     }
 
-    public void RadollActive(Vector3 direction)
+    public void RagdollActive(Vector3 direction)
     {
         SetRagdoll(true, direction);
         animator.enabled = false;
         meshAgent.enabled = false;
         enemyMove.enabled = false;
-        rb.AddForce(direction * 100f, ForceMode.Impulse);
         capsule.enabled = false;
-        
+        rb.isKinematic = true;
+        swordCollider.enabled = false;
+    }
+
+    public void RagdollActive_Net(Vector3 direction)
+    {
+        SetRagdoll(true, direction);
+        animator.enabled = false;
+        moveBehaviour.enabled = false;
+        rb.isKinematic = true;
+        foreach (Collider col in colliders) {
+            col.enabled = true;
+        }
+        capsule.enabled = false;
+        swordCollider.enabled = false;
     }
 }

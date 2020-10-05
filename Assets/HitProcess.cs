@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.AI;
+using Photon.Pun;
 
-public class HitProcess : MonoBehaviour
+public class HitProcess : MonoBehaviourPunCallbacks
 {
 
     [SerializeField]
@@ -42,20 +43,35 @@ public class HitProcess : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) {
-            PlaydeathVoice();
-            PlayHit();
-            Vector3 vec = new Vector3(other.transform.position.x, other.transform.position.y + 1f, other.transform.position.z);
-            var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
-            b.transform.SetParent(other.transform);
+            Debug.Log("プレイヤーにヒット1");
+            int viewID = other.GetComponent<PhotonView>().ViewID;
+            photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
         } else if (other.CompareTag("Enemy")) {
             PlaydeathVoice();
             PlayHit();
-            other.GetComponent<RagdollController>().RadollActive(transform.root.forward);
+            other.GetComponent<RagdollController>().RagdollActive(transform.root.forward);
         } else if (other.gameObject.layer == LayerMask.NameToLayer("EnemyRagdoll") && !hitFlg) {
             Vector3 vec = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
             var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
             b.transform.SetParent(other.transform);
+            b.transform.LookAt(transform.root.position);
             hitFlg = false;
         }
+    }
+
+    [PunRPC]
+    private void PlayerDeath(int viewID)
+    {
+        Debug.Log("プレイヤーにヒット");
+        PlaydeathVoice();
+        PlayHit();
+
+        Vector3 vec = new Vector3(PhotonView.Find(viewID).transform.position.x, PhotonView.Find(viewID).transform.position.y + 1.5f, PhotonView.Find(viewID).transform.position.z);
+        var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
+        b.transform.SetParent(PhotonView.Find(viewID).transform.GetChild(2).GetChild(0).GetChild(2));
+        b.transform.LookAt(transform.root.position);
+
+        PhotonView.Find(viewID).GetComponent<RagdollController>().RagdollActive_Net(transform.root.forward);
+       
     }
 }
