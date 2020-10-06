@@ -13,7 +13,6 @@ public class SimplePun : MonoBehaviourPunCallbacks
         MaxPlayers = 2
     };
 
-    // Use this for initialization
     void Start()
     {
         //旧バージョンでは引数必須でしたが、PUN2では不要です。
@@ -32,7 +31,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
     {
         // "room"という名前のルームに参加する（ルームが無ければ作成してから参加する）
         roomOptions.MaxPlayers = maxPlayer;
-        PhotonNetwork.JoinOrCreateRoom(null, roomOptions, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom("room", roomOptions, TypedLobby.Default);
         Debug.Log("OnConnectedToMaster");
     }
 
