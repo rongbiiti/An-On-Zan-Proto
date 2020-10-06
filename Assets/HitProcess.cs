@@ -46,15 +46,18 @@ public class HitProcess : MonoBehaviourPunCallbacks
             Debug.Log("プレイヤーにヒット1");
             int viewID = other.GetComponent<PhotonView>().ViewID;
             photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
+
         } else if (other.CompareTag("Enemy")) {
             PlaydeathVoice();
             PlayHit();
             other.GetComponent<RagdollController>().RagdollActive(transform.root.forward);
+
         } else if (other.gameObject.layer == LayerMask.NameToLayer("EnemyRagdoll") && !hitFlg) {
             Vector3 vec = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
             var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
             b.transform.SetParent(other.transform);
             b.transform.LookAt(transform.root.position);
+
             hitFlg = false;
         }
     }
@@ -62,7 +65,6 @@ public class HitProcess : MonoBehaviourPunCallbacks
     [PunRPC]
     private void PlayerDeath(int viewID)
     {
-        Debug.Log("プレイヤーにヒット");
         PlaydeathVoice();
         PlayHit();
 
@@ -72,6 +74,6 @@ public class HitProcess : MonoBehaviourPunCallbacks
         b.transform.LookAt(transform.root.position);
 
         PhotonView.Find(viewID).GetComponent<RagdollController>().RagdollActive_Net(transform.root.forward);
-       
+        PhotonView.Find(viewID).GetComponent<MaterialChanger>().enabled = true;
     }
 }

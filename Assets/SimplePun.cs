@@ -32,7 +32,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
     {
         // "room"という名前のルームに参加する（ルームが無ければ作成してから参加する）
         roomOptions.MaxPlayers = maxPlayer;
-        PhotonNetwork.JoinOrCreateRoom("An-On-Zan", roomOptions, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom(null, roomOptions, TypedLobby.Default);
         Debug.Log("OnConnectedToMaster");
     }
 
@@ -52,6 +52,8 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
             ThirdPersonOrbitCamBasic camera = myplayer.transform.GetChild(0).GetComponent<ThirdPersonOrbitCamBasic>();
             camera.enabled = true;
+
+            myplayer.GetComponent<MaterialChanger>().enabled = true;
         }
 
         Debug.Log("キャラ作成成功");
@@ -73,7 +75,6 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-
         Debug.Log("入室失敗");
         //ルームを作成する。
         PhotonNetwork.CreateRoom(null, roomOptions); //JoinOrCreateroomと同じ引数が使用可能。nullはルーム名を作成したくない場合roomNameを勝手に割り当てる。
