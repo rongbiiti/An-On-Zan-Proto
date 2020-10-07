@@ -60,5 +60,6 @@ public class RagdollController : MonoBehaviour
         }
         capsule.enabled = false;
         swordCollider.enabled = false;
+        GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
     }
 }
