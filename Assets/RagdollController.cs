@@ -16,6 +16,8 @@ public class RagdollController : MonoBehaviour
     EnemyMove enemyMove;
     MoveBehaviour moveBehaviour;
     [SerializeField] BoxCollider swordCollider;
+    
+    
 
     void Start()
     {
@@ -61,5 +63,9 @@ public class RagdollController : MonoBehaviour
         capsule.enabled = false;
         swordCollider.enabled = false;
         GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
-    }
+        if (transform.GetChild(0).gameObject.activeSelf) {
+            transform.GetChild(0).GetComponent<ExecutionCamera>().StartCoroutine("Execution");
+        }
+        
+    }    
 }

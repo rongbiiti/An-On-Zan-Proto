@@ -65,9 +65,6 @@ public class HitProcess : MonoBehaviourPunCallbacks
     [PunRPC]
     private void PlayerDeath(int viewID)
     {
-        PlaydeathVoice();
-        PlayHit();
-
         Vector3 vec = new Vector3(PhotonView.Find(viewID).transform.position.x, PhotonView.Find(viewID).transform.position.y + 1.5f, PhotonView.Find(viewID).transform.position.z);
         var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
         b.transform.SetParent(PhotonView.Find(viewID).transform.GetChild(2).GetChild(0).GetChild(2));
@@ -75,5 +72,18 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
         PhotonView.Find(viewID).GetComponent<RagdollController>().RagdollActive_Net(transform.root.forward);
         PhotonView.Find(viewID).GetComponent<MaterialChanger>().enabled = true;
+        
+        PlayHit();
+        StartCoroutine("DeathVoice");
+    }
+
+    private IEnumerator DeathVoice()
+    {
+        if (transform.root.GetChild(0).gameObject.activeSelf) {
+            transform.root.GetChild(0).GetComponent<ExecutionCamera>().StartCoroutine("Execution");
+        }
+       
+        yield return new WaitForSeconds(0.2f);
+        PlaydeathVoice();
     }
 }
