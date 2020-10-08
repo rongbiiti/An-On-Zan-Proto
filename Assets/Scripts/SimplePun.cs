@@ -98,7 +98,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
                     ThirdPersonOrbitCamBasic camera = myplayer.transform.GetChild(0).GetComponent<ThirdPersonOrbitCamBasic>();
                     camera.enabled = true;
 
-                    myplayer.GetComponent<MaterialChanger>().enabled = true;
+                    myplayer.GetComponent<MaterialChanger>().MaterialOn();
                 }
 
                 Debug.Log("キャラ作成成功" + PhotonNetwork.CurrentRoom.PlayerCount);

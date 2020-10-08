@@ -71,8 +71,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
         b.transform.LookAt(transform.root.position);
 
         PhotonView.Find(viewID).GetComponent<RagdollController>().RagdollActive_Net(transform.root.forward);
-        PhotonView.Find(viewID).GetComponent<MaterialChanger>().enabled = true;
-        
+        PhotonView.Find(viewID).GetComponent<MaterialChanger>().MaterialOn();
         PlayHit();
         StartCoroutine("DeathVoice");
     }

@@ -12,8 +12,16 @@ public class MaterialChanger : MonoBehaviour
 
     void Start()
     {
+        skinnedMeshRenderer.enabled = false;
+        swordMeshRenderer.enabled = false;
+    }
+
+    public void MaterialOn()
+    {
         skinnedMeshRenderer.material = material;
         swordMeshRenderer.material = swordMaterial;
+        skinnedMeshRenderer.enabled = true;
+        swordMeshRenderer.enabled = true;
     }
 
 }
