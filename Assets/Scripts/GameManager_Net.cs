@@ -19,6 +19,7 @@ public class GameManager_Net : MonoBehaviour
 
     public void MatchStart()
     {
+
         _player.GetComponent<MoveBehaviour>().enabled = false;
 
         _camera.GetComponent<ThirdPersonOrbitCamBasic>().enabled = false;
