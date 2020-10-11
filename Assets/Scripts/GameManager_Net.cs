@@ -13,20 +13,14 @@ public class GameManager_Net : MonoBehaviour
     public float zoomValue = 20f;
 
     private float time = 0f;
-    private float firstCameraZ;
 
     private bool startedFlg = false;
 
     public void MatchStart()
     {
 
-        _player.GetComponent<MoveBehaviour>().enabled = false;
-
-        _camera.GetComponent<ThirdPersonOrbitCamBasic>().enabled = false;
-        firstCameraZ = _camera.transform.position.z;
-        _camera.transform.localPosition = new Vector3(0, 8, 0);
-        _camera.transform.localEulerAngles = new Vector3(89, 0, 0);
-        _camera.transform.position += new Vector3(0, zoomValue, 0);
+        _player.GetComponent<FirstPersonAIO>().enabled = false;
+        _player.GetComponent<FPSMove>().enabled = false;
 
         startedFlg = true;
     }
@@ -38,8 +32,12 @@ public class GameManager_Net : MonoBehaviour
             _directionalLight.intensity -= 1 / _fadeTime * Time.deltaTime;
             _camera.transform.position -= new Vector3(0, zoomValue / _fadeTime * Time.deltaTime, 0);
             if (_fadeTime <= time) {
-                _player.GetComponent<MoveBehaviour>().enabled = true;
-                _camera.GetComponent<ThirdPersonOrbitCamBasic>().enabled = true;
+                _camera.SetActive(false);
+                _player.GetComponent<FirstPersonAIO>().enabled = true;
+                _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+                _player.GetComponent<FPSMove>().enabled = true;
+                _player.transform.GetChild(3).gameObject.SetActive(false);
+                _player.GetComponent<RagdollController>().MeshtoZero();
             }
         }
     }

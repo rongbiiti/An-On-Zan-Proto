@@ -23,6 +23,8 @@ public class HitProcess : MonoBehaviourPunCallbacks
     [SerializeField]
     private GameObject blood;
 
+    [SerializeField] GameObject _camera;
+
     private bool hitFlg = false;
 
     void Start()
@@ -67,19 +69,20 @@ public class HitProcess : MonoBehaviourPunCallbacks
     {
         Vector3 vec = new Vector3(PhotonView.Find(viewID).transform.position.x, PhotonView.Find(viewID).transform.position.y + 1.5f, PhotonView.Find(viewID).transform.position.z);
         var b = Instantiate(blood, vec, Quaternion.identity) as GameObject;
-        b.transform.SetParent(PhotonView.Find(viewID).transform.GetChild(2).GetChild(0).GetChild(2));
+        b.transform.SetParent(PhotonView.Find(viewID).transform.GetChild(2).GetChild(0).GetChild(0).GetChild(2));
         b.transform.LookAt(transform.root.position);
 
         PhotonView.Find(viewID).GetComponent<RagdollController>().RagdollActive_Net(transform.root.forward);
         PhotonView.Find(viewID).GetComponent<MaterialChanger>().MaterialOn();
+        PhotonView.Find(viewID).GetComponent<Animator>().SetBool("Death", true);
         PlayHit();
         StartCoroutine("DeathVoice");
     }
 
     private IEnumerator DeathVoice()
     {
-        if (transform.root.GetChild(0).gameObject.activeSelf) {
-            transform.root.GetChild(0).GetComponent<ExecutionCamera>().StartCoroutine("Execution");
+        if (_camera.activeSelf) {
+            _camera.GetComponent<ExecutionCamera>().StartCoroutine("Execution");
         }
        
         yield return new WaitForSeconds(0.2f);

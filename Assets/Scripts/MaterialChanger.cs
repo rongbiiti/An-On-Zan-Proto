@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class MaterialChanger : MonoBehaviour
+public class MaterialChanger : MonoBehaviourPunCallbacks
 {
 
     [SerializeField] private Material material;
@@ -10,10 +12,12 @@ public class MaterialChanger : MonoBehaviour
     [SerializeField] private Material swordMaterial;
     [SerializeField] private MeshRenderer swordMeshRenderer;
 
-    void Start()
+    private void Start()
     {
-        skinnedMeshRenderer.enabled = false;
-        swordMeshRenderer.enabled = false;
+        PhotonView photonview = GetComponent<PhotonView>();
+        if (!photonview.IsMine) {
+            StartCoroutine("MaterialOff");
+        }
     }
 
     public void MaterialOn()
@@ -22,6 +26,13 @@ public class MaterialChanger : MonoBehaviour
         swordMeshRenderer.material = swordMaterial;
         skinnedMeshRenderer.enabled = true;
         swordMeshRenderer.enabled = true;
+    }
+
+    public IEnumerator MaterialOff()
+    {
+        yield return new WaitForSeconds(2f);
+        skinnedMeshRenderer.enabled = false;
+        swordMeshRenderer.enabled = false;
     }
 
 }
