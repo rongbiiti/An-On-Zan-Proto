@@ -58,15 +58,18 @@ using UnityEngine.UI;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
+using Photon.Realtime;
 
 #if UNITY_EDITOR
-    using UnityEditor;
+using UnityEditor;
     using System.Net;
 #endif
 
 [RequireComponent(typeof(CapsuleCollider)),RequireComponent(typeof(Rigidbody)),AddComponentMenu("First Person AIO")]
 
-public class FirstPersonAIO : MonoBehaviour {
+public class FirstPersonAIO : MonoBehaviourPunCallbacks
+{
 
 
     #region Variables
@@ -690,7 +693,9 @@ public class FirstPersonAIO : MonoBehaviour {
                         {
                             nextStepTime = headbobCycle + 0.5f;
                             int n = Random.Range(0, footStepSounds.Count);
-                            if(footStepSounds.Any() && footStepSounds[n] != null){ audioSource.PlayOneShot(footStepSounds[n],Volume/10);}
+                            if (footStepSounds.Any() && footStepSounds[n] != null) {
+                                GetComponent<AnimationEventSEPlayer>().PlayFootStep();
+                            }
                             
                         }
                     }
@@ -809,8 +814,6 @@ public class FirstPersonAIO : MonoBehaviour {
         if(advanced.maxSlopeAngle>0){advanced.curntGroundNormal = Vector3.up; advanced.lastKnownSlopeAngle = 0; advanced.isTouchingWalkable = false; advanced.isTouchingUpright = false;}
 
     }
-
-
 }
 
 #if UNITY_EDITOR
@@ -1551,5 +1554,9 @@ public class FirstPersonAIO : MonoBehaviour {
                  adTex1 = tex;
              }
          }
+
+
     }
+
+
 #endif

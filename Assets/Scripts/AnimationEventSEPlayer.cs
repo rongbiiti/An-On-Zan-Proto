@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine.Audio;
 
-public class AnimationEventSEPlayer : MonoBehaviour
+public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     private AudioClip audioClip;
@@ -26,11 +30,28 @@ public class AnimationEventSEPlayer : MonoBehaviour
 
     private Animator animator;
     private float speed;
+    public List<AudioClip> footStepSounds = null;
+
 
     private void Start()
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+    }
+    
+    public void PlayFootStep()
+    {
+        photonView.RPC("FootStep", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void FootStep()
+    {
+        int n = Random.Range(0, footStepSounds.Count);
+        if (footStepSounds.Any() && footStepSounds[n] != null) {
+            audioSource.PlayOneShot(footStepSounds[n]);
+        }
+            
     }
 
     public void PlayWalk(string eventName)
