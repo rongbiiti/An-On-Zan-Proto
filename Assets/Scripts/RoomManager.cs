@@ -17,6 +17,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
         DontDestroyOnLoad(gameObject);
         Instance = this;
+        Debug.Log("RoomManagerCreated");
     }
 
     public override void OnEnable()
@@ -33,9 +34,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        if (scene.buildIndex == 1) // We're in the game scene
-        {
-            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
-        }
+        //if (scene.buildIndex == 1) // We're in the game scene
+        //{
+        //    PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
+        //}
     }
 }

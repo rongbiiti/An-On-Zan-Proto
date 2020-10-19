@@ -18,7 +18,6 @@ public class GameManager_Net : MonoBehaviour
 
     public void MatchStart()
     {
-
         _player.GetComponent<FirstPersonAIO>().enabled = false;
         _player.GetComponent<FPSMove>().enabled = false;
 

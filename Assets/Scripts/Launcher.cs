@@ -11,6 +11,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public static Launcher Instance;
 
     [SerializeField] TMP_InputField _roomNameInputField;
+    [SerializeField] TMP_InputField _playerNameInputField;
     [SerializeField] TMP_Text _errorText;
     [SerializeField] TMP_Text _roomNameText;
     [SerializeField] Transform _roomListContent;
@@ -22,6 +23,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
+        PhotonNetwork.UseAlternativeUdpPorts = true;
     }
 
     void Start()
@@ -41,7 +43,13 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("title");
         Debug.Log("Joined Lobby");
-        PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+        if (string.IsNullOrEmpty(_playerNameInputField.text)) {
+            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+            return;
+        } else {
+            PhotonNetwork.NickName = _playerNameInputField.text;
+        }
+        
     }
 
     public void CreateRoom()
@@ -49,12 +57,21 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (string.IsNullOrEmpty(_roomNameInputField.text)) {
             return;
         }
-        PhotonNetwork.CreateRoom(_roomNameInputField.text);
+
+        var roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = 2;
+        PhotonNetwork.CreateRoom(_roomNameInputField.text, roomOptions);
         MenuManager.Instance.OpenMenu("loading");
     }
 
     public override void OnJoinedRoom()
     {
+        if (string.IsNullOrEmpty(_playerNameInputField.text)) {
+            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+        } else {
+            PhotonNetwork.NickName = _playerNameInputField.text;
+        }
+        
         MenuManager.Instance.OpenMenu("room");
         _roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -86,6 +103,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         PhotonNetwork.LoadLevel(1);
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
     }
 
     public void LeaveRoom()
@@ -120,6 +139,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        if(PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers) {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
         Instantiate(_playerListItemPrefab, _playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
+
 }

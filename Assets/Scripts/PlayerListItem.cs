@@ -20,6 +20,8 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     {
         if (player == otherPlayer) {
             Destroy(gameObject);
+            PhotonNetwork.CurrentRoom.IsOpen = true;
+            PhotonNetwork.CurrentRoom.IsVisible = true;
         }
     }
 

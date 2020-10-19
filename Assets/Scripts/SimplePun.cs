@@ -17,7 +17,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
     {
         ////旧バージョンでは引数必須でしたが、PUN2では不要です。
         // シーンの読み込みコールバックを登録.
-        SceneManager.sceneLoaded += OnLoadedScene;
+        //SceneManager.sceneUnloaded += OnLoadedScene;
         //キャラクターを生成
         myplayer = PhotonNetwork.Instantiate(_playerPrefabName, _startPosition[PhotonNetwork.LocalPlayer.ActorNumber - 1], Quaternion.identity, 0);
         //自分だけが操作できるようにスクリプトを有効にする
@@ -32,10 +32,9 @@ public class SimplePun : MonoBehaviourPunCallbacks
             fpsMove.enabled = true;
 
             myplayer.GetComponent<MaterialChanger>().enabled = false;
+            Debug.Log("キャラ作成成功" + PhotonNetwork.LocalPlayer.ActorNumber);
 
         }
-
-        Debug.Log("キャラ作成成功" + PhotonNetwork.LocalPlayer.ActorNumber);
 
         GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
         gameManager_Net._player = myplayer;
@@ -50,8 +49,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
         GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());
     }
 
-
-    private void OnLoadedScene(Scene i_scene, LoadSceneMode i_mode)
+    private void OnLoadedScene(Scene i_scene)
     {
         playerCreatedFlg = false;
         PhotonNetwork.LeaveRoom();
@@ -59,7 +57,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        //PhotonNetwork.JoinRandomRoom();
+        SceneManager.LoadScene(0);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
