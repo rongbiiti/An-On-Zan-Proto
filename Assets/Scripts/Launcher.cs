@@ -23,7 +23,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
-        PhotonNetwork.UseAlternativeUdpPorts = true;
+        PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
+
     }
 
     void Start()
@@ -32,24 +33,28 @@ public class Launcher : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
     }
 
+    void OnGUI()
+    {
+        //ログインの状態を画面上に出力
+        GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());
+    }
+
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to Master");
         PhotonNetwork.JoinLobby();
         PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
+        if (string.IsNullOrEmpty(_playerNameInputField.text)) {
+            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+            return;
+        }
     }
 
     public override void OnJoinedLobby()
     {
         MenuManager.Instance.OpenMenu("title");
-        Debug.Log("Joined Lobby");
-        if (string.IsNullOrEmpty(_playerNameInputField.text)) {
-            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
-            return;
-        } else {
-            PhotonNetwork.NickName = _playerNameInputField.text;
-        }
-        
+        Debug.Log("Joined Lobby");        
     }
 
     public void CreateRoom()
@@ -60,18 +65,13 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         var roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 2;
+        roomOptions.PlayerTtl = 10000;
         PhotonNetwork.CreateRoom(_roomNameInputField.text, roomOptions);
         MenuManager.Instance.OpenMenu("loading");
     }
 
     public override void OnJoinedRoom()
-    {
-        if (string.IsNullOrEmpty(_playerNameInputField.text)) {
-            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
-        } else {
-            PhotonNetwork.NickName = _playerNameInputField.text;
-        }
-        
+    {        
         MenuManager.Instance.OpenMenu("room");
         _roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -115,6 +115,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void JoinRoom(RoomInfo info)
     {
+        
         PhotonNetwork.JoinRoom(info.Name);
         MenuManager.Instance.OpenMenu("loading");
     }
@@ -144,6 +145,24 @@ public class Launcher : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.IsVisible = false;
         }
         Instantiate(_playerListItemPrefab, _playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+    }
+
+    public void ChangePlayerNickName()
+    {
+        if (string.IsNullOrEmpty(_playerNameInputField.text)) {
+            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+            return;
+        } else {
+            PhotonNetwork.NickName = _playerNameInputField.text;
+        }
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+        if (!PhotonNetwork.ReconnectAndRejoin()) {
+            PhotonNetwork.LeaveRoom();
+        }
     }
 
 }

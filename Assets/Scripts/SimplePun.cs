@@ -3,25 +3,30 @@ using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class SimplePun : MonoBehaviourPunCallbacks
 {
 
     [SerializeField] Vector3[] _startPosition;
     [SerializeField] string _playerPrefabName;
+    [SerializeField] GameObject _panel;
+    [SerializeField] GameObject _errorPanel;
+    [SerializeField] TMP_Text _text;
 
     bool playerCreatedFlg = false;
     GameObject myplayer;
+    float timeOutWait = 10f;
+    bool timeOutWaitFlg;
 
     void Start()
     {
-        ////旧バージョンでは引数必須でしたが、PUN2では不要です。
         // シーンの読み込みコールバックを登録.
         //SceneManager.sceneUnloaded += OnLoadedScene;
         //キャラクターを生成
         myplayer = PhotonNetwork.Instantiate(_playerPrefabName, _startPosition[PhotonNetwork.LocalPlayer.ActorNumber - 1], Quaternion.identity, 0);
-        //自分だけが操作できるようにスクリプトを有効にする
 
+        //自分だけが操作できるようにスクリプトを有効にする
         PhotonView photonview = myplayer.GetComponent<PhotonView>();
         if (photonview.IsMine && PhotonNetwork.IsConnected == true) {
 
@@ -43,6 +48,17 @@ public class SimplePun : MonoBehaviourPunCallbacks
         playerCreatedFlg = true;
     }
 
+    private void FixedUpdate()
+    {
+        if (timeOutWaitFlg) {
+            timeOutWait -= Time.deltaTime;
+            _text.text = timeOutWait.ToString("f1");
+            if (timeOutWait < 0f) {
+                StartCoroutine("ErrorLeaveRoom");
+            }
+        }
+    }
+
     void OnGUI()
     {
         //ログインの状態を画面上に出力
@@ -62,7 +78,39 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        SceneManager.LoadScene(0);
+        PhotonNetwork.CurrentRoom.IsOpen = true;
+        timeOutWaitFlg = true;
+        _panel.SetActive(true);
     }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        timeOutWait = 10f;
+        timeOutWaitFlg = false;
+        _panel.SetActive(false);
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+        if (!PhotonNetwork.ReconnectAndRejoin()) {
+            PhotonNetwork.LeaveRoom();
+        }
+    }
+
+    public override void OnConnected()
+    {
+        base.OnConnected();
+    }
+
+    IEnumerator ErrorLeaveRoom()
+    {
+        _panel.SetActive(false);
+        _errorPanel.SetActive(true);
+        timeOutWaitFlg = false;
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        yield return new WaitForSeconds(3f);
+        PhotonNetwork.LeaveRoom();
+    }
 }

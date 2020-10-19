@@ -16,12 +16,6 @@ public class TimeOutView : MonoBehaviourPunCallbacks
         if (!photonView.IsMine) {
             _text = GameObject.Find("TimeOutCountDownText").GetComponent<TMP_Text>();
         }
-        
-    }
-
-    void Update()
-    {
-        
     }
 
     public void FixedUpdate()
@@ -31,7 +25,8 @@ public class TimeOutView : MonoBehaviourPunCallbacks
         }
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
-    }
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+    //}
 }

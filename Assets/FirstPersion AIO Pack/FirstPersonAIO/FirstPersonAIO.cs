@@ -200,6 +200,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
     Vector3 miscRefVel;
     bool previousGrounded;
     AudioSource audioSource;
+    private AnimationEventSEPlayer animEventSEPlayer;
 
     #endregion
 
@@ -334,6 +335,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
 
         previousPosition = fps_Rigidbody.position;
         audioSource = GetComponent<AudioSource>();
+        animEventSEPlayer = GetComponent<AnimationEventSEPlayer>();
         #endregion
     }
 
@@ -689,14 +691,13 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                         nextStepTime = headbobCycle + 0.5f;
                     } else
                     {
-                        if(headbobCycle > nextStepTime)
+                        if(headbobCycle > nextStepTime && isSprinting)
                         {
                             nextStepTime = headbobCycle + 0.5f;
                             int n = Random.Range(0, footStepSounds.Count);
                             if (footStepSounds.Any() && footStepSounds[n] != null) {
-                                GetComponent<AnimationEventSEPlayer>().PlayFootStep();
+                                animEventSEPlayer.PlayFootStep();
                             }
-                            
                         }
                     }
                     previousGrounded = true;
