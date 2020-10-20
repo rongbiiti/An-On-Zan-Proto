@@ -11,6 +11,7 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
     [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
     [SerializeField] private Material swordMaterial;
     [SerializeField] private MeshRenderer swordMeshRenderer;
+    [SerializeField] private float _materialOffWaitTime = 2f;
 
     private void Start()
     {
@@ -30,7 +31,7 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
 
     public IEnumerator MaterialOff()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(_materialOffWaitTime);
         skinnedMeshRenderer.enabled = false;
         swordMeshRenderer.enabled = false;
     }

@@ -21,16 +21,44 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        Debug.Log(PhotonNetwork.NetworkingClient.UserId);
         // シーンの読み込みコールバックを登録.
         //SceneManager.sceneUnloaded += OnLoadedScene;
         //キャラクターを生成
-        myplayer = PhotonNetwork.Instantiate(_playerPrefabName, _startPosition[PhotonNetwork.LocalPlayer.ActorNumber - 1], Quaternion.identity, 0);
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var p in players) {
+            PhotonView photonView = p.GetPhotonView();
+            Debug.Log(PhotonNetwork.NetworkingClient.UserId);
+            if (photonView.Controller.UserId == PhotonNetwork.NetworkingClient.UserId) {
+                Debug.Log("自分が操作していたキャラを見つけた");
+                myplayer = p;
+                FirstPersonAIO firstPersonAIO = myplayer.GetComponent<FirstPersonAIO>();
+                firstPersonAIO.enabled = true;
+
+                FPSMove fpsMove = myplayer.GetComponent<FPSMove>();
+                fpsMove.enabled = true;
+
+                myplayer.GetComponent<MaterialChanger>().enabled = false;
+                GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
+                gameManager_Net._player = p;
+                gameManager_Net.PlayerActive();
+                playerCreatedFlg = true;
+                return;
+            }
+        }
+        Debug.Log(players.Length);
+        if (players.Length >= 2) {
+            playerCreatedFlg = true;
+        }
+        if (playerCreatedFlg == false) {
+            myplayer = PhotonNetwork.Instantiate(_playerPrefabName, _startPosition[PhotonNetwork.LocalPlayer.ActorNumber - 1], Quaternion.identity, 0);
+        }
 
         //自分だけが操作できるようにスクリプトを有効にする
         PhotonView photonview = myplayer.GetComponent<PhotonView>();
         if (photonview.IsMine && PhotonNetwork.IsConnected == true) {
 
-            FirstPersonAIO firstPersonAIO = myplayer.transform.GetComponent<FirstPersonAIO>();
+            FirstPersonAIO firstPersonAIO = myplayer.GetComponent<FirstPersonAIO>();
             firstPersonAIO.enabled = true;
 
             FPSMove fpsMove = myplayer.GetComponent<FPSMove>();
@@ -41,10 +69,11 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
         }
 
-        GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
-        gameManager_Net._player = myplayer;
-        gameManager_Net.MatchStart();
-
+        if (playerCreatedFlg == false) {
+            GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
+            gameManager_Net._player = myplayer;
+            gameManager_Net.MatchStart();
+        }
         playerCreatedFlg = true;
     }
 
@@ -97,6 +126,13 @@ public class SimplePun : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.ReconnectAndRejoin()) {
             PhotonNetwork.LeaveRoom();
         }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        Debug.Log("再入室？");
+        
     }
 
     public override void OnConnected()

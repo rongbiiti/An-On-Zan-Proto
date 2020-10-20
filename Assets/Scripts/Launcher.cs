@@ -24,7 +24,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         Instance = this;
         PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
-
+        PhotonNetwork.KeepAliveInBackground = 10;
     }
 
     void Start()
