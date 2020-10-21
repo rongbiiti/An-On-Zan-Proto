@@ -8,6 +8,7 @@ using System.IO;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager Instance;
+    public bool isCreatead;
 
     void Awake()
     {
@@ -34,9 +35,16 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        //if (scene.buildIndex == 1) // We're in the game scene
-        //{
-        //    PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
-        //}
+        if (scene.buildIndex == 1 && PhotonNetwork.InRoom) // We're in the game scene
+        {
+            if (!isCreatead) {
+                GameObject.Find("NetworkStarter").GetComponent<SimplePun>().CreatePlayer();
+                Debug.Log("プレイヤー作成");
+            } else {
+                GameObject.Find("NetworkStarter").GetComponent<SimplePun>().StartCoroutine("SearchPlayer");
+                Debug.Log("プレイヤー検索");
+            }
+            
+        }
     }
 }

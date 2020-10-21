@@ -160,8 +160,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        if (!PhotonNetwork.ReconnectAndRejoin()) {
-            PhotonNetwork.LeaveRoom();
+        while (!PhotonNetwork.ConnectUsingSettings()) {
+            
         }
     }
 
