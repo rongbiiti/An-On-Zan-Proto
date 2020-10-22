@@ -22,8 +22,6 @@ public class EnemyMove : MonoBehaviour
 
     void Start()
     {
-        playerTransform = player.transform.position;
-        playerAudioSource = player.GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -38,6 +36,11 @@ public class EnemyMove : MonoBehaviour
         GotoNextPoint();
     }
 
+    public void GetPlayerComponent()
+    {
+        playerTransform = player.transform.position;
+        playerAudioSource = player.GetComponent<AudioSource>();
+    }
 
     void GotoNextPoint()
     {
@@ -52,7 +55,6 @@ public class EnemyMove : MonoBehaviour
         // 必要ならば出発地点にもどります
         destPoint = (destPoint + 1) % points.Length;
     }
-
 
     void Update()
     {

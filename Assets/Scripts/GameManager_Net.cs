@@ -12,6 +12,8 @@ public class GameManager_Net : MonoBehaviour
     public GameObject _camera;      // シーン上のメインカメラ
     public float zoomValue = 20f;   // どのくらいカメラが落ちていくか
 
+    private NavMeshAgent navMesh;
+    private EnemyMove enemyMove;
     private float time = 0f;
     private bool startedFlg = false;
 
@@ -20,8 +22,10 @@ public class GameManager_Net : MonoBehaviour
     private void Start()
     {
         if(_isCPUMatch) {
-            _enemy.GetComponent<NavMeshAgent>().enabled = false;
-            _enemy.GetComponent<EnemyMove>().enabled = false;
+            navMesh = _enemy.GetComponent<NavMeshAgent>();
+            enemyMove = _enemy.GetComponent<EnemyMove>();
+            navMesh.enabled = false;
+            enemyMove.enabled = false;
         }
     }
 
@@ -69,6 +73,8 @@ public class GameManager_Net : MonoBehaviour
     {
         _enemy.GetComponent<NavMeshAgent>().enabled = true;
         _enemy.GetComponent<EnemyMove>().enabled = true;
+        enemyMove.player = _player;
+        enemyMove.GetPlayerComponent();
     }
 
 }
