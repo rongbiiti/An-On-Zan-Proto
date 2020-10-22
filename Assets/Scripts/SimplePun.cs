@@ -7,9 +7,9 @@ using TMPro;
 
 public class SimplePun : MonoBehaviourPunCallbacks
 {
-
     [SerializeField] Vector3[] _startPosition;
     [SerializeField] string _playerPrefabName;
+    [SerializeField] GameObject _playerPrefab;
     [SerializeField] GameObject _panel;
     [SerializeField] GameObject _errorPanel;
     [SerializeField] TMP_Text _text;
@@ -67,6 +67,8 @@ public class SimplePun : MonoBehaviourPunCallbacks
             fpsMove.enabled = true;
 
             myplayer.GetComponent<MaterialChanger>().enabled = false;
+
+            myplayer.transform.LookAt(Vector3.zero);
             Debug.Log("キャラ作成成功" + PhotonNetwork.LocalPlayer.ActorNumber);
 
         }
@@ -233,5 +235,21 @@ public class SimplePun : MonoBehaviourPunCallbacks
         timeOutWait = 10f;
         timeOutWaitFlg = false;
         _panel.SetActive(false);
+    }
+
+    public void CreatePlayerInCPUMatch()
+    {
+        myplayer = Instantiate(_playerPrefab, _startPosition[0], Quaternion.identity);
+        FirstPersonAIO firstPersonAIO = myplayer.GetComponent<FirstPersonAIO>();
+        firstPersonAIO.enabled = true;
+
+        FPSMove fpsMove = myplayer.GetComponent<FPSMove>();
+        fpsMove.enabled = true;
+
+        myplayer.GetComponent<MaterialChanger>().enabled = false;
+
+        GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
+        gameManager_Net._player = myplayer;
+        gameManager_Net.MatchStart();
     }
 }

@@ -8,11 +8,22 @@ public class GameManager_Net : MonoBehaviour
     public Light _directionalLight; // シーン上の太陽光
     public float _fpsCameraEnableWaitTime = 2f;    // FPSカメラがONになるまでの時間
     public GameObject _player;      // 自分が操作権を持つキャラ
+    public GameObject _enemy;
     public GameObject _camera;      // シーン上のメインカメラ
     public float zoomValue = 20f;   // どのくらいカメラが落ちていくか
 
     private float time = 0f;
     private bool startedFlg = false;
+
+    public bool _isCPUMatch;
+
+    private void Start()
+    {
+        if(_isCPUMatch) {
+            _enemy.GetComponent<NavMeshAgent>().enabled = false;
+            _enemy.GetComponent<EnemyMove>().enabled = false;
+        }
+    }
 
     // 試合開始時に別スクリプトから呼ばれる
     public void MatchStart()
@@ -37,6 +48,9 @@ public class GameManager_Net : MonoBehaviour
                 // カメラOFF
                 _camera.SetActive(false);
                 PlayerActive();
+                if(_isCPUMatch) {
+                    EnemyActive();
+                }
             }
         }
     }
@@ -50,4 +64,11 @@ public class GameManager_Net : MonoBehaviour
         _player.transform.GetChild(3).gameObject.SetActive(false);  // 呼吸音を出すスピーカーON
         _player.GetComponent<RagdollController>().MeshtoZero();     // FPS用に足と頭を縮ませる
     }
+
+    public void EnemyActive()
+    {
+        _enemy.GetComponent<NavMeshAgent>().enabled = true;
+        _enemy.GetComponent<EnemyMove>().enabled = true;
+    }
+
 }
