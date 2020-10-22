@@ -71,8 +71,8 @@ public class GameManager_Net : MonoBehaviour
 
     public void EnemyActive()
     {
-        _enemy.GetComponent<NavMeshAgent>().enabled = true;
-        _enemy.GetComponent<EnemyMove>().enabled = true;
+        navMesh.enabled = true;
+        enemyMove.enabled = true;
         enemyMove.player = _player;
         enemyMove.GetPlayerComponent();
     }

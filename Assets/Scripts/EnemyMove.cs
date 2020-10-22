@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-
+using System.Collections.Generic;
 
 public class EnemyMove : MonoBehaviour
 {
@@ -59,6 +59,7 @@ public class EnemyMove : MonoBehaviour
     void Update()
     {
         if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, playerTransform) < 4f) {
+            
             playerTransform = player.transform.position;
             agent.destination = playerTransform;
             Debug.Log("はっけｎ");
