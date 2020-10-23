@@ -12,13 +12,19 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
     [SerializeField] private Material swordMaterial;
     [SerializeField] private MeshRenderer swordMeshRenderer;
     [SerializeField] private float _materialOffWaitTime = 2f;
+    [SerializeField] private bool _isCPU;
 
     private void Start()
     {
-        PhotonView photonview = GetComponent<PhotonView>();
-        if (!photonview.IsMine) {
+        if (PhotonNetwork.IsConnected && !_isCPU) {
+            PhotonView photonview = GetComponent<PhotonView>();
+            if (!photonview.IsMine) {
+                StartCoroutine("MaterialOff");
+            }
+        } else {
             StartCoroutine("MaterialOff");
         }
+        
     }
 
     public void MaterialOn()

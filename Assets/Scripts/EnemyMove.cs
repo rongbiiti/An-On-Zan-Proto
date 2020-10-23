@@ -62,20 +62,18 @@ public class EnemyMove : MonoBehaviour
             
             playerTransform = player.transform.position;
             agent.destination = playerTransform;
-            Debug.Log("はっけｎ");
-            Debug.Log(agent.destination);
-            Debug.Log(playerTransform);
+            Debug.Log("プレイヤー発見");
         }
         // エージェントが現目標地点に近づいてきたら、
         // 次の目標地点を選択します
-        if (!agent.pathPending && agent.remainingDistance < 1f) {
-            if(Vector3.Distance(transform.position, playerTransform) < 1f) {
+        if (!agent.pathPending && agent.remainingDistance < 2f) {
+            if(Vector3.Distance(transform.position, playerTransform) < 2f) {
                 animator.SetBool("Attack", true);
-                Debug.Log("あたっく");
+                Debug.Log("CPUが攻撃した");
                 GotoNextPoint();
             } else {
                 GotoNextPoint();
-                Debug.Log("つぎへ");
+                Debug.Log("次のポイントへ");
             }
         }
             

@@ -59,17 +59,18 @@ public class RagdollController : MonoBehaviour
         }
     }
 
+    // CPU用
     public void RagdollActive(Vector3 direction)
     {
-        SetRagdoll(true, direction);
-        animator.enabled = false;
         meshAgent.enabled = false;
         enemyMove.enabled = false;
-        capsule.enabled = false;
-        rb.isKinematic = true;
         swordCollider.enabled = false;
+        _breathSource.enabled = false;
+        gameObject.tag = "Untagged";
+        gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
     }
 
+    // プレイヤー用
     public void RagdollActive_Net(Vector3 direction)
     {
         MeshtoOne();
@@ -77,7 +78,9 @@ public class RagdollController : MonoBehaviour
         fPSMove.enabled = false;
         _breathSource.enabled = false;
         gameObject.tag = "Untagged";
+        gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
         swordCollider.enabled = false;
+        rb.velocity = Vector3.zero;
 
         if (_camera.activeSelf) {
             _camera.GetComponent<ExecutionCamera>().StartCoroutine("Execution");
