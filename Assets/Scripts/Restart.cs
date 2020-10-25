@@ -14,6 +14,13 @@ public class Restart : MonoBehaviour
 
     public void LeaveRoom()
     {
-        PhotonNetwork.LeaveRoom();
+        if (PhotonNetwork.InRoom) {
+            PhotonNetwork.LeaveRoom();
+        } else if (PhotonNetwork.InLobby) {
+            PhotonNetwork.LeaveLobby();
+        } else {
+            PhotonNetwork.LeaveRoom();
+        }
+        
     }
 }

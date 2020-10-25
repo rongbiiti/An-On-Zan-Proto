@@ -36,15 +36,6 @@ public class RagdollController : MonoBehaviour
         MeshtoOne();
     }
 
-    void SetRagdoll(bool isEnabled, Vector3 direction)
-    {
-        foreach (Rigidbody rigidbody in ragdollRigidbodies) {
-            rigidbody.isKinematic = !isEnabled;
-            rigidbody.useGravity = !isEnabled;
-            rigidbody.AddForce(direction * 16f, ForceMode.Impulse);
-        }
-    }
-
     public void MeshtoOne()
     {
         foreach (Transform mesh in meshs) {

@@ -65,7 +65,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
     [PunRPC]
     private void PlayerDeath(int viewID)
     {
-        Vector3 vec = new Vector3(PhotonView.Find(viewID).transform.position.x, PhotonView.Find(viewID).transform.position.y + 1.5f, PhotonView.Find(viewID).transform.position.z);
+        Vector3 vec = new Vector3(PhotonView.Find(viewID).transform.position.x, PhotonView.Find(viewID).transform.position.y + 1.35f, PhotonView.Find(viewID).transform.position.z);
         GameObject effect = Instantiate(blood, vec, Quaternion.identity) as GameObject;
         effect.transform.SetParent(PhotonView.Find(viewID).transform.GetChild(2).GetChild(0).GetChild(0).GetChild(2));
         effect.transform.LookAt(transform.root.position);
@@ -80,7 +80,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
     // オフライン用
     private void PlayerDeath(Collider col, bool isTargetCPU)
     {
-        Vector3 vec = new Vector3(col.transform.position.x, col.transform.position.y + 1.5f, col.transform.position.z);
+        Vector3 vec = new Vector3(col.transform.position.x, col.transform.position.y + 1.35f, col.transform.position.z);
         GameObject effect = Instantiate(blood, vec, Quaternion.identity) as GameObject;
 
         if (!isTargetCPU) {

@@ -6,6 +6,7 @@ public class ExecutionCamera : MonoBehaviour
 {
     public Material _executionShaderMaterial;
     public Transform _headjoint;
+    public Animator animator;
     private bool executionFlg = false;
 
     private void OnRenderImage(RenderTexture src, RenderTexture dest)
@@ -27,8 +28,10 @@ public class ExecutionCamera : MonoBehaviour
         Time.timeScale = 1f;
         executionFlg = false;
 
-        // 死に様を見せるために位置変更
-        _headjoint.localPosition = new Vector3(0, 2.9f, -2.6f);
-        _headjoint.localRotation = Quaternion.Euler(31.72f, 0, 0);
+        if (animator.GetBool("Death")) {
+            // 死に様を見せるために位置変更
+            _headjoint.localPosition = new Vector3(0, 2.9f, -2.6f);
+            _headjoint.localRotation = Quaternion.Euler(31.72f, 0, 0);
+        }
     }
 }
