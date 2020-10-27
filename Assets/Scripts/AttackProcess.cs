@@ -26,7 +26,7 @@ public class AttackProcess : MonoBehaviour
         preSprintSpeed = firstPersonAIO.sprintSpeed;
     }
 
-    void AttackStart()
+    public void AttackStart()
     {
         weaponCollider.enabled = true;
         Debug.Log("攻撃判定ON");
@@ -37,14 +37,14 @@ public class AttackProcess : MonoBehaviour
         firstPersonAIO.sprintSpeed = 0f;
     }
 
-    void AttackEnd()
+    public void AttackEnd()
     {
         weaponCollider.enabled = false;
         Debug.Log("攻撃判定OFF");
         animator.SetBool("Attack", false);
     }
 
-    void EffectStop()
+    public void EffectStop()
     {
         effect.SetActive(false);
         if (isCPU) return;
