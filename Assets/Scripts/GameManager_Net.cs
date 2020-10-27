@@ -14,6 +14,7 @@ public class GameManager_Net : MonoBehaviour
 
     private NavMeshAgent navMesh;
     private EnemyMove enemyMove;
+    private PauseManager pauseManager;
     private float time = 0f;
     private bool startedFlg = false;
 
@@ -26,6 +27,8 @@ public class GameManager_Net : MonoBehaviour
             enemyMove = _enemy.GetComponent<EnemyMove>();
             navMesh.enabled = false;
             enemyMove.enabled = false;
+            pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
+            pauseManager.isCanPause = false;
         }
     }
 
@@ -50,10 +53,11 @@ public class GameManager_Net : MonoBehaviour
 
             if (_fpsCameraEnableWaitTime <= time) {
                 // カメラOFF
-                _camera.SetActive(false);
+                //_camera.SetActive(false);
                 PlayerActive();
                 if(_isCPUMatch) {
                     EnemyActive();
+                    pauseManager.isCanPause = true;
                 }
             }
         }

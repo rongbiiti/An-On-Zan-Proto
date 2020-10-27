@@ -10,6 +10,7 @@ public class CPUMatch : MonoBehaviour
     public void OnClick()
     {
         SceneManager.LoadScene(2);
+        PhotonNetwork.OfflineMode = true;
         Debug.Log("ok");
     }
 

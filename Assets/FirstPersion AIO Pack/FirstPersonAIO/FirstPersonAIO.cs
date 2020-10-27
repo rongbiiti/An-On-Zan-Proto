@@ -381,7 +381,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
             else if(Input.GetKeyDown(_crouchModifiers.crouchKey)){isCrouching = !isCrouching || _crouchModifiers.crouchOverride;}
             }
 
-        if(Input.GetButtonDown("Cancel")){ControllerPause();}
+        //if(Input.GetButtonDown("Cancel")){ControllerPause();}
         #endregion
 
         #region Movement Settings - Update
