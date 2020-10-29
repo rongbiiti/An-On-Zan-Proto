@@ -23,6 +23,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
+        Application.targetFrameRate = 60;
         PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
         PhotonNetwork.KeepAliveInBackground = 10;
     }

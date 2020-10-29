@@ -20,6 +20,7 @@ public class RagdollController : MonoBehaviour
     [SerializeField] BoxCollider swordCollider;
     [SerializeField] GameObject _camera;
     [SerializeField] Transform[] meshs;
+    [SerializeField] GameObject _bloodEffect;
 
     void Start()
     {
@@ -59,6 +60,7 @@ public class RagdollController : MonoBehaviour
         _breathSource.enabled = false;
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
+        InstantiateBloodEffect();
     }
 
     // プレイヤー用
@@ -72,11 +74,17 @@ public class RagdollController : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
         swordCollider.enabled = false;
         rb.velocity = Vector3.zero;
+        InstantiateBloodEffect();
 
         if (_camera.activeSelf) {
             _camera.GetComponent<ExecutionCamera>().StartCoroutine("Execution");
             GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
         }
         
-    }    
+    }
+
+    public void InstantiateBloodEffect()
+    {
+        _bloodEffect.SetActive(true);
+    }
 }
