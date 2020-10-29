@@ -7,7 +7,7 @@ public class GameManager_Net : MonoBehaviour
 {
     public Light _directionalLight; // シーン上の太陽光
     public float _fpsCameraEnableWaitTime = 2f;    // FPSカメラがONになるまでの時間
-    public float _fpsCameraLightTime = 0.1f;
+    public float _fpsCameraLightTime = 4f;
     public GameObject _player;      // 自分が操作権を持つキャラ
     public GameObject _enemy;
     public GameObject _camera;      // シーン上のメインカメラ
@@ -46,29 +46,35 @@ public class GameManager_Net : MonoBehaviour
     {
         if (time < _fpsCameraEnableWaitTime && startedFlg)
         {
-            //time += Time.deltaTime;
+            time += Time.deltaTime;
             //// 光がなくなっていく
             ////_directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
 
             // カメラが落ちていく
             _camera.transform.position -= new Vector3(0, zoomValue / _fpsCameraEnableWaitTime * Time.deltaTime, 0);
-
-            if (_fpsCameraLightTime >= time)
+            if(_fpsCameraEnableWaitTime <= time)
             {
-                // 光がなくなっていく
-                if (time < _fpsCameraLightTime)
-                {
-                    _directionalLight.intensity -= 1 / _fpsCameraLightTime * Time.deltaTime;
-                }
-                // カメラOFF
-                //_camera.SetActive(false);
-                    PlayerActive();
+                _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
+                _enemy.GetComponent<EnemyLight>().startFlg = true;
+            }
+            
+        }
+        else if (time < _fpsCameraLightTime && startedFlg)
+        {
+            time += Time.deltaTime;
+            _directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
+            // カメラOFF
+            //_camera.SetActive(false);
+            if (_fpsCameraLightTime <= time)
+            {
+                PlayerActive();
                 if (_isCPUMatch)
                 {
                     EnemyActive();
                     pauseManager.isCanPause = true;
                 }
             }
+           
         }
     }
 
