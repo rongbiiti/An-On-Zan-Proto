@@ -32,6 +32,18 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
+        if (PhotonNetwork.InLobby) {
+            MenuManager.Instance.OpenMenu("title");
+        } else if (PhotonNetwork.IsConnected) {
+            Debug.Log("Connected to Master");
+            PhotonNetwork.JoinLobby();
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
+            if (string.IsNullOrEmpty(_playerNameInputField.text)) {
+                PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+                return;
+            }
+        }
     }
 
     void OnGUI()

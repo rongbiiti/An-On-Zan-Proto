@@ -19,6 +19,11 @@ public class EnemyMove : MonoBehaviour
     private int groundedBool;                       // Animator variable related to whether or not the player is on ground.
     private bool jump;                              // Boolean to determine whether or not the player started a jump.
     private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
+    [SerializeField] Light _light;
+    [SerializeField] private float _lightFadeOutTime = 2f;
+    private float startLightIntensity;
+    private float time;
+    public bool startFlg;
 
     void Start()
     {
@@ -34,6 +39,7 @@ public class EnemyMove : MonoBehaviour
         animator.SetBool("Grounded", true);
 
         GotoNextPoint();
+        startLightIntensity = _light.intensity;
     }
 
     public void GetPlayerComponent()
@@ -86,5 +92,11 @@ public class EnemyMove : MonoBehaviour
         speedSeeker = Mathf.Clamp(speedSeeker, 0.3f, 0.8f);
         speed *= speedSeeker;
         animator.SetFloat("Speed", speed, 0.2f, Time.deltaTime);
+
+        if (time < _lightFadeOutTime && startFlg) {
+            time += Time.deltaTime;
+            _light.intensity -= startLightIntensity / _lightFadeOutTime * Time.deltaTime;
+
+        }
     }
 }
