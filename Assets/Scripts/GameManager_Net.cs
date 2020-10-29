@@ -7,6 +7,7 @@ public class GameManager_Net : MonoBehaviour
 {
     public Light _directionalLight; // シーン上の太陽光
     public float _fpsCameraEnableWaitTime = 2f;    // FPSカメラがONになるまでの時間
+    public float _fpsCameraLightTime = 0.1f;
     public GameObject _player;      // 自分が操作権を持つキャラ
     public GameObject _enemy;
     public GameObject _camera;      // シーン上のメインカメラ
@@ -43,19 +44,27 @@ public class GameManager_Net : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (time < _fpsCameraEnableWaitTime && startedFlg) {
-            time += Time.deltaTime;
-            // 光がなくなっていく
-            _directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
+        if (time < _fpsCameraEnableWaitTime && startedFlg)
+        {
+            //time += Time.deltaTime;
+            //// 光がなくなっていく
+            ////_directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
 
             // カメラが落ちていく
             _camera.transform.position -= new Vector3(0, zoomValue / _fpsCameraEnableWaitTime * Time.deltaTime, 0);
 
-            if (_fpsCameraEnableWaitTime <= time) {
+            if (_fpsCameraLightTime >= time)
+            {
+                // 光がなくなっていく
+                if (time < _fpsCameraLightTime)
+                {
+                    _directionalLight.intensity -= 1 / _fpsCameraLightTime * Time.deltaTime;
+                }
                 // カメラOFF
                 //_camera.SetActive(false);
-                PlayerActive();
-                if(_isCPUMatch) {
+                    PlayerActive();
+                if (_isCPUMatch)
+                {
                     EnemyActive();
                     pauseManager.isCanPause = true;
                 }
