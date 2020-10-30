@@ -16,10 +16,13 @@ public class Restart : MonoBehaviour
     {
         if (PhotonNetwork.InRoom) {
             PhotonNetwork.LeaveRoom();
+            Debug.Log("InRoomが呼ばれた");
         } else if (PhotonNetwork.InLobby) {
             PhotonNetwork.LeaveLobby();
-        } else {
-            PhotonNetwork.LeaveRoom();
+            Debug.Log("Inlobbyが呼ばれた");
+        } else{
+            Debug.Log("elseが呼ばれた");
+            SceneReload();
         }
         
     }

@@ -67,7 +67,8 @@ public class EnemyMove : MonoBehaviour
         // エージェントが現目標地点に近づいてきたら、
         // 次の目標地点を選択します
         if (!agent.pathPending && agent.remainingDistance < 2f) {
-            if(Vector3.Distance(transform.position, playerTransform) < 2f) {
+            AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
+            if (Vector3.Distance(transform.position, playerTransform) < 2f && clipInfo[0].clip.name != "Attack") {
                 animator.SetBool("Attack", true);
                 Debug.Log("CPUが攻撃した");
                 GotoNextPoint();

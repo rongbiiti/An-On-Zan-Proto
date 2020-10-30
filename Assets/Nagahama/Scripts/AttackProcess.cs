@@ -10,6 +10,7 @@ public class AttackProcess : MonoBehaviour
     [SerializeField] private bool isCPU;
 
     float preMouseSensitibity;
+    float preStickRotateSpeed;
     float preMoveSpeed;
     float preSprintSpeed;
     FirstPersonAIO firstPersonAIO;
@@ -22,6 +23,7 @@ public class AttackProcess : MonoBehaviour
         firstPersonAIO = GetComponent<FirstPersonAIO>();
         if (isCPU) return;
         preMouseSensitibity = firstPersonAIO.mouseSensitivity;
+        preStickRotateSpeed = firstPersonAIO.stickRotateSpeed;
         preMoveSpeed = firstPersonAIO.walkSpeed;
         preSprintSpeed = firstPersonAIO.sprintSpeed;
     }
@@ -32,9 +34,12 @@ public class AttackProcess : MonoBehaviour
         Debug.Log("攻撃判定ON");
         effect.SetActive(true);
         if (isCPU) return;
-        firstPersonAIO.mouseSensitivity = 0f;
-        firstPersonAIO.walkSpeed = 0f;
-        firstPersonAIO.sprintSpeed = 0f;
+        //firstPersonAIO.mouseSensitivity = 0f;
+        //firstPersonAIO.stickRotateSpeed = 0f;
+        //firstPersonAIO.walkSpeed = 0f;
+        //firstPersonAIO.sprintSpeed = 0f;
+        firstPersonAIO.playerCanMove = false;
+        firstPersonAIO.enableCameraMovement = false;
     }
 
     public void AttackEnd()
@@ -48,9 +53,12 @@ public class AttackProcess : MonoBehaviour
     {
         effect.SetActive(false);
         if (isCPU) return;
-        firstPersonAIO.mouseSensitivity = preMouseSensitibity;
-        firstPersonAIO.walkSpeed = preMoveSpeed;
-        firstPersonAIO.sprintSpeed = preSprintSpeed;
+        //firstPersonAIO.mouseSensitivity = preMouseSensitibity;
+        //firstPersonAIO.stickRotateSpeed = preStickRotateSpeed;
+        //firstPersonAIO.walkSpeed = preMoveSpeed;
+        //firstPersonAIO.sprintSpeed = preSprintSpeed;
+        firstPersonAIO.playerCanMove = true;
+        firstPersonAIO.enableCameraMovement = true;
     }
     
 }
