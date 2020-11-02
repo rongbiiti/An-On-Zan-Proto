@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class AttackProcess : MonoBehaviour
+public class AttackProcess : MonoBehaviourPunCallbacks
 {
 
     [SerializeField]private BoxCollider weaponCollider;
@@ -10,6 +11,7 @@ public class AttackProcess : MonoBehaviour
     [SerializeField] private bool isCPU;
     [SerializeField] private bool Shinkuuha;
     [SerializeField] private GameObject _shinkuuhaPrefab;
+    [SerializeField] private string _shinkuuhaPrefabName;
 
     float preMouseSensitibity;
     float preStickRotateSpeed;
@@ -43,12 +45,11 @@ public class AttackProcess : MonoBehaviour
         firstPersonAIO.playerCanMove = false;
         firstPersonAIO.enableCameraMovement = false;
         if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
-            Vector3 initPos = transform.position + transform.forward * 2f;
-            GameObject shinkuuha = Instantiate(_shinkuuhaPrefab, initPos, transform.rotation);
-            HitProcess hitProcess = shinkuuha.GetComponent<HitProcess>();
-            hitProcess._camera = transform.GetChild(0).GetChild(0).gameObject;
-            hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
-            hitProcess._parent = gameObject;
+            if (PhotonNetwork.InRoom) {
+                photonView.RPC("ShinkuuhaLauntch_net", RpcTarget.All);
+            } else {
+                ShinkuuhaLauntch();
+            }
         }
     }
 
@@ -74,5 +75,26 @@ public class AttackProcess : MonoBehaviour
             GetComponent<FPSMove>().isShinkuuha = false;
         }
     }
-    
+
+    public void ShinkuuhaLauntch()
+    {
+        Vector3 initPos = transform.position + transform.forward * 2f;
+        GameObject shinkuuha = Instantiate(_shinkuuhaPrefab, initPos, transform.rotation);
+        HitProcess hitProcess = shinkuuha.GetComponent<HitProcess>();
+        hitProcess._camera = transform.GetChild(0).GetChild(0).gameObject;
+        hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
+        hitProcess._parent = gameObject;
+    }
+
+    [PunRPC]
+    public void ShinkuuhaLauntch_net()
+    {
+        Vector3 initPos = transform.position + transform.forward * 2f;
+        GameObject shinkuuha = PhotonNetwork.Instantiate(_shinkuuhaPrefabName, initPos, transform.rotation, 0);
+        HitProcess hitProcess = shinkuuha.GetComponent<HitProcess>();
+        hitProcess._camera = transform.GetChild(0).GetChild(0).gameObject;
+        hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
+        hitProcess._parent = gameObject;
+    }
+
 }
