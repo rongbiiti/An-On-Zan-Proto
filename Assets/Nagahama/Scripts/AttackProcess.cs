@@ -8,6 +8,8 @@ public class AttackProcess : MonoBehaviour
     [SerializeField]private BoxCollider weaponCollider;
     [SerializeField]private GameObject effect;
     [SerializeField] private bool isCPU;
+    [SerializeField] private bool Shinkuuha;
+    [SerializeField] private GameObject _shinkuuhaPrefab;
 
     float preMouseSensitibity;
     float preStickRotateSpeed;
@@ -40,6 +42,14 @@ public class AttackProcess : MonoBehaviour
         //firstPersonAIO.sprintSpeed = 0f;
         firstPersonAIO.playerCanMove = false;
         firstPersonAIO.enableCameraMovement = false;
+        if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
+            Vector3 initPos = transform.position + transform.forward * 2f;
+            GameObject shinkuuha = Instantiate(_shinkuuhaPrefab, initPos, transform.rotation);
+            HitProcess hitProcess = shinkuuha.GetComponent<HitProcess>();
+            hitProcess._camera = transform.GetChild(0).GetChild(0).gameObject;
+            hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
+            hitProcess._parent = gameObject;
+        }
     }
 
     public void AttackEnd()
@@ -47,6 +57,7 @@ public class AttackProcess : MonoBehaviour
         weaponCollider.enabled = false;
         Debug.Log("攻撃判定OFF");
         animator.SetBool("Attack", false);
+        
     }
 
     public void EffectStop()
@@ -59,6 +70,9 @@ public class AttackProcess : MonoBehaviour
         //firstPersonAIO.sprintSpeed = preSprintSpeed;
         firstPersonAIO.playerCanMove = true;
         firstPersonAIO.enableCameraMovement = true;
+        if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
+            GetComponent<FPSMove>().isShinkuuha = false;
+        }
     }
     
 }

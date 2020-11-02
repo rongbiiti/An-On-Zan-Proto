@@ -13,6 +13,7 @@ public class FPSMove : MonoBehaviour
     private float sprintSpeed = 2.0f;                // Default sprint speed.
     private float speedDampTime = 0.01f;              // Default damp time to change the animations based on current speed.
     private FirstPersonAIO _fpsController;
+    public bool isShinkuuha;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,11 @@ public class FPSMove : MonoBehaviour
         if (Input.GetButtonDown("Attack") && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
             animator.SetBool("Attack", true);
             StartCoroutine("AttackBoolControll");
+        }
+        if (Input.GetButtonDown("Shinkuuha") && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+            animator.SetBool("Attack", true);
+            StartCoroutine("AttackBoolControll");
+            isShinkuuha = true;
         }
         //h = Input.GetAxis("Horizontal");
         //v = Input.GetAxis("Vertical");

@@ -52,7 +52,7 @@ public class RagdollController : MonoBehaviour
     }
 
     // CPU用
-    public void RagdollActive(Vector3 direction)
+    public void RagdollActive()
     {
         meshAgent.enabled = false;
         enemyMove.enabled = false;
@@ -64,7 +64,7 @@ public class RagdollController : MonoBehaviour
     }
 
     // プレイヤー用
-    public void RagdollActive_Net(Vector3 direction)
+    public void RagdollActive_Net()
     {
         MeshtoOne();
         firstPersonAIO.enabled = false;
@@ -86,5 +86,10 @@ public class RagdollController : MonoBehaviour
     public void InstantiateBloodEffect()
     {
         _bloodEffect.SetActive(true);
+    }
+
+    private void OnParticleCollision(GameObject other)
+    {
+        
     }
 }
