@@ -11,6 +11,7 @@ public class GameManager_Net : MonoBehaviour
     public GameObject _player;      // 自分が操作権を持つキャラ
     public GameObject _enemy;
     public GameObject _camera;      // シーン上のメインカメラ
+    public GameObject _fasttext;
     public float zoomValue = 20f;   // どのくらいカメラが落ちていくか
 
     private NavMeshAgent navMesh;
@@ -18,6 +19,7 @@ public class GameManager_Net : MonoBehaviour
     private PauseManager pauseManager;
     private float time = 0f;
     private bool startedFlg = false;
+    private Animator anim;
 
     public bool _isCPUMatch;
 
@@ -28,6 +30,8 @@ public class GameManager_Net : MonoBehaviour
             enemyMove = _enemy.GetComponent<EnemyMove>();
             navMesh.enabled = false;
             enemyMove.enabled = false;
+            _fasttext = GameObject.Find("Image");
+            anim = _fasttext.GetComponent<Animator>();
             pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
             pauseManager.isCanPause = false;
         }
@@ -55,6 +59,7 @@ public class GameManager_Net : MonoBehaviour
             if(_fpsCameraEnableWaitTime <= time)
             {
                 _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
+                anim.SetBool("CameraTrigger",true);
                 _enemy.GetComponent<EnemyLight>().startFlg = true;
             }
             
