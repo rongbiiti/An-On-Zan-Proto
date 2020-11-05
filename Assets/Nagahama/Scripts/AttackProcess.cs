@@ -5,7 +5,6 @@ using Photon.Pun;
 
 public class AttackProcess : MonoBehaviourPunCallbacks
 {
-
     [SerializeField]private BoxCollider weaponCollider;
     [SerializeField]private GameObject effect;
     [SerializeField] private bool isCPU;
@@ -82,6 +81,16 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         GameObject shinkuuha = Instantiate(_shinkuuhaPrefab, initPos, transform.rotation);
         HitProcess hitProcess = shinkuuha.GetComponent<HitProcess>();
         hitProcess._camera = transform.GetChild(0).GetChild(0).gameObject;
+        hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
+        hitProcess._parent = gameObject;
+    }
+
+    public void ShinkuuhaLauntchEnemy()
+    {
+        Vector3 initPos = transform.position + transform.forward * 2f;
+        initPos.y += 1.2f;
+        GameObject shinkuuha = Instantiate(_shinkuuhaPrefab, initPos, transform.rotation);
+        HitProcess hitProcess = shinkuuha.GetComponent<HitProcess>();
         hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
         hitProcess._parent = gameObject;
     }

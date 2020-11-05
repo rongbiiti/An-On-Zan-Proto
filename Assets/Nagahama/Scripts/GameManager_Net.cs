@@ -90,7 +90,7 @@ public class GameManager_Net : MonoBehaviour
         _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
         _player.GetComponent<FPSMove>().enabled = true;
         _player.transform.GetChild(3).gameObject.SetActive(false);  // 呼吸音を出すスピーカーON
-        _player.GetComponent<RagdollController>().MeshtoZero();     // FPS用に足と頭を縮ませる
+        _player.GetComponent<PlayerDeathProcess>().MeshtoZero();     // FPS用に足と頭を縮ませる
     }
 
     public void EnemyActive()

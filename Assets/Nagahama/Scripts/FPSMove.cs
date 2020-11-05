@@ -49,7 +49,6 @@ public class FPSMove : MonoBehaviour
 
     void MovementManagement(float horizontal, float vertical)
     {
-
         // Set proper speed.
         Vector2 dir = new Vector2(horizontal, vertical);
         speed = Vector2.ClampMagnitude(dir, 1f).magnitude;

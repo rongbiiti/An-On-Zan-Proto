@@ -8,12 +8,8 @@ using Photon.Pun;
 public class HitProcess : MonoBehaviourPunCallbacks
 {
 
-    [SerializeField] private AudioClip deathVoiceClip;
-
     [SerializeField] private AudioClip hitClip;
-
     [SerializeField] private AudioMixerGroup audioMixerGroup;
-
     [SerializeField] private GameObject blood;
 
     public GameObject _camera;
@@ -26,11 +22,6 @@ public class HitProcess : MonoBehaviourPunCallbacks
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-    }
-
-    public void PlaydeathVoice()
-    {
-        audioSource.PlayOneShot(deathVoiceClip);
     }
 
     public void PlayHit()
@@ -48,6 +39,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
                 photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
             } else {
                 PlayerDeath(other, false);
+                transform.root.GetComponent<EnemyMove>().enabled = false;
             }
 
             GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
@@ -64,7 +56,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
     [PunRPC]
     private void PlayerDeath(int viewID)
     {
-        PhotonView.Find(viewID).GetComponent<RagdollController>().RagdollActive_Net();
+        PhotonView.Find(viewID).GetComponent<PlayerDeathProcess>().KillPlayer_Net();
         PhotonView.Find(viewID).GetComponent<MaterialChanger>().MaterialOn();
         PhotonView.Find(viewID).GetComponent<Animator>().SetBool("Death", true);
         PhotonView.Find(viewID).GetComponent<AttackProcess>().AttackEnd();
@@ -80,9 +72,9 @@ public class HitProcess : MonoBehaviourPunCallbacks
         _parentMaterialChanger.MaterialOn();
 
         if (!isTargetCPU) {
-            col.GetComponent<RagdollController>().RagdollActive_Net();
+            col.GetComponent<PlayerDeathProcess>().KillPlayer_Net();
         } else {
-            col.GetComponent<RagdollController>().RagdollActive();
+            col.GetComponent<PlayerDeathProcess>().KillPlayer();            
         }
 
         col.GetComponent<MaterialChanger>().MaterialOn();
@@ -100,7 +92,6 @@ public class HitProcess : MonoBehaviourPunCallbacks
         }
 
         yield return new WaitForSeconds(0.17f);
-        PlaydeathVoice();
     }
 
     private void OnParticleCollision(GameObject other)
@@ -114,6 +105,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
                 photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
             } else {
                 PlayerDeath(other.GetComponent<Collider>(), false);
+                _parent.GetComponent<EnemyMove>().enabled = false;
             }
 
             GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;

@@ -8,6 +8,7 @@ public class EnemyMove : MonoBehaviour
 
     public Transform[] points;
     public GameObject player;
+    public bool isCanShinkuuha = false;
     private Vector3 playerTransform;
     private AudioSource playerAudioSource;
     private int destPoint = 0;
@@ -56,19 +57,32 @@ public class EnemyMove : MonoBehaviour
         destPoint = (destPoint + 1) % points.Length;
     }
 
-    void Update()
+    private void FixedUpdate()
     {
         if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, playerTransform) < 4f) {
-            
+
             playerTransform = player.transform.position;
             agent.destination = playerTransform;
             Debug.Log("プレイヤー発見");
         }
+
+        if (isCanShinkuuha && playerAudioSource.isPlaying && Vector3.Distance(transform.position, playerTransform) < 10f) {
+
+            playerTransform = player.transform.position;
+            agent.destination = playerTransform;
+            Debug.Log("プレイヤー発見");
+            if (!animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+                animator.SetBool("Attack", true);
+                StartCoroutine("EnemyShinkuuha");
+                Debug.Log("CPUが真空波攻撃をした");
+                GotoNextPoint();
+            }
+        }
+
         // エージェントが現目標地点に近づいてきたら、
         // 次の目標地点を選択します
         if (!agent.pathPending && agent.remainingDistance < 2f) {
-            AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
-            if (Vector3.Distance(transform.position, playerTransform) < 2f && clipInfo[0].clip.name != "Attack") {
+            if (Vector3.Distance(transform.position, playerTransform) < 2f && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
                 animator.SetBool("Attack", true);
                 Debug.Log("CPUが攻撃した");
                 GotoNextPoint();
@@ -77,17 +91,23 @@ public class EnemyMove : MonoBehaviour
                 Debug.Log("次のポイントへ");
             }
         }
-            
-    }
 
-    private void FixedUpdate()
-    {
         Vector2 dir = new Vector2(rb.worldCenterOfMass.x, rb.worldCenterOfMass.z);
         speed = Vector2.ClampMagnitude(dir, 1f).magnitude;
         speedSeeker = Mathf.Clamp(speedSeeker, 0.3f, 0.8f);
         speed *= speedSeeker;
         animator.SetFloat("Speed", speed, 0.2f, Time.deltaTime);
+    }
 
-       
+    private void OnDisable()
+    {
+        animator.SetFloat("Speed", 0, 0, Time.deltaTime);
+        agent.enabled = false;
+    }
+
+    public IEnumerator EnemyShinkuuha()
+    {
+        yield return new WaitForSeconds(0.6f);
+        GetComponent<AttackProcess>().ShinkuuhaLauntchEnemy();
     }
 }
