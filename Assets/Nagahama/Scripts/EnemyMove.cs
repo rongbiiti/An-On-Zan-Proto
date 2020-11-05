@@ -57,6 +57,13 @@ public class EnemyMove : MonoBehaviour
         destPoint = (destPoint + 1) % points.Length;
     }
 
+    private void Update()
+    {
+        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.F2)) {
+            isCanShinkuuha = !isCanShinkuuha;
+        }
+    }
+
     private void FixedUpdate()
     {
         if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, playerTransform) < 4f) {

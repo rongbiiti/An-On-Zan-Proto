@@ -36,6 +36,11 @@ public class FPSMove : MonoBehaviour
             StartCoroutine("AttackBoolControll");
             isShinkuuha = true;
         }
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.J)) {
+            _fpsController.canJump = !_fpsController.canJump;
+        }
+
         //h = Input.GetAxis("Horizontal");
         //v = Input.GetAxis("Vertical");
         //animator.SetFloat("H", h, 0.1f, Time.deltaTime);
