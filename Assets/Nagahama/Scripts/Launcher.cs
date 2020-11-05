@@ -30,26 +30,35 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        Debug.Log("Connecting to Master");
-        PhotonNetwork.ConnectUsingSettings();
-        if (PhotonNetwork.InLobby) {
-            MenuManager.Instance.OpenMenu("title");
-        } else if (PhotonNetwork.IsConnected) {
-            Debug.Log("Connected to Master");
-            PhotonNetwork.JoinLobby();
-            PhotonNetwork.AutomaticallySyncScene = true;
-            PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
-            if (string.IsNullOrEmpty(_playerNameInputField.text)) {
-                PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
-                return;
-            }
-        }
+        //Connect();
     }
 
     void OnGUI()
     {
         //ログインの状態を画面上に出力
         GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());
+    }
+
+    public void Connect()
+    {
+        Debug.Log("Connecting to Master");
+
+        PhotonNetwork.ConnectUsingSettings();
+
+        if (PhotonNetwork.InLobby) {
+            MenuManager.Instance.OpenMenu("title");
+
+        } else if (PhotonNetwork.IsConnected) {
+            Debug.Log("Connected to Master");
+            PhotonNetwork.JoinLobby();
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
+
+            if (string.IsNullOrEmpty(_playerNameInputField.text)) {
+                PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+                return;
+            }
+        }
     }
 
     public override void OnConnectedToMaster()

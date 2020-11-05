@@ -31,6 +31,13 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         preSprintSpeed = firstPersonAIO.sprintSpeed;
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.F1)) {
+            Shinkuuha = !Shinkuuha;
+        }
+    }
+
     public void AttackStart()
     {
         weaponCollider.enabled = true;

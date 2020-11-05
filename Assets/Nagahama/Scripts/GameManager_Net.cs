@@ -30,7 +30,7 @@ public class GameManager_Net : MonoBehaviour
             enemyMove = _enemy.GetComponent<EnemyMove>();
             navMesh.enabled = false;
             enemyMove.enabled = false;
-            _fasttext = GameObject.Find("Image");
+            //_fasttext = GameObject.Find("Image");
             anim = _fasttext.GetComponent<Animator>();
             pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
             pauseManager.isCanPause = false;
