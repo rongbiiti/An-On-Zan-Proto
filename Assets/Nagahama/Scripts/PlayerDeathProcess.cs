@@ -60,6 +60,7 @@ public class PlayerDeathProcess : MonoBehaviour
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
         InstantiateBloodEffect();
+        ZanAnimation.flg = true;
         StartCoroutine("PlayDeathVoice");
     }
 
@@ -70,6 +71,7 @@ public class PlayerDeathProcess : MonoBehaviour
         firstPersonAIO.enabled = false;
         fPSMove.enabled = false;
         _breathSource.enabled = false;
+        ZanAnimation.flg = true;
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
         swordCollider.enabled = false;
