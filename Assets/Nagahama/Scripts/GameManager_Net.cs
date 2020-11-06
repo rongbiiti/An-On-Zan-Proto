@@ -31,10 +31,10 @@ public class GameManager_Net : MonoBehaviour
             navMesh.enabled = false;
             enemyMove.enabled = false;
             //_fasttext = GameObject.Find("Image");
-            anim = _fasttext.GetComponent<Animator>();
             pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
             pauseManager.isCanPause = false;
         }
+        anim = _fasttext.GetComponent<Animator>();
     }
 
     // 試合開始時に別スクリプトから呼ばれる
@@ -51,8 +51,6 @@ public class GameManager_Net : MonoBehaviour
         if (time < _fpsCameraEnableWaitTime && startedFlg)
         {
             time += Time.deltaTime;
-            //// 光がなくなっていく
-            ////_directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
 
             // カメラが落ちていく
             _camera.transform.position -= new Vector3(0, zoomValue / _fpsCameraEnableWaitTime * Time.deltaTime, 0);

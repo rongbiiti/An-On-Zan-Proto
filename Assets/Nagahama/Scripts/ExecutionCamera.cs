@@ -8,9 +8,11 @@ public class ExecutionCamera : MonoBehaviour
     public Material _executionShaderMaterial;
     public Transform _headjoint;
     public Animator animator;
+    public LayerMask layerMask;
     private bool isCPUMatch = false;
     private PauseManager pauseManager;
     private bool executionFlg = false;
+    public bool isRayCast;
 
     private void Start()
     {
@@ -27,6 +29,12 @@ public class ExecutionCamera : MonoBehaviour
         } else {
             Graphics.Blit(src, dest);
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (!isRayCast) return;
+        WallDisable();
     }
 
     public IEnumerator Execution()
@@ -49,7 +57,38 @@ public class ExecutionCamera : MonoBehaviour
         if (animator.GetBool("Death")) {
             // 死に様を見せるために位置変更
             _headjoint.localPosition = new Vector3(0, 2.9f, -2.6f);
-            _headjoint.localRotation = Quaternion.Euler(31.72f, 0, 0);
+            _headjoint.localEulerAngles = new Vector3(40f, 0, 0);
+            transform.localEulerAngles = Vector3.zero;
+            isRayCast = true;            
         }
+    }
+
+    private void WallDisable()
+    {
+        // カメラの前にある邪魔な壁などをオフにする
+        Vector3 startPos = _headjoint.position;
+        Vector3 targetPos = _headjoint.forward;
+        float maxDistance = 4f;
+        float radius = 0.7f;
+        Ray ray = new Ray(startPos, targetPos);
+        RaycastHit hit;
+
+        if (Physics.SphereCast(startPos, radius, targetPos, out hit, maxDistance, layerMask)) {
+            hit.collider.gameObject.SetActive(false);
+            Debug.Log("壁にヒット");
+        }
+        Debug.DrawRay(ray.origin, ray.direction * maxDistance, Color.green);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!isRayCast) return;
+        Vector3 startPos = _headjoint.position;
+        Vector3 targetPos = _headjoint.forward;
+        float maxDistance = 4f;
+        float radius = 0.7f;
+        Ray ray = new Ray(startPos, targetPos);
+
+        Gizmos.DrawWireSphere(startPos + targetPos * maxDistance, radius);
     }
 }
