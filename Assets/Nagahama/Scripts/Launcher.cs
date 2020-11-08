@@ -30,7 +30,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        Connect();
+        //Connect();
     }
 
     void OnGUI()
