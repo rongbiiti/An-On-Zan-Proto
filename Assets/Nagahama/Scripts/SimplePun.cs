@@ -68,7 +68,9 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
             myplayer.GetComponent<MaterialChanger>().enabled = false;
 
-            myplayer.transform.LookAt(Vector3.zero);
+            Vector3 lookPos = Vector3.zero;
+            lookPos.y = myplayer.transform.position.y;
+            myplayer.transform.LookAt(lookPos);
             Debug.Log("キャラ作成成功" + PhotonNetwork.LocalPlayer.ActorNumber);
 
         }

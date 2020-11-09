@@ -63,14 +63,15 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
         PlayHit();
         StartCoroutine("DeathVoice");
+
+        // 自分の姿を明かす
+        _parentMaterialChanger.MaterialOn();
     }
 
     // オフライン用
     private void PlayerDeath(Collider col, bool isTargetCPU)
     {
-        // 自分の姿を明かす
-        _parentMaterialChanger.MaterialOn();
-
+        
         if (!isTargetCPU) {
             col.GetComponent<PlayerDeathProcess>().KillPlayer_Net();
         } else {
@@ -83,6 +84,9 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
         PlayHit();
         StartCoroutine("DeathVoice");
+
+        // 自分の姿を明かす
+        _parentMaterialChanger.MaterialOn();
     }
 
     private IEnumerator DeathVoice()
@@ -99,16 +103,25 @@ public class HitProcess : MonoBehaviourPunCallbacks
         Debug.Log("真空波がなにかにヒットした");
         if (other.CompareTag("Player")) {
             Debug.Log("真空波がプレイヤーにヒット");
-            if (other == _parent) return;
+            GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
+
             if (PhotonNetwork.InRoom) {
+
+                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                foreach (var p in players) {
+                    PhotonView photonView = p.GetPhotonView();
+                    if (!photonView.IsMine) {
+                        p.GetComponent<MaterialChanger>().MaterialOn();
+                    }
+                }
+
                 int viewID = other.GetComponent<PhotonView>().ViewID;
                 photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
+
             } else {
                 PlayerDeath(other.GetComponent<Collider>(), false);
                 _parent.GetComponent<EnemyMove>().enabled = false;
             }
-
-            GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
 
         } else if (other.CompareTag("Enemy")) {
             Debug.Log("真空波がCPUにヒット");

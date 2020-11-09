@@ -31,10 +31,10 @@ public class GameManager_Net : MonoBehaviour
             navMesh.enabled = false;
             enemyMove.enabled = false;
             //_fasttext = GameObject.Find("Image");
-            anim = _fasttext.GetComponent<Animator>();
             pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
             pauseManager.isCanPause = false;
         }
+        anim = _fasttext.GetComponent<Animator>();
     }
 
     // 試合開始時に別スクリプトから呼ばれる
@@ -44,6 +44,7 @@ public class GameManager_Net : MonoBehaviour
         _player.GetComponent<FPSMove>().enabled = false;
         _directionalLight.intensity = 1;
         startedFlg = true;
+        _player.transform.GetChild(3).gameObject.SetActive(false);  // 呼吸音を出すスピーカーON
     }
 
     private void FixedUpdate()
@@ -51,8 +52,6 @@ public class GameManager_Net : MonoBehaviour
         if (time < _fpsCameraEnableWaitTime && startedFlg)
         {
             time += Time.deltaTime;
-            //// 光がなくなっていく
-            ////_directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
 
             // カメラが落ちていく
             _camera.transform.position -= new Vector3(0, zoomValue / _fpsCameraEnableWaitTime * Time.deltaTime, 0);
@@ -89,8 +88,8 @@ public class GameManager_Net : MonoBehaviour
         _player.GetComponent<FirstPersonAIO>().enabled = true;
         _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
         _player.GetComponent<FPSMove>().enabled = true;
-        _player.transform.GetChild(3).gameObject.SetActive(false);  // 呼吸音を出すスピーカーON
         _player.GetComponent<PlayerDeathProcess>().MeshtoZero();     // FPS用に足と頭を縮ませる
+        StartCoroutine(nameof(DelayAudioEnable));
     }
 
     public void EnemyActive()
@@ -99,6 +98,19 @@ public class GameManager_Net : MonoBehaviour
         enemyMove.enabled = true;
         enemyMove.player = _player;
         enemyMove.GetPlayerComponent();
+        StartCoroutine(nameof(DelayAudioEnable_CPU));
+    }
+
+    private IEnumerator DelayAudioEnable()
+    {
+        yield return new WaitForSeconds(0.3f);
+        _player.GetComponent<AudioSource>().volume = 1;
+    }
+
+    private IEnumerator DelayAudioEnable_CPU()
+    {
+        yield return new WaitForSeconds(0.3f);
+        _enemy.GetComponent<AudioSource>().volume = 1;
     }
 
 }
