@@ -111,6 +111,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
 
     #region Movement Settings
 
+    public LayerMask layerMask;
     public bool playerCanMove = true;
     public bool walkByDefault = true;
     public float walkSpeed = 4f;
@@ -475,9 +476,9 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
 
         #region step logic
         RaycastHit WT;
-        if (advanced.maxStepHeight > 0 && Physics.Raycast(transform.position - new Vector3(0, ((capsule.height / 2) * transform.localScale.y) - 0.01f, 0), MoveDirection, out WT, capsule.radius + 0.15f, Physics.AllLayers, QueryTriggerInteraction.Ignore) && Vector3.Angle(WT.normal, Vector3.up) > 88) {
+        if (advanced.maxStepHeight > 0 && Physics.Raycast(transform.position - new Vector3(0, ((capsule.height / 2) * transform.localScale.y) - 0.01f, 0), MoveDirection, out WT, capsule.radius + 0.15f, layerMask, QueryTriggerInteraction.Ignore) && Vector3.Angle(WT.normal, Vector3.up) > 88) {
             RaycastHit ST;
-            if (!Physics.Raycast(transform.position - new Vector3(0, ((capsule.height / 2) * transform.localScale.y) - (advanced.maxStepHeight), 0), MoveDirection, out ST, capsule.radius + 0.25f, Physics.AllLayers, QueryTriggerInteraction.Ignore)) {
+            if (!Physics.Raycast(transform.position - new Vector3(0, ((capsule.height / 2) * transform.localScale.y) - (advanced.maxStepHeight), 0), MoveDirection, out ST, capsule.radius + 0.25f, layerMask, QueryTriggerInteraction.Ignore)) {
                 advanced.stairMiniHop = true;
                 transform.position += new Vector3(0, advanced.maxStepHeight * 1.2f, 0);
             }
@@ -967,6 +968,8 @@ public class FPAIO_Editor : Editor
         GUILayout.Label("Movement Setup", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
         EditorGUILayout.Space();
         EditorGUILayout.Space();
+
+        t.layerMask = (LayerMask)EditorGUILayout.LayerField(new GUIContent("LayerMask", "レイキャストのレイヤーマスクを設定"), t.layerMask);
         t.playerCanMove = EditorGUILayout.ToggleLeft(new GUIContent("Enable Player Movement", "Determines if the player is allowed to move."), t.playerCanMove);
         GUI.enabled = t.playerCanMove;
         t.walkByDefault = EditorGUILayout.ToggleLeft(new GUIContent("Walk By Default", "Determines if the default mode of movement is 'Walk' or 'Srpint'."), t.walkByDefault);
