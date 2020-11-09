@@ -40,6 +40,8 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(_materialOffWaitTime);
         skinnedMeshRenderer.enabled = false;
         swordMeshRenderer.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        GetComponent<AudioSource>().volume = 1;
     }
 
 }

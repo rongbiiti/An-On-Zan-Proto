@@ -89,6 +89,7 @@ public class GameManager_Net : MonoBehaviour
         _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
         _player.GetComponent<FPSMove>().enabled = true;
         _player.GetComponent<PlayerDeathProcess>().MeshtoZero();     // FPS用に足と頭を縮ませる
+        StartCoroutine(nameof(DelayAudioEnable));
     }
 
     public void EnemyActive()
@@ -97,6 +98,19 @@ public class GameManager_Net : MonoBehaviour
         enemyMove.enabled = true;
         enemyMove.player = _player;
         enemyMove.GetPlayerComponent();
+        StartCoroutine(nameof(DelayAudioEnable_CPU));
+    }
+
+    private IEnumerator DelayAudioEnable()
+    {
+        yield return new WaitForSeconds(0.3f);
+        _player.GetComponent<AudioSource>().volume = 1;
+    }
+
+    private IEnumerator DelayAudioEnable_CPU()
+    {
+        yield return new WaitForSeconds(0.3f);
+        _enemy.GetComponent<AudioSource>().volume = 1;
     }
 
 }
