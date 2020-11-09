@@ -315,7 +315,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
             }
         }
         cameraStartingPosition = playerCamera.transform.localPosition;
-        if (lockAndHideCursor) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
+        //if (lockAndHideCursor) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         baseCamFOV = playerCamera.fieldOfView;
         #endregion
 
@@ -754,11 +754,11 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
 
     public void ControllerPause()
     {
-        controllerPauseState = !controllerPauseState;
-        if (lockAndHideCursor) {
-            Cursor.lockState = controllerPauseState ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = controllerPauseState;
-        }
+        //controllerPauseState = !controllerPauseState;
+        //if (lockAndHideCursor) {
+        //    Cursor.lockState = controllerPauseState ? CursorLockMode.None : CursorLockMode.Locked;
+        //    Cursor.visible = controllerPauseState;
+        //}
     }
 
 
