@@ -55,7 +55,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
 
             if (string.IsNullOrEmpty(_playerNameInputField.text)) {
-                PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+                PhotonNetwork.NickName = "侍 " + Random.Range(0, 1000).ToString("0000");
                 return;
             }
         }
@@ -68,7 +68,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 10000;
         if (string.IsNullOrEmpty(_playerNameInputField.text)) {
-            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+            PhotonNetwork.NickName = "侍 " + Random.Range(0, 1000).ToString("0000");
             return;
         }
     }
@@ -82,13 +82,16 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         if (string.IsNullOrEmpty(_roomNameInputField.text)) {
+            _roomNameInputField.text = "死合場 " + Random.Range(0, 1000).ToString("0000");
             return;
         }
 
         var roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 2;
         roomOptions.PlayerTtl = 10000;
+
         PhotonNetwork.CreateRoom(_roomNameInputField.text, roomOptions);
+
         MenuManager.Instance.OpenMenu("loading");
     }
 
@@ -117,8 +120,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        _errorText.text = "Room Creation Failed: " + message;
-        Debug.LogError("Room Creation Failed: " + message);
+        _errorText.text = "部屋の作成に失敗しました: " + message;
+        Debug.LogError("部屋の作成に失敗しました: " + message);
         MenuManager.Instance.OpenMenu("error");
     }
 
@@ -172,7 +175,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void ChangePlayerNickName()
     {
         if (string.IsNullOrEmpty(_playerNameInputField.text)) {
-            PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+            PhotonNetwork.NickName = "侍 " + Random.Range(0, 1000).ToString("0000");
             return;
         } else {
             PhotonNetwork.NickName = _playerNameInputField.text;
