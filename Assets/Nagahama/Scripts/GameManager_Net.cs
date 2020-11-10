@@ -96,7 +96,7 @@ public class GameManager_Net : MonoBehaviour
     {
         navMesh.enabled = true;
         enemyMove.enabled = true;
-        enemyMove.player = _player;
+        enemyMove._player = _player;
         enemyMove.GetPlayerComponent();
         StartCoroutine(nameof(DelayAudioEnable_CPU));
     }
