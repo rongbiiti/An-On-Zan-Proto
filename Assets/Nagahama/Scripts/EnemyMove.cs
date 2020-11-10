@@ -13,6 +13,8 @@ public class EnemyMove : MonoBehaviour
     public float _attackStartDistance = 2f;         // 攻撃を施行する距離
     public float _footStepSearchDistance = 4f;      // 足音反応距離
     public float _attackingSearchDistance = 9f;     // プレイヤーの攻撃動作反応距離
+    public float _playerfootStepFindDelayTime = 0.5f;//プレイヤーの足音反応するまでのディレイ
+    public float _attackingPlayerFindDelayTime = 1f;// プレイヤーの攻撃動作に反応するまでのディレイ
 
 
     private float startSpeed;                       // 初期移動速度
@@ -28,6 +30,7 @@ public class EnemyMove : MonoBehaviour
     private bool jump;                              // Boolean to determine whether or not the player started a jump.
     private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
     private Animator playerAnimator;                // プレイヤーのAnimatorコンポーネント変数
+    private AttackProcess playerAttackProcess;      // プレイヤーのAttackProcessコンポーネント変数
     private bool isFindAttackingPlayer;             // プレイヤーの攻撃に反応したか
     private bool isFindFootStepingPlayer;           // プレイヤーの足音に反応したか
                                                     
@@ -50,36 +53,33 @@ public class EnemyMove : MonoBehaviour
         animator.SetBool("Grounded", true);
     }
 
-    void Start()
-    {
-        // ランダムな値を取得する
-        int range = Random.Range(0, 2);
-
-        // 0ならプレイヤー初期位置に真っ直ぐ向かう
-        if (range == 0) {
-            agent.destination = lastPlayerPos;
-            Debug.Log("プレイヤーに向かうを引いた");
-
-        // 1なら巡回ポイントをランダムで指定して向かう
-        } else if (range == 1) {
-            int n = Random.Range(0, _points.Length);
-            agent.destination = _points[n].position;
-            destPoint = (n + 1) % _points.Length;
-            Debug.Log("巡回地点に向かうを引いた");
-        // 2なら3秒その場で待機し、0か1を改めて抽選する。
-        } else {
-            StartCoroutine(nameof(DelayStart));
-            Debug.Log("止まるを引いた");
-        }
-        
-    }
-
     public void GetPlayerComponent()
     {
         // プレイヤーのコンポーネント等取得。他オブジェクトから呼ばれる。
         lastPlayerPos = _player.transform.position;
         playerAudioSource = _player.GetComponent<AudioSource>();
         playerAnimator = _player.GetComponent<Animator>();
+        playerAttackProcess = _player.GetComponent<AttackProcess>();
+
+        // ランダムな値を取得する
+        int range = Random.Range(0, 3);
+
+        // 0ならプレイヤー初期位置に真っ直ぐ向かう
+        if (range == 0) {
+            agent.destination = lastPlayerPos;
+            Debug.Log("プレイヤーに向かうを引いた");
+
+            // 1なら巡回ポイントをランダムで指定して向かう
+        } else if (range == 1) {
+            int n = Random.Range(0, _points.Length);
+            agent.destination = _points[n].position;
+            destPoint = (n + 1) % _points.Length;
+            Debug.Log("巡回地点に向かうを引いた");
+            // 2なら3秒その場で待機し、0か1を改めて抽選する。
+        } else {
+            StartCoroutine(nameof(DelayStart));
+            Debug.Log("止まるを引いた");
+        }
     }
 
     void GotoNextPoint()
@@ -117,42 +117,14 @@ public class EnemyMove : MonoBehaviour
         // プレイヤーのAudioSourceが再生中で、敵とプレイヤーの現在位置が一定距離以下なら、プレイヤーの現在位置を進行目標地点に設定する。
         if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, _player.transform.position) < _footStepSearchDistance) {
 
-            // 音がしたプレイヤーの座標を記憶する。
-            lastPlayerPos = _player.transform.position;
-
-            // navmeshagentの目的地を音がした座標にする
-            agent.destination = lastPlayerPos;
-
-            // 足音反応フラグを立てる
-            isFindFootStepingPlayer = true;
-
-            // 開始時のくじで2を引いていたら、止めて音がした地点へ向かうようにする。
-            StopCoroutine(nameof(DelayStart));
-
-            // 行動できるように速度を戻す
-            agent.speed = startSpeed;
-            Debug.Log("プレイヤー発見：距離" + Vector3.Distance(transform.position, _player.transform.position));
+            StartCoroutine(nameof(FindPlayerFootStepDelay));
         }        
 
         // プレイヤーが攻撃中で、自身とプレイヤーの現在地との距離が一定以下でかつ
         // プレイヤーの攻撃反応フラグが折れていたら
-        if (playerAnimator.GetBool("Attack") && Vector3.Distance(transform.position, _player.transform.position) < _attackingSearchDistance && !isFindAttackingPlayer)
+        if (playerAttackProcess.IsAttacking && Vector3.Distance(transform.position, _player.transform.position) < _attackingSearchDistance && !isFindAttackingPlayer)
         {
-            // 音がしたプレイヤーの座標を記憶する。
-            lastPlayerPos = _player.transform.position;
-
-            // navmeshagentの目的地を音がした座標にする
-            agent.destination = lastPlayerPos;
-
-            // 攻撃反応フラグを立てる
-            isFindAttackingPlayer = true;
-
-            // 開始時のくじで2を引いていたら、止めて音がした地点へ向かうようにする。
-            StopCoroutine(nameof(DelayStart));
-
-            // 行動できるように速度を戻す
-            agent.speed = startSpeed;
-            Debug.Log("攻撃中のプレイヤー発見：距離" + Vector3.Distance(transform.position, _player.transform.position));
+            StartCoroutine(nameof(FindAttackingPlayer));
         }
         else if (isFindAttackingPlayer)
         {
@@ -227,7 +199,7 @@ public class EnemyMove : MonoBehaviour
         if (agent.speed < startSpeed) return;
 
         // ダッシュ用の速度を代入する。
-        animator.SetFloat("Speed", _sprintSpeed, 0.2f, Time.deltaTime);
+        animator.SetFloat("Speed", _sprintSpeed, 0.5f, Time.deltaTime);
     }
 
     private void OnDisable()
@@ -246,6 +218,50 @@ public class EnemyMove : MonoBehaviour
         GetComponent<AttackProcess>().ShinkuuhaLauntchEnemy();
     }
     #endregion
+
+    private IEnumerator FindPlayerFootStepDelay()
+    {
+
+        yield return new WaitForSeconds(_playerfootStepFindDelayTime);
+
+        // 音がしたプレイヤーの座標を記憶する。
+        lastPlayerPos = _player.transform.position;
+
+        // navmeshagentの目的地を音がした座標にする
+        agent.destination = lastPlayerPos;
+
+        // 足音反応フラグを立てる
+        isFindFootStepingPlayer = true;
+
+        // 開始時のくじで2を引いていたら、止めて音がした地点へ向かうようにする。
+        StopCoroutine(nameof(DelayStart));
+
+        // 行動できるように速度を戻す
+        agent.speed = startSpeed;
+        Debug.Log("プレイヤー発見：距離" + Vector3.Distance(transform.position, _player.transform.position));
+    }
+
+    private IEnumerator FindAttackingPlayer()
+    {
+
+        yield return new WaitForSeconds(_attackingPlayerFindDelayTime);
+
+        // 音がしたプレイヤーの座標を記憶する。
+        lastPlayerPos = _player.transform.position;
+
+        // navmeshagentの目的地を音がした座標にする
+        agent.destination = lastPlayerPos;
+
+        // 攻撃反応フラグを立てる
+        isFindAttackingPlayer = true;
+
+        // 開始時のくじで2を引いていたら、止めて音がした地点へ向かうようにする。
+        StopCoroutine(nameof(DelayStart));
+
+        // 行動できるように速度を戻す
+        agent.speed = startSpeed;
+        Debug.Log("攻撃中のプレイヤー発見：距離" + Vector3.Distance(transform.position, _player.transform.position));
+    }
 
     private IEnumerator DelayStart()
     {

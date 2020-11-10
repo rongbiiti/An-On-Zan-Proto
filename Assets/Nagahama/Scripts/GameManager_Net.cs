@@ -60,6 +60,7 @@ public class GameManager_Net : MonoBehaviour
                 _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
                 anim.SetBool("CameraTrigger",true);
                 _enemy.GetComponent<EnemyLight>().startFlg = true;
+                _camera.GetComponent<AudioListener>().enabled = false;
             }
             
         }
