@@ -88,7 +88,7 @@ public class PlayerDeathProcess : MonoBehaviour
 
     public void InstantiateBloodEffect()
     {
-        _bloodEffect.SetActive(true);
+        //_bloodEffect.SetActive(true);
     }
 
     private IEnumerator PlayDeathVoice()
