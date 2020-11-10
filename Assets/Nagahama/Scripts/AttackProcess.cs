@@ -19,6 +19,12 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     float preSprintSpeed;
     FirstPersonAIO firstPersonAIO;
     private Animator animator;
+    private bool isAttacking;
+
+    public bool IsAttacking
+    {
+        get { return isAttacking; }
+    }
 
     private void Start()
     {
@@ -51,6 +57,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         //firstPersonAIO.sprintSpeed = 0f;
         firstPersonAIO.playerCanMove = false;
         firstPersonAIO.enableCameraMovement = false;
+        isAttacking = true;
         if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             if (PhotonNetwork.InRoom) {
                 ShinkuuhaLauntch_net();
@@ -78,6 +85,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         //firstPersonAIO.sprintSpeed = preSprintSpeed;
         firstPersonAIO.playerCanMove = true;
         firstPersonAIO.enableCameraMovement = true;
+        isAttacking = false;
         if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             GetComponent<FPSMove>().isShinkuuha = false;
         }
