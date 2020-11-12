@@ -185,8 +185,29 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        while (!PhotonNetwork.ConnectUsingSettings()) {
-            
+
+        switch (cause) {
+            case DisconnectCause.Exception:     // 何らかの内部例外によりソケットコードが失敗しました。これは、ローカルで接続しようとしてもサーバが利用できない場合に発生する可能性があります。疑問がある場合は、Exit Gamesに連絡してください。Exit Gamesに連絡してください。
+            case DisconnectCause.ServerTimeout: // タイミングアウト（クライアントからの確認応答がない）のため、サーバーがこのクライアントを切断しました。
+            case DisconnectCause.ClientTimeout: // このクライアントは、サーバの応答が期限内に受信されていないことを検出しました。
+            case DisconnectCause.DisconnectByServerLogic:   // サーバがこのクライアントをルームのロジック内から切断しました(C#のコード)。
+            case DisconnectCause.AuthenticationTicketExpired:   // 認証チケットは、別の認証サービスコールをしなくても、Photon Cloudサーバーへのアクセスを提供する必要があります。しかし、チケットの有効期限が切れています。
+            case DisconnectCause.DisconnectByServerReasonUnknown:   // サーバは不明な理由でこのクライアントを切断しました。
+                PhotonNetwork.ConnectUsingSettings();
+                break;
+            case DisconnectCause.OperationNotAllowedInCurrentState: // OnOperationResponseです。このクライアントでは (現在) 利用できない操作 (通常は許可されていません)。op Authenticate に対してのみ追跡されます。
+            case DisconnectCause.CustomAuthenticationFailed:    // OnOperationResponseを使用しています。無効なクライアント値またはCloud Dashboardでカスタム認証を設定してPhoton Cloudで認証します。
+            case DisconnectCause.DisconnectByClientLogic:   // サーバがこのクライアントをルームのロジック内から切断しました(C#のコード)。
+            case DisconnectCause.InvalidAuthentication: // OnOperationResponse. 無効な AppId で Photon Cloud で認証しています。サブスクリプションを更新するか、Exit Gamesに連絡してください。
+            case DisconnectCause.ExceptionOnConnect:    // OnStatusChanged: サーバが利用できないか、アドレスが間違っています。ポートが提供され、サーバが起動していることを確認してください。
+            case DisconnectCause.MaxCcuReached: // OnOperationResponse。CCU Burstを使用せずにPhoton Cloudサブスクリプションを使用している場合、認証に（一時的に）失敗しました。サブスクリプションを更新してください。
+            case DisconnectCause.InvalidRegion: // OnOperationResponse。アプリのPhoton Cloudサブスクリプションがいくつかの（他の）リージョンにロックされている場合に認証します。サブスクリプションまたはマスターサーバーのアドレスを更新してください。
+            case DisconnectCause.None:  // エラーは追跡されませんでした。
+                
+                break;
+            default:
+                
+                break;
         }
     }
 
