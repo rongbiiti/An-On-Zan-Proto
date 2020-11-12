@@ -9,7 +9,6 @@ public class InputFieldDeFocus : MonoBehaviour
     private Selectable selectable;
     [SerializeField] private EventSystem eventSystem;
     [SerializeField] private GameObject _inputField;
-    private float preAxis;
 
     void Start()
     {
@@ -20,13 +19,9 @@ public class InputFieldDeFocus : MonoBehaviour
     {
         if (eventSystem.currentSelectedGameObject != _inputField) return;
 
-        float nowAxis = Input.GetAxis("DirPadV");
-
-        if (Input.GetButtonUp("Dicide") || Input.GetButtonUp("Cancel") ||
-            ( nowAxis < 0 && preAxis == 0.0f)) {
+        if (Input.GetButtonUp("Dicide") || Input.GetButtonUp("Cancel")) {
             selectable.Select();
         }
 
-        preAxis = nowAxis;
     }
 }

@@ -11,7 +11,7 @@ public class CursorLockManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKey(KeyCode.LeftShift) && Input.GetKeyUp(KeyCode.F1)) {
+        if(Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.F1)) {
             if(Cursor.lockState == CursorLockMode.Locked) {
                 CursorUnLock();
             } else if (Cursor.lockState == CursorLockMode.None) {
