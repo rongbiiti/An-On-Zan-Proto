@@ -35,7 +35,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        if (scene.buildIndex == 1 && PhotonNetwork.InRoom) // We're in the game scene
+        if (scene.buildIndex == 2 && PhotonNetwork.InRoom) // We're in the game scene
         {
             if (!isCreatead) {
                 GameObject.Find("NetworkStarter").GetComponent<SimplePun>().CreatePlayer();
@@ -46,7 +46,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             }
             
         }
-        else if(scene.buildIndex == 2) {
+        else if(scene.buildIndex == 3) {
             GameObject.Find("NetworkStarter").GetComponent<SimplePun>().CreatePlayerInCPUMatch();
         }
     }

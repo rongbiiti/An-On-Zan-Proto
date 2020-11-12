@@ -30,7 +30,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        //Connect();
+        Connect();
     }
 
     void OnGUI()
@@ -127,7 +127,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
-        PhotonNetwork.LoadLevel(1);
+        PhotonNetwork.LoadLevel(2);
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;
     }

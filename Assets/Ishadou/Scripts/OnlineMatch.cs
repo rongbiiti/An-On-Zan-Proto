@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Photon.Pun;
-using Photon.Realtime;
 
-public class CPUMatch : MonoBehaviour
+public class OnlineMatch : MonoBehaviour
 {
     public void OnClick()
     {
-        SceneManager.LoadScene(3);
-        PhotonNetwork.OfflineMode = true;
+        SceneManager.LoadScene(1);
         Debug.Log("ok");
     }
-
-    
 }
