@@ -10,7 +10,7 @@ public class CPU_Restart : MonoBehaviour
 {
     public void SceneReload()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(3);
     }
 
 }
