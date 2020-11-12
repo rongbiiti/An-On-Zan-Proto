@@ -8,16 +8,20 @@ public class Exit : MonoBehaviourPunCallbacks
 {
     public void GameExit()
     {
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        if (PhotonNetwork.IsConnected) {
-            PhotonNetwork.Disconnect();
+        PhotonNetwork.Disconnect();
+        StartCoroutine(nameof(Quit));
+    }
+
+    private IEnumerator Quit()
+    {
+        while (PhotonNetwork.NetworkClientState != ClientState.Disconnected) {
+            yield return new WaitForFixedUpdate();
         }
-#elif UNITY_STANDALONE
-                      UnityEngine.Application.Quit();
-        if (PhotonNetwork.IsConnected) {
-            PhotonNetwork.Disconnect();
-        }
-#endif
+
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #elif UNITY_STANDALONE
+            UnityEngine.Application.Quit();
+        #endif
     }
 }

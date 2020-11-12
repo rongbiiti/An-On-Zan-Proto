@@ -42,7 +42,7 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
     public void PlayFootStep()
     {
         if (PhotonNetwork.InRoom) {
-            photonView.RPC("FootStep", RpcTarget.All);
+            photonView.RPC("FootStep", RpcTarget.AllViaServer);
         } else {
             FootStep();
         }

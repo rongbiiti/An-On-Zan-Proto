@@ -36,7 +36,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
             if (PhotonNetwork.InRoom) {
                 int viewID = other.GetComponent<PhotonView>().ViewID;
-                photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
+                photonView.RPC("PlayerDeath", RpcTarget.AllViaServer, viewID);
             } else {
                 PlayerDeath(other, false);
                 transform.root.GetComponent<EnemyMove>().enabled = false;
@@ -116,7 +116,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
                 }
 
                 int viewID = other.GetComponent<PhotonView>().ViewID;
-                photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
+                photonView.RPC("PlayerDeath", RpcTarget.AllViaServer, viewID);
 
             } else {
                 PlayerDeath(other.GetComponent<Collider>(), false);
