@@ -31,9 +31,10 @@ public class GameManager_Net : MonoBehaviour
             navMesh.enabled = false;
             enemyMove.enabled = false;
             //_fasttext = GameObject.Find("Image");
-            pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
-            pauseManager.isCanPause = false;
+            
         }
+        pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
+        pauseManager.isCanPause = false;
         anim = _fasttext.GetComponent<Animator>();
     }
 
@@ -76,8 +77,9 @@ public class GameManager_Net : MonoBehaviour
                 if (_isCPUMatch)
                 {
                     EnemyActive();
-                    pauseManager.isCanPause = true;
+                    
                 }
+                pauseManager.isCanPause = true;
             }
            
         }

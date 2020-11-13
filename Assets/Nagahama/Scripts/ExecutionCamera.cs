@@ -16,7 +16,7 @@ public class ExecutionCamera : MonoBehaviour
 
     private void Start()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 2) isCPUMatch = true;
+        if (SceneManager.GetActiveScene().buildIndex == 3) isCPUMatch = true;
         if (isCPUMatch) {
             pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
         }
@@ -69,26 +69,31 @@ public class ExecutionCamera : MonoBehaviour
         Vector3 startPos = _headjoint.position;
         Vector3 targetPos = _headjoint.forward;
         float maxDistance = 4f;
-        float radius = 0.7f;
         Ray ray = new Ray(startPos, targetPos);
         RaycastHit hit;
 
-        if (Physics.SphereCast(startPos, radius, targetPos, out hit, maxDistance, layerMask)) {
+        if (Physics.Raycast(ray, out hit, maxDistance, layerMask) ) {
             hit.collider.gameObject.SetActive(false);
             Debug.Log("壁にヒット");
         }
         Debug.DrawRay(ray.origin, ray.direction * maxDistance, Color.green);
-    }
 
-    private void OnDrawGizmos()
-    {
-        if (!isRayCast) return;
-        Vector3 startPos = _headjoint.position;
-        Vector3 targetPos = _headjoint.forward;
-        float maxDistance = 4f;
-        float radius = 0.7f;
-        Ray ray = new Ray(startPos, targetPos);
+        targetPos.x += 0.6f;
+        ray = new Ray(startPos, targetPos);
+        if (Physics.Raycast(ray, out hit, maxDistance, layerMask))
+        {
+            hit.collider.gameObject.SetActive(false);
+            Debug.Log("壁にヒット");
+        }
+        Debug.DrawRay(ray.origin, ray.direction * maxDistance, Color.green);
 
-        Gizmos.DrawWireSphere(startPos + targetPos * maxDistance, radius);
+        targetPos.x -= 1.2f;
+        ray = new Ray(startPos, targetPos);
+        if (Physics.Raycast(ray, out hit, maxDistance, layerMask))
+        {
+            hit.collider.gameObject.SetActive(false);
+            Debug.Log("壁にヒット");
+        }
+        Debug.DrawRay(ray.origin, ray.direction * maxDistance, Color.green);
     }
 }

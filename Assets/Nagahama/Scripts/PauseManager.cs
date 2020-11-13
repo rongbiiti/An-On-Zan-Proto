@@ -7,12 +7,16 @@ public class PauseManager : MonoBehaviour
     [SerializeField] private GameObject _pausePanel;
     private bool isPause = false;
     public bool isCanPause;
+    public bool isCPUMatch = true;
 
     void Update()
     {
         if(Input.GetButtonDown("Pause") && !isPause && isCanPause) {
             _pausePanel.SetActive(true);
-            Pauser.Pause();
+            if (isCPUMatch)
+            {
+                Pauser.Pause();
+            }
             isPause = true;
         }
     }
@@ -20,7 +24,10 @@ public class PauseManager : MonoBehaviour
     public void UnPause()
     {
         _pausePanel.SetActive(false);
-        Pauser.Resume();
+        if (isCPUMatch)
+        {
+            Pauser.Resume();
+        }
         isPause = false;
     }
 }

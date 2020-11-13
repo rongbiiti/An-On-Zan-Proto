@@ -106,7 +106,7 @@ public class EnemyMove : MonoBehaviour
     {
         #region ShinkuuhaUnLock
         // 真空波解禁！！！！
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.F2)) {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F2)) {
             isCanShinkuuha = !isCanShinkuuha;
         }
         #endregion
@@ -293,14 +293,14 @@ public class EnemyMove : MonoBehaviour
     }
 
     // UnityEditor上でのみ表示されるデバッグ用表示
-    private void OnGUI()
-    {
-#if UNITY_EDITOR
-        if (isFindAttackingPlayer)
-        {
-            GUI.Label(new Rect(400, 400, 100, 100), "プレイヤーの攻撃発見");
-        }
-        GUI.Label(new Rect(400, 300, 100, 50), "移動速度" + animator.GetFloat("Speed"));
-#endif
-    }
+//    private void OnGUI()
+//    {
+//#if UNITY_EDITOR
+//        if (isFindAttackingPlayer)
+//        {
+//            GUI.Label(new Rect(400, 400, 100, 100), "プレイヤーの攻撃発見");
+//        }
+//        GUI.Label(new Rect(400, 300, 100, 50), "移動速度" + animator.GetFloat("Speed"));
+//#endif
+//    }
 }

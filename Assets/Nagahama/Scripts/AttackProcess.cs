@@ -7,6 +7,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 {
     [SerializeField] private BoxCollider weaponCollider;
     [SerializeField] private GameObject effect;
+    [SerializeField] ParticleSystem particle;
     [SerializeField] private bool isCPU;
     [SerializeField] private bool Shinkuuha;
     [SerializeField] private GameObject _shinkuuhaPrefab;
@@ -29,6 +30,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     private void Start()
     {
         effect.SetActive(false);
+        particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         animator = GetComponent<Animator>();
         firstPersonAIO = GetComponent<FirstPersonAIO>();
         if (isCPU) return;
@@ -49,7 +51,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     {
         weaponCollider.enabled = true;
         Debug.Log("攻撃判定ON");
-        effect.SetActive(true);
         if (isCPU) return;
         //firstPersonAIO.mouseSensitivity = 0f;
         //firstPersonAIO.stickRotateSpeed = 0f;
@@ -75,9 +76,16 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         
     }
 
+    public void EffectStart()
+    {
+        effect.SetActive(true);
+        particle.Play(true);
+    }
+
     public void EffectStop()
     {
         effect.SetActive(false);
+        particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         if (isCPU) return;
         //firstPersonAIO.mouseSensitivity = preMouseSensitibity;
         //firstPersonAIO.stickRotateSpeed = preStickRotateSpeed;

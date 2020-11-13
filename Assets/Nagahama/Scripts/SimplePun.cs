@@ -76,9 +76,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
         }
 
         if (playerCreatedFlg == false) {
-            GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
-            gameManager_Net._player = myplayer;
-            gameManager_Net.MatchStart();
+            StartCoroutine(nameof(MatchStart_Net));
         }
         playerCreatedFlg = true;
         RoomManager.Instance.isCreatead = true;
@@ -249,6 +247,27 @@ public class SimplePun : MonoBehaviourPunCallbacks
         fpsMove.enabled = true;
 
         myplayer.GetComponent<MaterialChanger>().enabled = false;
+
+        GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
+        gameManager_Net._player = myplayer;
+        gameManager_Net.MatchStart();
+    }
+
+    private IEnumerator MatchStart_Net()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        Pauser.Pause();
+        Time.timeScale = 0f;
+
+        while (players.Length >= 2) {
+
+            yield return new WaitForFixedUpdate();
+            players = GameObject.FindGameObjectsWithTag("Player");
+        }
+
+        Pauser.Resume();
+        Time.timeScale = 1f;
 
         GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
         gameManager_Net._player = myplayer;

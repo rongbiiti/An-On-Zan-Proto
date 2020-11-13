@@ -354,15 +354,11 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
         if (enableCameraMovement && !controllerPauseState) {
             float mouseYInput = 0;
             float mouseXInput = 0;
-            float stickYInput = 0;
-            float stickXInput = 0;
             float camFOV = playerCamera.fieldOfView;
 
             if (cameraInputMethod == CameraInputMethod.Traditional || cameraInputMethod == CameraInputMethod.TraditionalWithConstraints) {
                 mouseYInput = mouseInputInversion == InvertMouseInput.None || mouseInputInversion == InvertMouseInput.X ? Input.GetAxis("Mouse Y") : -Input.GetAxis("Mouse Y");
                 mouseXInput = mouseInputInversion == InvertMouseInput.None || mouseInputInversion == InvertMouseInput.Y ? Input.GetAxis("Mouse X") : -Input.GetAxis("Mouse X");
-                stickYInput = mouseInputInversion == InvertMouseInput.None || mouseInputInversion == InvertMouseInput.X ? Input.GetAxis("Analog Y") : -Input.GetAxis("Analog Y");
-                stickXInput = mouseInputInversion == InvertMouseInput.None || mouseInputInversion == InvertMouseInput.Y ? Input.GetAxis("Analog X") : -Input.GetAxis("Analog X");
 
             } else {
                 mouseXInput = Input.GetAxis("Horizontal") * (mouseInputInversion == InvertMouseInput.None || mouseInputInversion == InvertMouseInput.Y ? 1 : -1);
@@ -381,11 +377,9 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
             }
 
             targetAngles.y += mouseXInput * (mouseSensitivity - ((baseCamFOV - camFOV) * fOVToMouseSensitivity) / 6f);
-            targetAngles.y += stickXInput * (stickRotateSpeed - ((baseCamFOV - camFOV) * fOVToMouseSensitivity) / 6f);
 
             if (cameraInputMethod == CameraInputMethod.Traditional) {
                 targetAngles.x += mouseYInput * (mouseSensitivity - ((baseCamFOV - camFOV) * fOVToMouseSensitivity) / 6f);
-                targetAngles.x += stickYInput * (stickRotateSpeed - ((baseCamFOV - camFOV) * fOVToMouseSensitivity) / 6f);
             } else {
                 targetAngles.x = 0f;
             }
@@ -427,6 +421,54 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
 
         #region Look Settings - FixedUpdate
 
+        if (enableCameraMovement && !controllerPauseState)
+        {
+            float stickYInput = 0;
+            float stickXInput = 0;
+            float camFOV = playerCamera.fieldOfView;
+
+            if (cameraInputMethod == CameraInputMethod.Traditional || cameraInputMethod == CameraInputMethod.TraditionalWithConstraints)
+            {
+                stickYInput = mouseInputInversion == InvertMouseInput.None || mouseInputInversion == InvertMouseInput.X ? Input.GetAxis("Analog Y") : -Input.GetAxis("Analog Y");
+                stickXInput = mouseInputInversion == InvertMouseInput.None || mouseInputInversion == InvertMouseInput.Y ? Input.GetAxis("Analog X") : -Input.GetAxis("Analog X");
+            }
+
+            if (targetAngles.y > 180)
+            {
+                targetAngles.y -= 360; followAngles.y -= 360;
+            }
+            else if (targetAngles.y < -180)
+            {
+                targetAngles.y += 360; followAngles.y += 360;
+            }
+
+            if (targetAngles.x > 180)
+            {
+                targetAngles.x -= 360; followAngles.x -= 360;
+            }
+            else if (targetAngles.x < -180)
+            {
+                targetAngles.x += 360; followAngles.x += 360;
+            }
+
+            targetAngles.y += stickXInput * (stickRotateSpeed - ((baseCamFOV - camFOV) * fOVToMouseSensitivity) / 6f);
+
+            if (cameraInputMethod == CameraInputMethod.Traditional)
+            {
+                targetAngles.x += stickYInput * (stickRotateSpeed - ((baseCamFOV - camFOV) * fOVToMouseSensitivity) / 6f);
+            }
+            else
+            {
+                targetAngles.x = 0f;
+            }
+
+            targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * verticalRotationRange, 0.5f * verticalRotationRange);
+            followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, (cameraSmoothing) / 100);
+
+            playerCamera.transform.localRotation = Quaternion.Euler(-followAngles.x + originalRotation.x, 0, 0);
+            transform.localRotation = Quaternion.Euler(0, followAngles.y + originalRotation.y, 0);
+        }
+
         #endregion
 
         #region Movement Settings - FixedUpdate
@@ -460,17 +502,17 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
         if (advanced.maxSlopeAngle > 0) {
             if (advanced.isTouchingUpright && advanced.isTouchingWalkable) {
 
-                MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * walkSpeedInternal);
+                MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * speed);
                 if (!didJump) { fps_Rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation; }
             } else if (advanced.isTouchingUpright && !advanced.isTouchingWalkable) {
                 fps_Rigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
             } else {
 
                 fps_Rigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
-                MoveDirection = ((transform.forward * inputXY.y * speed + transform.right * inputXY.x * walkSpeedInternal) * (fps_Rigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f));
+                MoveDirection = ((transform.forward * inputXY.y * speed + transform.right * inputXY.x * speed) * (fps_Rigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f));
             }
         } else {
-            MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * walkSpeedInternal);
+            MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * speed);
         }
 
 
