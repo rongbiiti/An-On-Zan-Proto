@@ -51,7 +51,7 @@ public class ExecutionCamera : MonoBehaviour
         Time.timeScale = 1f;
         executionFlg = false;
         if (isCPUMatch) {
-            pauseManager.isCanPause = true;
+            pauseManager.isCanPause = false;
         }
 
         if (animator.GetBool("Death")) {

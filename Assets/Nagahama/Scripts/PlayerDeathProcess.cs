@@ -14,8 +14,9 @@ public class PlayerDeathProcess : MonoBehaviour
     EnemyMove enemyMove;
     FirstPersonAIO firstPersonAIO;
     FPSMove fPSMove;
+    PauseManager _pauseManager;
     [SerializeField] AudioSource _breathSource;
-    [SerializeField] BoxCollider swordCollider;
+    [SerializeField] BoxCollider _swordCollider;
     [SerializeField] GameObject _camera;
     [SerializeField] Transform[] meshs;
     [SerializeField] GameObject _bloodEffect;
@@ -32,6 +33,7 @@ public class PlayerDeathProcess : MonoBehaviour
         firstPersonAIO = GetComponent<FirstPersonAIO>();
         fPSMove = GetComponent<FPSMove>();
         rootAudioSource = GetComponent<AudioSource>();
+        _pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
 
         MeshtoOne();
     }
@@ -55,12 +57,13 @@ public class PlayerDeathProcess : MonoBehaviour
     {
         meshAgent.enabled = false;
         enemyMove.enabled = false;
-        swordCollider.enabled = false;
+        _swordCollider.enabled = false;
         _breathSource.enabled = false;
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
         InstantiateBloodEffect();
         ZanAnimation.flg = true;
+        _pauseManager.isCanPause = false;
         StartCoroutine("PlayDeathVoice");
     }
 
@@ -72,9 +75,10 @@ public class PlayerDeathProcess : MonoBehaviour
         fPSMove.enabled = false;
         _breathSource.enabled = false;
         ZanAnimation.flg = true;
+        _pauseManager.isCanPause = false;
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
-        swordCollider.enabled = false;
+        _swordCollider.enabled = false;
         rb.velocity = Vector3.zero;
         InstantiateBloodEffect();
         StartCoroutine("PlayDeathVoice");

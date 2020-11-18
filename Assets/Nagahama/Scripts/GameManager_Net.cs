@@ -13,6 +13,7 @@ public class GameManager_Net : MonoBehaviour
     public GameObject _camera;      // シーン上のメインカメラ
     public GameObject _fasttext;
     public float zoomValue = 20f;   // どのくらいカメラが落ちていくか
+    public Result _result;
 
     private NavMeshAgent navMesh;
     private EnemyMove enemyMove;
@@ -41,6 +42,8 @@ public class GameManager_Net : MonoBehaviour
     // 試合開始時に別スクリプトから呼ばれる
     public void MatchStart()
     {
+        _result._fpsAIO = _player.GetComponent<FirstPersonAIO>();
+        _result._fpsMove = _player.GetComponent<FPSMove>();
         _player.GetComponent<FirstPersonAIO>().enabled = false;
         _player.GetComponent<FPSMove>().enabled = false;
         _directionalLight.intensity = 1;
