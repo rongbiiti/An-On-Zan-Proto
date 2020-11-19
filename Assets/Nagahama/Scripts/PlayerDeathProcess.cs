@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -20,7 +21,7 @@ public class PlayerDeathProcess : MonoBehaviour
     [SerializeField] GameObject _camera;
     [SerializeField] Transform[] meshs;
     [SerializeField] GameObject _bloodEffect;
-    [SerializeField] AudioClip _deathVoiceClip;
+    [SerializeField] public List<AudioClip> _deathVoiceClip = null;
     AudioSource rootAudioSource;
 
     void Start()
@@ -98,6 +99,11 @@ public class PlayerDeathProcess : MonoBehaviour
     private IEnumerator PlayDeathVoice()
     {
         yield return new WaitForSeconds(0.17f);
-        rootAudioSource.PlayOneShot(_deathVoiceClip);
+
+        int n = Random.Range(0, _deathVoiceClip.Count);
+        if (_deathVoiceClip.Any() && _deathVoiceClip[n] != null) {
+            rootAudioSource.PlayOneShot(_deathVoiceClip[n]);
+        }
+        
     }
 }
