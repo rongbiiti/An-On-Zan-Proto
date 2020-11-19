@@ -12,8 +12,10 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     [SerializeField] private bool Shinkuuha;
     [SerializeField] private GameObject _shinkuuhaPrefab;
     [SerializeField] private string _shinkuuhaPrefabName;
+    [SerializeField] private AudioClip _shinkuuhaAudio;
     [SerializeField] private Transform _playerCameraTransform;
 
+    AudioSource audioSource;
     float preMouseSensitibity;
     float preStickRotateSpeed;
     float preMoveSpeed;
@@ -38,6 +40,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         preStickRotateSpeed = firstPersonAIO.stickRotateSpeed;
         preMoveSpeed = firstPersonAIO.walkSpeed;
         preSprintSpeed = firstPersonAIO.sprintSpeed;
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -107,6 +110,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         hitProcess._camera = _playerCameraTransform.gameObject;
         hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
         hitProcess._parent = gameObject;
+        audioSource.PlayOneShot(_shinkuuhaAudio);
     }
 
     public void ShinkuuhaLauntchEnemy()
@@ -117,6 +121,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         HitProcess hitProcess = shinkuuha.GetComponent<HitProcess>();
         hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
         hitProcess._parent = gameObject;
+        audioSource.PlayOneShot(_shinkuuhaAudio);
     }
 
     [PunRPC]
@@ -128,6 +133,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         hitProcess._camera = _playerCameraTransform.gameObject;
         hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
         hitProcess._parent = gameObject;
+        audioSource.PlayOneShot(_shinkuuhaAudio);
     }
 
 }

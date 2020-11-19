@@ -228,7 +228,9 @@ public class EnemyMove : MonoBehaviour
         lastPlayerPos = _player.transform.position;
 
         // navmeshagentの目的地を音がした座標にする
-        agent.destination = lastPlayerPos;
+        if (agent.isActiveAndEnabled) {
+            agent.destination = lastPlayerPos;
+        }
 
         // 足音反応フラグを立てる
         isFindFootStepingPlayer = true;
@@ -250,7 +252,9 @@ public class EnemyMove : MonoBehaviour
         lastPlayerPos = _player.transform.position;
 
         // navmeshagentの目的地を音がした座標にする
-        agent.destination = lastPlayerPos;
+        if (agent.isActiveAndEnabled) {
+            agent.destination = lastPlayerPos;
+        }
 
         // 攻撃反応フラグを立てる
         isFindAttackingPlayer = true;
