@@ -63,8 +63,12 @@ public class GameManager_Net : MonoBehaviour
             {
                 _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
                 anim.SetBool("CameraTrigger",true);
-                _enemy.GetComponent<EnemyLight>().startFlg = true;
+                
                 _camera.GetComponent<AudioListener>().enabled = false;
+                if (_isCPUMatch)
+                {
+                    _enemy.GetComponent<EnemyLight>().startFlg = true;
+                }
             }
             
         }
@@ -96,6 +100,9 @@ public class GameManager_Net : MonoBehaviour
         _player.GetComponent<FPSMove>().enabled = true;
         _player.GetComponent<PlayerDeathProcess>().MeshtoZero();     // FPS用に足と頭を縮ませる
         StartCoroutine(nameof(DelayAudioEnable));
+        Vector3 lookPos = Vector3.zero;
+        lookPos.y = _player.transform.position.y;
+        _player.transform.LookAt(lookPos);
     }
 
     public void EnemyActive()

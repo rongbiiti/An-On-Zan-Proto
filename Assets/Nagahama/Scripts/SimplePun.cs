@@ -44,6 +44,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
                 gameManager_Net._player = p;
                 gameManager_Net.PlayerActive();
                 playerCreatedFlg = true;
+                PhotonNetwork.AutomaticallySyncScene = true;
                 return;
             }
         }
