@@ -12,6 +12,7 @@ public class GameManager_Net : MonoBehaviour
     public GameObject _enemy;
     public GameObject _camera;      // シーン上のメインカメラ
     public GameObject _fasttext;
+    public GameObject[] _candle;    // シーン上のろうそく
     public float zoomValue = 20f;   // どのくらいカメラが落ちていくか
     public Result _result;
 
@@ -76,6 +77,12 @@ public class GameManager_Net : MonoBehaviour
         {
             time += Time.deltaTime;
             _directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
+
+            for (int i = 0; i<4; i++) { 
+                //ろうそくの火を消す
+                _candle[i].GetComponent<Light>().intensity -= 1.37f / _fpsCameraEnableWaitTime * Time.deltaTime;
+            }
+
             // カメラOFF
             //_camera.SetActive(false);
             if (_fpsCameraLightTime <= time)
