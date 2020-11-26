@@ -8,6 +8,7 @@ public class GameManager_Net : MonoBehaviour
     public Light _directionalLight; // シーン上の太陽光
     public float _fpsCameraEnableWaitTime = 2f;    // FPSカメラがONになるまでの時間
     public float _fpsCameraLightTime = 4f;
+    public float _lightDisableTime = 1.67f; // ライトが消える時間
     public GameObject _player;      // 自分が操作権を持つキャラ
     public GameObject _enemy;
     public GameObject _camera;      // シーン上のメインカメラ
@@ -76,12 +77,6 @@ public class GameManager_Net : MonoBehaviour
         else if (time < _fpsCameraLightTime && startedFlg)
         {
             time += Time.deltaTime;
-            _directionalLight.intensity -= 1 / _fpsCameraEnableWaitTime * Time.deltaTime;
-
-            for (int i = 0; i<4; i++) { 
-                //ろうそくの火を消す
-                _candle[i].GetComponent<Light>().intensity -= 1.37f / _fpsCameraEnableWaitTime * Time.deltaTime;
-            }
 
             // カメラOFF
             //_camera.SetActive(false);
@@ -95,8 +90,18 @@ public class GameManager_Net : MonoBehaviour
                 }
                 pauseManager.isCanPause = true;
             }
-           
+
+            if (time > _lightDisableTime + _fpsCameraEnableWaitTime && startedFlg) {
+                _directionalLight.intensity = 0;
+                for (int i = 0; i < 4; i++) {
+                    //ろうそくの火を消す
+                    _candle[i].GetComponent<Light>().intensity = 0;
+                }
+            }
+
         }
+
+        
     }
 
     // キャラを操作可能にしたいときに呼ばれる

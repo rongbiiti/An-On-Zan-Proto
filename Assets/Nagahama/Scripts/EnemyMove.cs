@@ -15,6 +15,7 @@ public class EnemyMove : MonoBehaviour
     public float _attackingSearchDistance = 9f;     // プレイヤーの攻撃動作反応距離
     public float _playerfootStepFindDelayTime = 0.5f;//プレイヤーの足音反応するまでのディレイ
     public float _attackingPlayerFindDelayTime = 1f;// プレイヤーの攻撃動作に反応するまでのディレイ
+    public float _attackDelay = 0.5f;               // 攻撃時のディレイ
 
 
     private float startSpeed;                       // 初期移動速度
@@ -33,6 +34,7 @@ public class EnemyMove : MonoBehaviour
     private AttackProcess playerAttackProcess;      // プレイヤーのAttackProcessコンポーネント変数
     private bool isFindAttackingPlayer;             // プレイヤーの攻撃に反応したか
     private bool isFindFootStepingPlayer;           // プレイヤーの足音に反応したか
+    private bool isAttackDelayStarted;              // 攻撃動作のディレイを開始したか
                                                     
     private void Awake()                            
     {                   
@@ -115,14 +117,14 @@ public class EnemyMove : MonoBehaviour
     private void FixedUpdate()
     {
         // プレイヤーのAudioSourceが再生中で、敵とプレイヤーの現在位置が一定距離以下なら、プレイヤーの現在位置を進行目標地点に設定する。
-        if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, _player.transform.position) < _footStepSearchDistance) {
+        if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, _player.transform.position) < _footStepSearchDistance && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !isAttackDelayStarted) {
 
             StartCoroutine(nameof(FindPlayerFootStepDelay));
         }        
 
         // プレイヤーが攻撃中で、自身とプレイヤーの現在地との距離が一定以下でかつ
         // プレイヤーの攻撃反応フラグが折れていたら
-        if (playerAttackProcess.IsAttacking && Vector3.Distance(transform.position, _player.transform.position) < _attackingSearchDistance && !isFindAttackingPlayer)
+        if (playerAttackProcess.IsAttacking && Vector3.Distance(transform.position, _player.transform.position) < _attackingSearchDistance && !isFindAttackingPlayer && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !isAttackDelayStarted)
         {
             StartCoroutine(nameof(FindAttackingPlayer));
         }
@@ -166,17 +168,15 @@ public class EnemyMove : MonoBehaviour
 
             // 足音か攻撃動作を探知したことがあり、
             //navmeshagentの目標地点と自信の位置との距離が一定以下でかつ
-            //攻撃モーションを再生中でないとき
-            if ((isFindFootStepingPlayer || isFindAttackingPlayer) && Vector3.Distance(transform.position, agent.destination) < _attackStartDistance && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+            //攻撃モーションを再生中でないときかつ
+            // 攻撃ディレイが始まっていないとき
+            if ((isFindFootStepingPlayer || isFindAttackingPlayer) && Vector3.Distance(transform.position, agent.destination) < _attackStartDistance && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !isAttackDelayStarted) {
                 // 攻撃する。
-                animator.SetBool("Attack", true);
-                Debug.Log("CPUが攻撃した：距離" + Vector3.Distance(transform.position, _player.transform.position));
-                isFindAttackingPlayer = false;
-                // 次の巡回地点を指定しておく
-                GotoNextPoint();
+                StartCoroutine(nameof(Attack));
 
             // 攻撃モーション中でなければ、次の巡回地点へ向かう
             } else if (!animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+                
                 GotoNextPoint();
                 Debug.Log("次のポイントへ");
             }
@@ -221,11 +221,10 @@ public class EnemyMove : MonoBehaviour
 
     private IEnumerator FindPlayerFootStepDelay()
     {
-
-        yield return new WaitForSeconds(_playerfootStepFindDelayTime);
-
         // 音がしたプレイヤーの座標を記憶する。
         lastPlayerPos = _player.transform.position;
+
+        yield return new WaitForSeconds(_playerfootStepFindDelayTime);
 
         // navmeshagentの目的地を音がした座標にする
         if (agent.isActiveAndEnabled) {
@@ -245,11 +244,10 @@ public class EnemyMove : MonoBehaviour
 
     private IEnumerator FindAttackingPlayer()
     {
-
-        yield return new WaitForSeconds(_attackingPlayerFindDelayTime);
-
         // 音がしたプレイヤーの座標を記憶する。
         lastPlayerPos = _player.transform.position;
+
+        yield return new WaitForSeconds(_attackingPlayerFindDelayTime);
 
         // navmeshagentの目的地を音がした座標にする
         if (agent.isActiveAndEnabled) {
@@ -294,6 +292,20 @@ public class EnemyMove : MonoBehaviour
             destPoint = (n + 1) % _points.Length;
             Debug.Log("巡回地点に向かうを引いた");
         }
+    }
+
+    private IEnumerator Attack()
+    {
+        isFindAttackingPlayer = false;
+        isFindFootStepingPlayer = false;
+        isAttackDelayStarted = true;
+        yield return new WaitForSeconds(_attackDelay);
+        animator.SetBool("Attack", true);
+        Debug.Log("CPUが攻撃した：距離" + Vector3.Distance(transform.position, _player.transform.position));
+        isFindAttackingPlayer = false;
+        isFindFootStepingPlayer = false;
+        isAttackDelayStarted = false;
+
     }
 
     // UnityEditor上でのみ表示されるデバッグ用表示
