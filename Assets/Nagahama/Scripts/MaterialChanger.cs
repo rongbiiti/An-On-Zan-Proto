@@ -27,6 +27,14 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
         
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.F4))
+        {
+            MaterialOn();
+        }
+    }
+
     public void MaterialOn()
     {
         skinnedMeshRenderer.material = material;
