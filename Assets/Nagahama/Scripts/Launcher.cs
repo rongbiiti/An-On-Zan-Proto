@@ -17,6 +17,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] Transform _roomListContent;
     [SerializeField] GameObject _roomListItemPrefab;
     [SerializeField] Transform _playerListContent;
+    [SerializeField] Transform _playerListContent_2;
     [SerializeField] GameObject _playerListItemPrefab;
     [SerializeField] GameObject _startGameButton;
 
@@ -82,7 +83,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         if (string.IsNullOrEmpty(_roomNameInputField.text)) {
-            _roomNameInputField.text = "死合場 " + Random.Range(0, 1000).ToString("0000");
+            _roomNameInputField.text = "試合場 " + Random.Range(0, 1000).ToString("0000");
             return;
         }
 
@@ -105,9 +106,21 @@ public class Launcher : MonoBehaviourPunCallbacks
         foreach (Transform child in _playerListContent) {
             Destroy(child.gameObject);
         }
+        foreach (Transform child in _playerListContent_2)
+        {
+            Destroy(child.gameObject);
+        }
 
         for (int i = 0; i < players.Count(); i++) {
-            Instantiate(_playerListItemPrefab, _playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+            if(i == 0)
+            {
+                Instantiate(_playerListItemPrefab, _playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+            }
+            else
+            {
+                Instantiate(_playerListItemPrefab, _playerListContent_2).GetComponent<PlayerListItem>().SetUp(players[i]);
+            }
+            
         }
 
         _startGameButton.SetActive(PhotonNetwork.IsMasterClient);
