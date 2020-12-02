@@ -99,8 +99,7 @@ public class CameraScreenShot : MonoBehaviour
         _camera.targetTexture = prev;
         RenderTexture.active = rt;
 
-        var screenShot = new Texture2D(_camera.pixelWidth,
-            _camera.pixelHeight,
+        var screenShot = new Texture2D((_camera.pixelWidth / 2) + 200, (_camera.pixelHeight / 2) + 200,
             TextureFormat.RGB24,
             false);
         //スクリーン画面をテクスチャ情報へ変換(Pixelデータ)
