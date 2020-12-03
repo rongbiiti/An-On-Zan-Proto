@@ -28,6 +28,7 @@ public class CameraScreenShot : MonoBehaviour
     private float mLength;
 
     public static bool replay = false;
+    public static bool CPUAttack = false;
     private GameObject mainCamera;      //メインカメラ格納用
     private GameObject subCamera;       //サブカメラ格納用 
     [SerializeField] private Camera _camera;
@@ -56,7 +57,7 @@ public class CameraScreenShot : MonoBehaviour
     {
 
         //「P」で撮影
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) || CPUAttack)
         {
             flg = true;
         }
@@ -75,6 +76,7 @@ public class CameraScreenShot : MonoBehaviour
                 countup = 0;
                 flg = false;
                 replay = true;
+                //CPUAttack = false;
                 count = 0;
             }
             countup++;

@@ -64,6 +64,7 @@ public class PlayerDeathProcess : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
         InstantiateBloodEffect();
         ZanAnimation.flg = true;
+        replay.PlayerDeathflg = true;
         _pauseManager.isCanPause = false;
         StartCoroutine("PlayDeathVoice");
     }
@@ -76,6 +77,7 @@ public class PlayerDeathProcess : MonoBehaviour
         fPSMove.enabled = false;
         _breathSource.enabled = false;
         ZanAnimation.flg = true;
+        replay.PlayerDeathflg = true;
         _pauseManager.isCanPause = false;
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
@@ -99,7 +101,6 @@ public class PlayerDeathProcess : MonoBehaviour
     private IEnumerator PlayDeathVoice()
     {
         yield return new WaitForSeconds(0.17f);
-
         int n = Random.Range(0, _deathVoiceClip.Count);
         if (_deathVoiceClip.Any() && _deathVoiceClip[n] != null) {
             rootAudioSource.PlayOneShot(_deathVoiceClip[n]);

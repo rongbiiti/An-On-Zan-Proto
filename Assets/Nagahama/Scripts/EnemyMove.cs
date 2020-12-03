@@ -305,7 +305,7 @@ public class EnemyMove : MonoBehaviour
         isFindAttackingPlayer = false;
         isFindFootStepingPlayer = false;
         isAttackDelayStarted = false;
-
+        CameraScreenShot.CPUAttack = true;
     }
 
     // UnityEditor上でのみ表示されるデバッグ用表示

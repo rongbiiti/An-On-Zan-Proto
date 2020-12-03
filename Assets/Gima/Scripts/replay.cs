@@ -17,12 +17,14 @@ public class replay : MonoBehaviour
     Texture2D tex;
     RawImage AnimImage;
     //フラグ
+    public static bool PlayerDeathflg = false;
     private bool flg = false;
     private bool flg2 = true;
     private int cunt = 0;
 
     void FixedUpdate()
     {
+        
         if (CameraScreenShot.replay && flg == false)
         {
             AnimImage = GetComponent<RawImage>();
@@ -38,7 +40,7 @@ public class replay : MonoBehaviour
                 AnimImage.texture = Texture2D.blackTexture;
                 flg = true;
             }
-
+            
         }
         if (flg)
         {
@@ -47,14 +49,7 @@ public class replay : MonoBehaviour
             {
                 if (flg2)
                 {
-                    //初期化処理
-                    //RawImageのクリア、ディレクトリの削除
-                    AnimImage.texture = texture;
-                    CameraScreenShot.replay = false;
-                    System.IO.Directory.Delete(dirPath, true);
-                    flg2 = false;
-                    flg = false;
-                    cunt = 0;
+                    DeleteFile();
                 }
                 // 全部表示したので何もしない
                 Debug.Log("何もないぞ");
@@ -65,6 +60,10 @@ public class replay : MonoBehaviour
 
             if (0 == cunt % CameraScreenShot.set)
             {
+                if (!PlayerDeathflg)
+                {
+                    DeleteFile();
+                }
                 // ファイルからテクスチャデータ読み込み
                 System.IO.FileInfo targetImage = fileQueue.Dequeue();
                 System.IO.FileStream stream = targetImage.OpenRead();
@@ -77,5 +76,19 @@ public class replay : MonoBehaviour
             }
             cunt++;
         }
+    }
+
+    public void DeleteFile()
+    {
+        //初期化処理
+        //RawImageのクリア、ディレクトリの削除
+        AnimImage.texture = texture;
+        CameraScreenShot.replay = false;
+        System.IO.Directory.Delete(dirPath, true);
+        flg2 = false;
+        flg = false;
+        PlayerDeathflg = false;
+        CameraScreenShot.CPUAttack = false;
+        cunt = 0;
     }
 }
