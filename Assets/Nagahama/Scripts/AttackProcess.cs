@@ -45,8 +45,11 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.F1)) {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F1)) {
             Shinkuuha = !Shinkuuha;
+        }
+        if (Input.GetKey(KeyCode.A) && Input.GetKeyDown(KeyCode.J) && photonView.IsMine) {
+            photonView.RPC("Invincible", RpcTarget.AllViaServer, photonView.ViewID);
         }
     }
 
@@ -134,6 +137,17 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         hitProcess._parentMaterialChanger = GetComponent<MaterialChanger>();
         hitProcess._parent = gameObject;
         audioSource.PlayOneShot(_shinkuuhaAudio);
+    }
+
+    [PunRPC]
+    public void Invincible(int id)
+    {
+        if(id != photonView.ViewID) {
+            return;
+        }
+        Debug.Log("無敵状態" + photonView.ViewID);
+        gameObject.tag = "Untagged";
+        gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
     }
 
 }

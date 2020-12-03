@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Photon.Pun;
@@ -49,8 +50,9 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
                 if (!photonView.IsMine) {
                     Vector3 startPos = p.transform.position;
                     Vector3 targetPos = p.transform.forward;
-                    transform.position = startPos + targetPos * -1f;
-                    transform.LookAt(startPos);
+                    transform.position = startPos + targetPos * -1.5f;
+                    StartCoroutine(RevertRotation(startPos));
+                    GameManager_Net.FindObjectOfType<GameManager_Net>().PlayerActive();
                     return;
                 }
             }
@@ -112,4 +114,12 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 
         return audioSource;
     }
+
+    private IEnumerator RevertRotation(Vector3 pos)
+    {
+        yield return new WaitForSeconds(0.1f);
+        transform.LookAt(pos);
+
+    }
+    
 }

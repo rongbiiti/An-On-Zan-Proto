@@ -107,15 +107,12 @@ public class GameManager_Net : MonoBehaviour
     // キャラを操作可能にしたいときに呼ばれる
     public void PlayerActive()
     {
-        _player.GetComponent<FirstPersonAIO>().enabled = true;
         _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
+        _player.GetComponent<FirstPersonAIO>().enabled = true;
+        Debug.Log(transform.rotation.eulerAngles);
         _player.GetComponent<FPSMove>().enabled = true;
         _player.GetComponent<PlayerDeathProcess>().MeshtoZero();     // FPS用に足と頭を縮ませる
-        StartCoroutine(nameof(DelayAudioEnable));
-        Vector3 lookPos = Vector3.zero;
-        lookPos.y = _player.transform.position.y;
-        _player.transform.LookAt(lookPos);
-        _player.transform.LookAt(transform.forward * -1f);
+        StartCoroutine(nameof(DelayAudioEnable));        
     }
 
     public void EnemyActive()
