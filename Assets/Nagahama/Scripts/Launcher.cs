@@ -182,7 +182,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
         }
-        Instantiate(_playerListItemPrefab, _playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+        Instantiate(_playerListItemPrefab, _playerListContent_2).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
     public void ChangePlayerNickName()

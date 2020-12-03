@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Photon.Pun;
@@ -38,7 +39,26 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
     }
-    
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Z) && Input.GetKeyDown(KeyCode.T)) {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (var p in players) {
+                PhotonView photonView = p.GetPhotonView();
+                Debug.Log(PhotonNetwork.NetworkingClient.UserId);
+                if (!photonView.IsMine) {
+                    Vector3 startPos = p.transform.position;
+                    Vector3 targetPos = p.transform.forward;
+                    transform.position = startPos + targetPos * -1.5f;
+                    StartCoroutine(RevertRotation(startPos));
+                    GameManager_Net.FindObjectOfType<GameManager_Net>().PlayerActive();
+                    return;
+                }
+            }
+        }
+    }
+
     public void PlayFootStep()
     {
         if (PhotonNetwork.InRoom) {
@@ -94,4 +114,12 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 
         return audioSource;
     }
+
+    private IEnumerator RevertRotation(Vector3 pos)
+    {
+        yield return new WaitForSeconds(0.1f);
+        transform.LookAt(pos);
+
+    }
+    
 }

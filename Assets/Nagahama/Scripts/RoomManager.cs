@@ -48,6 +48,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
         else if(scene.buildIndex == 3) {
             GameObject.Find("NetworkStarter").GetComponent<SimplePun>().CreatePlayerInCPUMatch();
+            PhotonNetwork.Disconnect();
         }
     }
 }

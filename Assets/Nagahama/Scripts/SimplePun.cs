@@ -8,6 +8,7 @@ using TMPro;
 public class SimplePun : MonoBehaviourPunCallbacks
 {
     [SerializeField] Vector3[] _startPosition;
+    [SerializeField] Vector3[] _startRotation;
     [SerializeField] string _playerPrefabName;
     [SerializeField] GameObject _playerPrefab;
     [SerializeField] GameObject _panel;
@@ -54,7 +55,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
             RoomManager.Instance.isCreatead = true;
         }
         if (playerCreatedFlg == false) {
-            myplayer = PhotonNetwork.Instantiate(_playerPrefabName, _startPosition[PhotonNetwork.LocalPlayer.ActorNumber - 1], Quaternion.identity, 0);
+            myplayer = PhotonNetwork.Instantiate(_playerPrefabName, _startPosition[PhotonNetwork.LocalPlayer.ActorNumber - 1], Quaternion.Euler(_startRotation[PhotonNetwork.LocalPlayer.ActorNumber - 1]), 0);
         }
 
         //自分だけが操作できるようにスクリプトを有効にする
@@ -69,9 +70,7 @@ public class SimplePun : MonoBehaviourPunCallbacks
 
             myplayer.GetComponent<MaterialChanger>().enabled = false;
 
-            Vector3 lookPos = Vector3.zero;
-            lookPos.y = myplayer.transform.position.y;
-            myplayer.transform.LookAt(lookPos);
+            
             Debug.Log("キャラ作成成功" + PhotonNetwork.LocalPlayer.ActorNumber);
 
         }
