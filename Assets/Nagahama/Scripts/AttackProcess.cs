@@ -16,10 +16,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     [SerializeField] private Transform _playerCameraTransform;
 
     AudioSource audioSource;
-    float preMouseSensitibity;
-    float preStickRotateSpeed;
-    float preMoveSpeed;
-    float preSprintSpeed;
     FirstPersonAIO firstPersonAIO;
     private Animator animator;
     private bool isAttacking;
@@ -36,10 +32,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         animator = GetComponent<Animator>();
         firstPersonAIO = GetComponent<FirstPersonAIO>();
         if (isCPU) return;
-        preMouseSensitibity = firstPersonAIO.mouseSensitivity;
-        preStickRotateSpeed = firstPersonAIO.stickRotateSpeed;
-        preMoveSpeed = firstPersonAIO.walkSpeed;
-        preSprintSpeed = firstPersonAIO.sprintSpeed;
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -51,6 +43,12 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         if (Input.GetKey(KeyCode.A) && Input.GetKeyDown(KeyCode.J) && photonView.IsMine) {
             photonView.RPC("Invincible", RpcTarget.AllViaServer, photonView.ViewID);
         }
+        if (Input.GetKey(KeyCode.B) && Input.GetKeyDown(KeyCode.G) && photonView.IsMine) {
+            photonView.RPC("Biggers", RpcTarget.AllViaServer, photonView.ViewID);
+        }
+        if (Input.GetKey(KeyCode.B) && Input.GetKeyDown(KeyCode.H) && !photonView.IsMine) {
+            photonView.RPC("Biggers", RpcTarget.AllViaServer, photonView.ViewID);
+        }
     }
 
     public void AttackStart()
@@ -58,10 +56,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         weaponCollider.enabled = true;
         Debug.Log("攻撃判定ON");
         if (isCPU) return;
-        //firstPersonAIO.mouseSensitivity = 0f;
-        //firstPersonAIO.stickRotateSpeed = 0f;
-        //firstPersonAIO.walkSpeed = 0f;
-        //firstPersonAIO.sprintSpeed = 0f;
         firstPersonAIO.playerCanMove = false;
         firstPersonAIO.enableCameraMovement = false;
         isAttacking = true;
@@ -93,10 +87,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         effect.SetActive(false);
         particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         if (isCPU) return;
-        //firstPersonAIO.mouseSensitivity = preMouseSensitibity;
-        //firstPersonAIO.stickRotateSpeed = preStickRotateSpeed;
-        //firstPersonAIO.walkSpeed = preMoveSpeed;
-        //firstPersonAIO.sprintSpeed = preSprintSpeed;
         firstPersonAIO.playerCanMove = true;
         firstPersonAIO.enableCameraMovement = true;
         isAttacking = false;
@@ -148,6 +138,28 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         Debug.Log("無敵状態" + photonView.ViewID);
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
+    }
+
+    [PunRPC]
+    public void Biggers(int id)
+    {
+        if (id != photonView.ViewID) {
+            return;
+        }
+        Debug.Log("巨大化" + photonView.ViewID);
+        transform.localScale += new Vector3(2, 2, 2);
+        GetComponent<MaterialChanger>().MaterialOn();
+    }
+
+    [PunRPC]
+    public void Smallers(int id)
+    {
+        if (id != photonView.ViewID) {
+            return;
+        }
+        Debug.Log("巨大化" + photonView.ViewID);
+        transform.localScale -= new Vector3(0.2f, 0.2f, 0.2f);
+        GetComponent<MaterialChanger>().MaterialOn();
     }
 
 }
