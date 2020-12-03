@@ -115,6 +115,7 @@ public class GameManager_Net : MonoBehaviour
         Vector3 lookPos = Vector3.zero;
         lookPos.y = _player.transform.position.y;
         _player.transform.LookAt(lookPos);
+        _player.transform.LookAt(transform.forward * -1f);
     }
 
     public void EnemyActive()
