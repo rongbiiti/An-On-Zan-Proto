@@ -47,8 +47,13 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             photonView.RPC("Biggers", RpcTarget.AllViaServer, photonView.ViewID);
         }
         if (Input.GetKey(KeyCode.B) && Input.GetKeyDown(KeyCode.H) && !photonView.IsMine) {
-            photonView.RPC("Biggers", RpcTarget.AllViaServer, photonView.ViewID);
+            photonView.RPC("Smallers", RpcTarget.AllViaServer, photonView.ViewID);
         }
+        if (Input.GetKey(KeyCode.I) && Input.GetKeyDown(KeyCode.D) && !photonView.IsMine)
+        {
+            photonView.RPC("MusicStart", RpcTarget.AllViaServer, photonView.ViewID);
+        }
+
     }
 
     public void AttackStart()
@@ -160,6 +165,17 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         Debug.Log("巨大化" + photonView.ViewID);
         transform.localScale -= new Vector3(0.2f, 0.2f, 0.2f);
         GetComponent<MaterialChanger>().MaterialOn();
+    }
+
+    [PunRPC]
+    public void MusicStart(int id)
+    {
+        if (id != photonView.ViewID || !photonView.IsMine)
+        {
+            return;
+        }
+        Debug.Log("ミュージックスタート" + photonView.ViewID);
+        GameObject.Find("IsyadouTheme").GetComponent<AudioSource>().Play();
     }
 
 }
