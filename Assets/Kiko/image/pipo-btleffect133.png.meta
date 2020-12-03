@@ -32,6 +32,33 @@ TextureImporter:
   - first:
       213: 8814507459579353870
     second: pipo-btleffect133_8
+  - first:
+      213: 3978066505653358382
+    second: pipo-btleffect133_9
+  - first:
+      213: -6005361412249720420
+    second: pipo-btleffect133_1
+  - first:
+      213: -6886306044633921564
+    second: pipo-btleffect133_2
+  - first:
+      213: 5999973981425503829
+    second: pipo-btleffect133_3
+  - first:
+      213: -2366333957803846345
+    second: pipo-btleffect133_4
+  - first:
+      213: 6937556702784565833
+    second: pipo-btleffect133_5
+  - first:
+      213: 4603771228894486136
+    second: pipo-btleffect133_6
+  - first:
+      213: -1355759613317752078
+    second: pipo-btleffect133_7
+  - first:
+      213: 1036676115595633151
+    second: pipo-btleffect133_8
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -133,11 +160,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 960
-        width: 640
-        height: 480
+        y: 2880
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -153,19 +180,19 @@ TextureImporter:
       name: pipo-btleffect133_1
       rect:
         serializedVersion: 2
-        x: 640
-        y: 960
-        width: 640
-        height: 480
+        x: 1920
+        y: 2880
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6c604577a76c44680800000000000000
-      internalID: -8771667944920578362
+      spriteID: c9964030d9ba8aca0800000000000000
+      internalID: -6005361412249720420
       vertices: []
       indices: 
       edges: []
@@ -174,19 +201,19 @@ TextureImporter:
       name: pipo-btleffect133_2
       rect:
         serializedVersion: 2
-        x: 1280
-        y: 960
-        width: 640
-        height: 480
+        x: 3840
+        y: 2880
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fb5f36d94710bb210800000000000000
-      internalID: 1349674113696003519
+      spriteID: 4e748fa332dee60a0800000000000000
+      internalID: -6886306044633921564
       vertices: []
       indices: 
       edges: []
@@ -196,18 +223,18 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 480
-        width: 640
-        height: 480
+        y: 1440
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4061f4c72c7c0f320800000000000000
-      internalID: 2589789423861175812
+      spriteID: 55e04700c80344350800000000000000
+      internalID: 5999973981425503829
       vertices: []
       indices: 
       edges: []
@@ -216,19 +243,19 @@ TextureImporter:
       name: pipo-btleffect133_4
       rect:
         serializedVersion: 2
-        x: 640
-        y: 480
-        width: 640
-        height: 480
+        x: 1920
+        y: 1440
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8efc2a116b91557d0800000000000000
-      internalID: -2930407712764014616
+      spriteID: 73558218dc7192fd0800000000000000
+      internalID: -2366333957803846345
       vertices: []
       indices: 
       edges: []
@@ -237,19 +264,19 @@ TextureImporter:
       name: pipo-btleffect133_5
       rect:
         serializedVersion: 2
-        x: 1280
-        y: 480
-        width: 640
-        height: 480
+        x: 3840
+        y: 1440
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ea0fb8e50e9e7a2d0800000000000000
-      internalID: -3267385854765829970
+      spriteID: 942ba9e7017274060800000000000000
+      internalID: 6937556702784565833
       vertices: []
       indices: 
       edges: []
@@ -260,17 +287,17 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 640
-        height: 480
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e529bdb7a748460b0800000000000000
-      internalID: -5736314363764305314
+      spriteID: 87e5b657a81e3ef30800000000000000
+      internalID: 4603771228894486136
       vertices: []
       indices: 
       edges: []
@@ -279,19 +306,19 @@ TextureImporter:
       name: pipo-btleffect133_7
       rect:
         serializedVersion: 2
-        x: 640
+        x: 1920
         y: 0
-        width: 640
-        height: 480
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c913e86095d919d30800000000000000
-      internalID: 4436500113624281500
+      spriteID: 2fadf5790df5f2de0800000000000000
+      internalID: -1355759613317752078
       vertices: []
       indices: 
       edges: []
@@ -300,19 +327,19 @@ TextureImporter:
       name: pipo-btleffect133_8
       rect:
         serializedVersion: 2
-        x: 1280
+        x: 3840
         y: 0
-        width: 640
-        height: 480
+        width: 1920
+        height: 1440
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e0b124e45db635a70800000000000000
-      internalID: 8814507459579353870
+      spriteID: ff1a5314f63036e00800000000000000
+      internalID: 1036676115595633151
       vertices: []
       indices: 
       edges: []
