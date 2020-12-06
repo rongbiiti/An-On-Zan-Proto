@@ -85,6 +85,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     {
         effect.SetActive(true);
         particle.Play(true);
+        animator.SetBool("Attack", false);
     }
 
     public void EffectStop()
@@ -92,8 +93,11 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         effect.SetActive(false);
         particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         if (isCPU) return;
-        firstPersonAIO.playerCanMove = true;
-        firstPersonAIO.enableCameraMovement = true;
+        if(!animator.GetBool("Death"))
+        {
+            firstPersonAIO.playerCanMove = true;
+            firstPersonAIO.enableCameraMovement = true;
+        }
         isAttacking = false;
         if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             GetComponent<FPSMove>().isShinkuuha = false;

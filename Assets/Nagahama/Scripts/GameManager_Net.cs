@@ -23,6 +23,8 @@ public class GameManager_Net : MonoBehaviour
     private float time = 0f;
     private bool startedFlg = false;
     private Animator anim;
+    private ReplayManager replayManager;
+    private ReplayManager replayManager_cpu;
 
     public bool _isCPUMatch;
 
@@ -112,6 +114,13 @@ public class GameManager_Net : MonoBehaviour
         Debug.Log(transform.rotation.eulerAngles);
         _player.GetComponent<FPSMove>().enabled = true;
         _player.GetComponent<PlayerDeathProcess>().MeshtoZero();     // FPS用に足と頭を縮ませる
+        SetComponentForReplay[] setComponentForReplays = FindObjectsOfType<SetComponentForReplay>();
+        foreach(var scfr in setComponentForReplays)
+        {
+            scfr.enabled = true;
+        }
+        
+        
         StartCoroutine(nameof(DelayAudioEnable));        
     }
 
@@ -121,6 +130,8 @@ public class GameManager_Net : MonoBehaviour
         enemyMove.enabled = true;
         enemyMove._player = _player;
         enemyMove.GetPlayerComponent();
+        replayManager_cpu = GameObject.Find("ReplayManager_CPU").GetComponent<ReplayManager>();
+        replayManager_cpu.enabled = true;
         StartCoroutine(nameof(DelayAudioEnable_CPU));
     }
 

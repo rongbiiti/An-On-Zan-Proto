@@ -17,11 +17,12 @@ public class HitProcess : MonoBehaviourPunCallbacks
     public MaterialChanger _parentMaterialChanger;
 
     private AudioSource audioSource;
-    private bool hitFlg = false;
+    private Light directionalLight;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
     }
 
     public void PlayHit()
@@ -43,13 +44,18 @@ public class HitProcess : MonoBehaviourPunCallbacks
                 transform.root.GetComponent<EnemyMove>().enabled = false;
             }
 
-            GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
+            directionalLight.intensity = 1;
+            transform.root.gameObject.tag = "Untagged";
+            transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
 
         } else if (other.CompareTag("Enemy")) {
             Debug.Log("CPUにヒット");
             PlayerDeath(other, true);
             PlayHit();
-            GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
+            directionalLight.intensity = 1;
+            transform.root.gameObject.tag = "Untagged";
+            transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
+
         }
     }
 
@@ -92,6 +98,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
     private IEnumerator DeathVoice()
     {
+        directionalLight.intensity = 1;
         if (_camera != null && _camera.activeSelf) {
             _camera.GetComponent<ExecutionCamera>().StartCoroutine("Execution");
         }
@@ -104,7 +111,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
         Debug.Log("真空波がなにかにヒットした");
         if (other.CompareTag("Player")) {
             Debug.Log("真空波がプレイヤーにヒット");
-            GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
+            directionalLight.intensity = 1;
 
             if (PhotonNetwork.InRoom) {
 
@@ -129,7 +136,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
             Debug.Log("真空波がCPUにヒット");
             PlayerDeath(other.GetComponent<Collider>(), true);
             PlayHit();
-            GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1;
+            directionalLight.intensity = 1;
         }
     }
 }

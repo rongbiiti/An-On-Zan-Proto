@@ -15,5 +15,10 @@ public class Result : MonoBehaviour
         _pause.isCanPause = false;
         _fpsAIO.enabled = false;
         _fpsMove.enabled = false;
+        ReplayManager[] replayManagers = FindObjectsOfType<ReplayManager>();
+        foreach(var rp in replayManagers)
+        {
+            rp.ReplayStart();
+        }
     }
 }

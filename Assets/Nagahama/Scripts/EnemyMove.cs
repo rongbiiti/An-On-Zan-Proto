@@ -19,6 +19,7 @@ public class EnemyMove : MonoBehaviour
 
 
     private float startSpeed;                       // 初期移動速度
+    private float animWalkSpeed;                    // アニメーション用の移動速度変数
     private Vector3 lastPlayerPos;                  // 最後にプレイヤーの気配を探知した座標
     private AudioSource playerAudioSource;          // プレイヤーのAudioSource
     private int destPoint = 0;                      // 巡回ポイントを回す用変数
@@ -84,6 +85,11 @@ public class EnemyMove : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        SetWalkSpeed();
+    }
+
     void GotoNextPoint()
     {
         // 地点がなにも設定されていないときに返します
@@ -138,8 +144,10 @@ public class EnemyMove : MonoBehaviour
         {
             // プレイヤーの攻撃反応フラグが折れていたら、
             // 通常速度に切替える
-            SetWalkSpeed();
+            //SetWalkSpeed();
         }
+
+        animator.SetFloat("Speed", animWalkSpeed);
 
         #region Shinkuuha
         if (isCanShinkuuha && playerAudioSource.isPlaying && Vector3.Distance(transform.position, _player.transform.position) < 10f)
@@ -190,7 +198,8 @@ public class EnemyMove : MonoBehaviour
         if (agent.speed < startSpeed) return;
 
         // 歩行用の速度を代入する。
-        animator.SetFloat("Speed", 0.2f, 0.5f, Time.deltaTime);
+        agent.speed = startSpeed;
+        animWalkSpeed = 0.2f;
     }
 
     private void SetSprintSpeed()
@@ -199,15 +208,17 @@ public class EnemyMove : MonoBehaviour
         if (agent.speed < startSpeed) return;
 
         // ダッシュ用の速度を代入する。
-        animator.SetFloat("Speed", _sprintSpeed, 0.5f, Time.deltaTime);
+        agent.speed = _sprintSpeed;
+        animWalkSpeed = 0.6f;
     }
 
     private void OnDisable()
     {
         // EnemyMoveコンポーネントが無効化されたとき、移動速度を0にして
         // navmeshagentも切っておく。
-        animator.SetFloat("Speed", 0, 0, Time.deltaTime);
         agent.enabled = false;
+        animWalkSpeed = 0;
+        animator.SetFloat("Speed", animWalkSpeed);
     }
 
     #region ShinkuuhaLauntch
@@ -239,6 +250,7 @@ public class EnemyMove : MonoBehaviour
 
         // 行動できるように速度を戻す
         agent.speed = startSpeed;
+        SetWalkSpeed();
         Debug.Log("プレイヤー発見：距離" + Vector3.Distance(transform.position, _player.transform.position));
     }
 
@@ -262,6 +274,7 @@ public class EnemyMove : MonoBehaviour
 
         // 行動できるように速度を戻す
         agent.speed = startSpeed;
+        SetWalkSpeed();
         Debug.Log("攻撃中のプレイヤー発見：距離" + Vector3.Distance(transform.position, _player.transform.position));
     }
 
@@ -270,6 +283,8 @@ public class EnemyMove : MonoBehaviour
         // 最初のくじで2を引いた場合の処理。
         // まず移動速度を0にする
         agent.speed = 0f;
+        animWalkSpeed = 0;
+        animator.SetFloat("Speed", animWalkSpeed);
         // 3秒待つ
         yield return new WaitForSeconds(3f);
         // 移動速度をもとに戻す
@@ -300,12 +315,18 @@ public class EnemyMove : MonoBehaviour
         isFindFootStepingPlayer = false;
         isAttackDelayStarted = true;
         yield return new WaitForSeconds(_attackDelay);
+
         animator.SetBool("Attack", true);
+        agent.isStopped = true;
         Debug.Log("CPUが攻撃した：距離" + Vector3.Distance(transform.position, _player.transform.position));
         isFindAttackingPlayer = false;
         isFindFootStepingPlayer = false;
         isAttackDelayStarted = false;
         CameraScreenShot.CPUAttack = true;
+        SetWalkSpeed();
+
+        yield return new WaitForSeconds(1f);
+        agent.isStopped = false;
     }
 
     // UnityEditor上でのみ表示されるデバッグ用表示
