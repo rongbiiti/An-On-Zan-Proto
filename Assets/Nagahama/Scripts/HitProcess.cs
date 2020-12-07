@@ -71,8 +71,13 @@ public class HitProcess : MonoBehaviourPunCallbacks
         PlayHit();
         StartCoroutine("DeathVoice");
 
-        // 自分の姿を明かす
-        _parentMaterialChanger.MaterialOn();
+        MaterialChanger[] materialChangers = FindObjectsOfType<MaterialChanger>();
+        foreach(var mc in materialChangers)
+        {
+            mc.MaterialOn();
+        }
+
+        Destroy(gameObject);
     }
 
     // オフライン用
@@ -109,22 +114,15 @@ public class HitProcess : MonoBehaviourPunCallbacks
     private void OnParticleCollision(GameObject other)
     {
         Debug.Log("真空波がなにかにヒットした");
+
         if (other.CompareTag("Player")) {
             Debug.Log("真空波がプレイヤーにヒット");
             directionalLight.intensity = 1;
 
             if (PhotonNetwork.InRoom) {
 
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                foreach (var p in players) {
-                    PhotonView photonView = p.GetPhotonView();
-                    if (!photonView.IsMine) {
-                        p.GetComponent<MaterialChanger>().MaterialOn();
-                    }
-                }
-
                 int viewID = other.GetComponent<PhotonView>().ViewID;
-                photonView.RPC("PlayerDeath", RpcTarget.AllViaServer, viewID);
+                photonView.RPC("PlayerDeath", RpcTarget.All, viewID);
                 RoomManager.Instance.isCreatead = false;
 
             } else {
