@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 public class SetComponentForReplay : MonoBehaviourPunCallbacks
 {
     private ReplayManager replayManager;
+
     private void OnEnable()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine || SceneManager.GetActiveScene().buildIndex == 3)
         {
             replayManager = GameObject.Find("ReplayManager").GetComponent<ReplayManager>();
             replayManager.enabled = true;
