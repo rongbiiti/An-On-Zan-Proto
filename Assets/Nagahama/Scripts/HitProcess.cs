@@ -77,7 +77,10 @@ public class HitProcess : MonoBehaviourPunCallbacks
             mc.MaterialOn();
         }
 
-        Destroy(gameObject);
+        if(_parentMaterialChanger != null) {
+            Destroy(gameObject);
+        }
+        
     }
 
     // オフライン用
