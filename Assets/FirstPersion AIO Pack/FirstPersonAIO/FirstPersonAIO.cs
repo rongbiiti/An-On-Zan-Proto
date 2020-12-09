@@ -130,6 +130,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
     internal float walkSpeedInternal;
     internal float sprintSpeedInternal;
     internal float jumpPowerInternal;
+    private Animator animator;
 
     [System.Serializable]
     public class CrouchModifiers
@@ -272,6 +273,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
         fps_Rigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
         fps_Rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         _crouchModifiers.colliderHeight = capsule.height;
+        animator = GetComponent<Animator>();
         #endregion
 
         #region Headbobbing Settings - Awake
@@ -647,7 +649,22 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
             if (jumpLandIntensity > 0 && !advanced.stairMiniHop) { xTilt = -springPosition * (jumpLandIntensity * 5.5f); } else if (!advanced.stairMiniHop) { xTilt = -springPosition; }
 
             if (IsGrounded) {
-                if (new Vector3(vel.x, 0.0f, vel.z).magnitude < 0.1f) { headbobFade = Mathf.MoveTowards(headbobFade, 0.0f, 0.5f); } else { headbobFade = Mathf.MoveTowards(headbobFade, 1.0f, Time.deltaTime); }
+                if (new Vector3(vel.x, 0.0f, vel.z).magnitude < 0.1f) { 
+                    // 停止中
+                    headbobFade = Mathf.MoveTowards(headbobFade, 0.0f, 0.5f);
+                    animator.SetFloat("Speed", 0);
+                
+                } else {
+                    // 歩行中
+                    headbobFade = Mathf.MoveTowards(headbobFade, 1.0f, Time.deltaTime);
+                    if (isSprinting) {
+                        animator.SetFloat("Speed", 1f);
+                    } else {
+                        animator.SetFloat("Speed", 0.2f);
+                    }
+                    
+                    Debug.Log("歩行中");
+                }
                 float speedHeightFactor = 1 + (flatVel * 0.3f);
                 xPos = -(headbobSideMovement / 10) * headbobFade * bobSwayFactor;
                 yPos = springPosition * (jumpLandIntensity / 10) + bobFactor * (headbobHeight / 10) * headbobFade * speedHeightFactor;
@@ -741,6 +758,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                         if (landSound) { audioSource.PlayOneShot(landSound, Volume / 10); }
                         nextStepTime = headbobCycle + 0.5f;
                     } else {
+                        
                         if (headbobCycle > nextStepTime && isSprinting) {
                             nextStepTime = headbobCycle + 0.5f;
                             int n = Random.Range(0, footStepSounds.Count);

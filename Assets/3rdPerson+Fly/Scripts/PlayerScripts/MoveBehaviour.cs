@@ -61,18 +61,7 @@ public class MoveBehaviour : GenericBehaviour
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.IsWriting) {
-            stream.SendNext(behaviourManager.GetRigidBody.position);
-            stream.SendNext(behaviourManager.GetRigidBody.rotation);
-            stream.SendNext(behaviourManager.GetRigidBody.velocity);
-        } else {
-            networkPosition = (Vector3)stream.ReceiveNext();
-            networkRotation = (Quaternion)stream.ReceiveNext();
-            behaviourManager.GetRigidBody.velocity = (Vector3)stream.ReceiveNext();
-
-            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
-            networkPosition += (behaviourManager.GetRigidBody.velocity * lag);
-        }
+        
     }
 
     // LocalFixedUpdate overrides the virtual function of the base class.

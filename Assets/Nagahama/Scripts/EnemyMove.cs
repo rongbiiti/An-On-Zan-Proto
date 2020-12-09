@@ -43,6 +43,7 @@ public class EnemyMove : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();       
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        animator.SetBool("Replay", true);
 
         // 初期速度を記憶しておく
         startSpeed = agent.speed;
@@ -88,6 +89,7 @@ public class EnemyMove : MonoBehaviour
     private void OnEnable()
     {
         SetWalkSpeed();
+        animator.SetBool("Replay", true);
     }
 
     void GotoNextPoint()
@@ -209,7 +211,7 @@ public class EnemyMove : MonoBehaviour
 
         // ダッシュ用の速度を代入する。
         agent.speed = _sprintSpeed;
-        animWalkSpeed = 0.6f;
+        animWalkSpeed = 1f;
     }
 
     private void OnDisable()
