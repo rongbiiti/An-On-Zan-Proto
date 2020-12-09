@@ -107,6 +107,8 @@ public class FadeManager : MonoBehaviour
 	public void LoadScene(int scene, float interval)
 	{
 		StartCoroutine(TransScene(scene, interval));
+		BGMFadeout bgmFadeout = FindObjectOfType<BGMFadeout>();
+		bgmFadeout.FadeoutStart(interval);
 	}
 
 	/// <summary>

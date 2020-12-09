@@ -18,11 +18,13 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
     private AudioSource audioSource;
     private Light directionalLight;
+    private KillBGM killBGMComponent;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
+        killBGMComponent = GameObject.Find("Directional Light").GetComponent<KillBGM>();
     }
 
     public void PlayHit()
@@ -45,6 +47,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
             }
 
             directionalLight.intensity = 1;
+            killBGMComponent.PlayKillBGM();
             transform.root.gameObject.tag = "Untagged";
             transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
 
@@ -53,6 +56,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
             PlayerDeath(other, true);
             PlayHit();
             directionalLight.intensity = 1;
+            killBGMComponent.PlayKillBGM();
             transform.root.gameObject.tag = "Untagged";
             transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
 
@@ -108,6 +112,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
     private IEnumerator DeathVoice()
     {
         directionalLight.intensity = 1;
+        killBGMComponent.PlayKillBGM();
         if (_camera != null && _camera.activeSelf) {
             _camera.GetComponent<ExecutionCamera>().StartCoroutine("Execution");
         }
@@ -122,6 +127,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
         if (other.CompareTag("Player")) {
             Debug.Log("真空波がプレイヤーにヒット");
             directionalLight.intensity = 1;
+            killBGMComponent.PlayKillBGM();
 
             if (PhotonNetwork.InRoom) {
 
@@ -139,6 +145,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
             PlayerDeath(other.GetComponent<Collider>(), true);
             PlayHit();
             directionalLight.intensity = 1;
+            killBGMComponent.PlayKillBGM();
         }
     }
 }
