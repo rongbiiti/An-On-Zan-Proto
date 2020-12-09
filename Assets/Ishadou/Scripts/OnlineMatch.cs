@@ -7,7 +7,7 @@ public class OnlineMatch : MonoBehaviour
 {
     public void OnClick()
     {
-        SceneManager.LoadScene(1);
+        FadeManager.Instance.LoadScene(1, 2);
         Debug.Log("ok");
     }
 }

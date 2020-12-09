@@ -9,7 +9,7 @@ public class CPUMatch : MonoBehaviour
 {
     public void OnClick()
     {
-        SceneManager.LoadScene(3);
+        FadeManager.Instance.LoadScene(3, 2);
         PhotonNetwork.OfflineMode = true;
         Debug.Log("ok");
     }

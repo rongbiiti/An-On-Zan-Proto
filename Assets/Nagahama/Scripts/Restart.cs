@@ -9,7 +9,7 @@ public class Restart : MonoBehaviour
 {
     public void SceneReload()
     {
-        SceneManager.LoadScene(0);
+        FadeManager.Instance.LoadScene(0, 1);
     }
 
     public void LeaveRoom()
