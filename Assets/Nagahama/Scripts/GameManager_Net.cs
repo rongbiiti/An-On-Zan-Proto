@@ -16,15 +16,19 @@ public class GameManager_Net : MonoBehaviour
     public GameObject[] _candle;    // シーン上のろうそく
     public float zoomValue = 20f;   // どのくらいカメラが落ちていくか
     public Result _result;
+    public AudioClip _drumCrip1;
+    public AudioClip _drumCrip2;
 
     private NavMeshAgent navMesh;
     private EnemyMove enemyMove;
     private PauseManager pauseManager;
     private float time = 0f;
     private bool startedFlg = false;
+    private bool lightDisableFlg = false;
     private Animator anim;
     private ReplayManager replayManager;
     private ReplayManager replayManager_cpu;
+    private AudioSource audioSource;
 
     public bool _isCPUMatch;
 
@@ -41,6 +45,7 @@ public class GameManager_Net : MonoBehaviour
         pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
         pauseManager.isCanPause = false;
         anim = _fasttext.GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // 試合開始時に別スクリプトから呼ばれる
@@ -69,6 +74,7 @@ public class GameManager_Net : MonoBehaviour
                 anim.SetBool("CameraTrigger",true);
                 
                 _camera.GetComponent<AudioListener>().enabled = false;
+                audioSource.PlayOneShot(_drumCrip1);
                 if (_isCPUMatch)
                 {
                     _enemy.GetComponent<EnemyLight>().startFlg = true;
@@ -85,25 +91,22 @@ public class GameManager_Net : MonoBehaviour
             if (_fpsCameraLightTime <= time)
             {
                 PlayerActive();
-                if (_isCPUMatch)
-                {
-                    EnemyActive();
-                    
-                }
                 pauseManager.isCanPause = true;
+                if (_isCPUMatch) {
+                    EnemyActive();
+                }                
             }
-
-            if (time > _lightDisableTime + _fpsCameraEnableWaitTime && startedFlg) {
-                _directionalLight.intensity = 0;
-                for (int i = 0; i < 4; i++) {
-                    //ろうそくの火を消す
-                    _candle[i].GetComponent<Light>().intensity = 0;
-                }
-            }
-
         }
 
-        
+        if (_lightDisableTime <= time && startedFlg && !lightDisableFlg) {
+            _directionalLight.intensity = 0;
+            audioSource.PlayOneShot(_drumCrip2);
+            lightDisableFlg = true;
+            for (int i = 0; i < 4; i++) {
+                //ろうそくの火を消す
+                _candle[i].GetComponent<Light>().intensity = 0;
+            }
+        }
     }
 
     // キャラを操作可能にしたいときに呼ばれる
