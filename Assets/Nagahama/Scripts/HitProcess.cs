@@ -12,9 +12,9 @@ public class HitProcess : MonoBehaviourPunCallbacks
     [SerializeField] private AudioMixerGroup audioMixerGroup;
     [SerializeField] private GameObject blood;
 
-    public GameObject _camera;
-    public GameObject _parent;
-    public MaterialChanger _parentMaterialChanger;
+    [HideInInspector] public GameObject _camera;
+    [HideInInspector] public GameObject _parent;
+    [HideInInspector] public MaterialChanger _parentMaterialChanger;
 
     private AudioSource audioSource;
     private Light directionalLight;
@@ -77,7 +77,8 @@ public class HitProcess : MonoBehaviourPunCallbacks
             mc.MaterialOn();
         }
 
-        if(_parentMaterialChanger != null) {
+        if(!gameObject.CompareTag("Sword")) {
+            Debug.Log("真空波破棄");
             Destroy(gameObject);
         }
         

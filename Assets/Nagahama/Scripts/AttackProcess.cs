@@ -25,13 +25,18 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         get { return isAttacking; }
     }
 
-    private void Start()
+    private void Awake()
     {
         effect.SetActive(false);
         particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+    }
+
+    private void Start()
+    {
+        
         animator = GetComponent<Animator>();
-        firstPersonAIO = GetComponent<FirstPersonAIO>();
         if (isCPU) return;
+        firstPersonAIO = GetComponent<FirstPersonAIO>();
         audioSource = GetComponent<AudioSource>();
     }
 

@@ -37,7 +37,7 @@ public class FPSMove : MonoBehaviour
             isShinkuuha = true;
         }
 
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.J)) {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.J)) {
             _fpsController.canJump = !_fpsController.canJump;
         }
 

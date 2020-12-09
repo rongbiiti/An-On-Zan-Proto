@@ -98,6 +98,7 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 
     public void PlaySlash(string eventName)
     {
+        Debug.Log("音再生");
         audioSource.PlayOneShot(slashClip);
     }
 
