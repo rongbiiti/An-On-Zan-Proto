@@ -103,6 +103,7 @@ public class ReplayManager : MonoBehaviour
             } else {
                 //GUI.Label(new Rect(500, 750, 500, 100), "CPU記録中:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
             }
+            GUI.Label(new Rect(500, 700, 500, 100), "" + animator.GetFloat("Speed"));
         } else {
             if (!_isCPU) {
                 //GUI.Label(new Rect(500, 700, 500, 100), "再生中残り:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
