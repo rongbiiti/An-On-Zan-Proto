@@ -10,6 +10,8 @@ public class ReplayManager : MonoBehaviour
     [HideInInspector] public Queue<bool> oldAtkBool = new Queue<bool>(420);
     [HideInInspector] public Queue<bool> oldDeathBool = new Queue<bool>(420);
     [HideInInspector] public Queue<float> oldSpeed = new Queue<float>(420);
+    [HideInInspector] public Queue<float> oldH = new Queue<float>(420);
+    [HideInInspector] public Queue<float> oldV = new Queue<float>(420);
 
     [HideInInspector] public bool isRunning;
     public Transform target_P;
@@ -32,23 +34,25 @@ public class ReplayManager : MonoBehaviour
     public void ReplayStart()
     {
         isRunning = true;
+
         animator.SetBool("Replay", true);
+
         oldPos.Enqueue(target_P.position);
         oldRot.Enqueue(target_P.rotation);
         oldAtkBool.Enqueue(animator.GetBool("Attack"));
         oldDeathBool.Enqueue(animator.GetBool("Death"));
         oldSpeed.Enqueue(0);
+        oldH.Enqueue(0);
+        oldV.Enqueue(0);
+
         rb = target_P.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
 
         if (oldPos.Count > 420)
         {
-            oldPos.Dequeue();
-            oldRot.Dequeue();
-            oldAtkBool.Dequeue();
-            oldDeathBool.Dequeue();
-            oldSpeed.Dequeue();
+            AllDequeue();
         }
+
         if (!_isCPU)
         {
             firstPerson.enabled = false;
@@ -66,22 +70,22 @@ public class ReplayManager : MonoBehaviour
             oldAtkBool.Enqueue(animator.GetBool("Attack"));
             oldDeathBool.Enqueue(animator.GetBool("Death"));
             oldSpeed.Enqueue(animator.GetFloat("Speed"));
+            oldH.Enqueue(animator.GetFloat("H"));
+            oldV.Enqueue(animator.GetFloat("V"));
 
-            if(oldPos.Count > 420)
+            if (oldPos.Count > 420)
             {
-                oldPos.Dequeue();
-                oldRot.Dequeue();
-                oldAtkBool.Dequeue();
-                oldDeathBool.Dequeue();
-                oldSpeed.Dequeue();
+                AllDequeue();
             }
-        } else  {
+        } else {
             target_P.position = oldPos.Dequeue();
             target_P.rotation = oldRot.Dequeue();
             animator.SetBool("Attack", oldAtkBool.Dequeue());
             animator.SetBool("Death", oldDeathBool.Dequeue());
             animator.SetFloat("Speed", oldSpeed.Dequeue());
-            
+            animator.SetFloat("H", oldH.Dequeue());
+            animator.SetFloat("V", oldV.Dequeue());
+
             if (oldPos.Count == 0)
             {
                 isRunning = false;
@@ -95,15 +99,27 @@ public class ReplayManager : MonoBehaviour
         }
     }
 
+    private void AllDequeue()
+    {
+        oldPos.Dequeue();
+        oldRot.Dequeue();
+        oldAtkBool.Dequeue();
+        oldDeathBool.Dequeue();
+        oldSpeed.Dequeue();
+        oldH.Dequeue();
+        oldV.Dequeue();
+    }
+
     private void OnGUI()
     {
         if (!isRunning) {
             if (!_isCPU){
                 //GUI.Label(new Rect(500, 700, 500, 100), "記録中:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
+                GUI.Label(new Rect(500, 700, 500, 100), "" + animator.GetFloat("Speed"));
             } else {
                 //GUI.Label(new Rect(500, 750, 500, 100), "CPU記録中:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
             }
-            GUI.Label(new Rect(500, 700, 500, 100), "" + animator.GetFloat("Speed"));
+            
         } else {
             if (!_isCPU) {
                 //GUI.Label(new Rect(500, 700, 500, 100), "再生中残り:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");

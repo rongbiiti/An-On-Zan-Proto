@@ -652,19 +652,23 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                 if (new Vector3(vel.x, 0.0f, vel.z).magnitude < 0.1f) { 
                     // 停止中
                     headbobFade = Mathf.MoveTowards(headbobFade, 0.0f, 0.5f);
-                    animator.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
+                    //animator.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
                     //Debug.Log(animator.GetFloat("Speed"));
 
                 } else {
                     // 歩行中
                     headbobFade = Mathf.MoveTowards(headbobFade, 1.0f, Time.deltaTime);
                     if (isSprinting) {
-                        animator.SetFloat("Speed", 1f, 0.2f, Time.deltaTime);
+                        //animator.SetFloat("Speed", 1f, 0.2f, Time.deltaTime);
                     } else {
-                        animator.SetFloat("Speed", 0.18f, 0.06f, Time.deltaTime);
+                        //animator.SetFloat("Speed", 0.18f, 0.06f, Time.deltaTime);
                     }
                     //Debug.Log(animator.GetFloat("Speed"));
                 }
+                Vector3 velocityXZ = Vector3.Scale(fps_Rigidbody.velocity, new Vector3(1, 0, 1));
+                animator.SetFloat("Speed", velocityXZ.magnitude / 1, 0.06f, Time.deltaTime);
+                animator.SetFloat("H", velocityXZ.x / 4.2f, 0.06f, Time.deltaTime);
+                animator.SetFloat("V", velocityXZ.z / 4.2f, 0.06f, Time.deltaTime);
 
                 float speedHeightFactor = 1 + (flatVel * 0.3f);
                 xPos = -(headbobSideMovement / 10) * headbobFade * bobSwayFactor;
