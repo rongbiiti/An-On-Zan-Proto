@@ -666,9 +666,9 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                     //Debug.Log(animator.GetFloat("Speed"));
                 }
                 Vector3 velocityXZ = Vector3.Scale(fps_Rigidbody.velocity, new Vector3(1, 0, 1));
-                animator.SetFloat("Speed", velocityXZ.magnitude / 1, 0.06f, Time.deltaTime);
-                animator.SetFloat("H", velocityXZ.x / 4.2f, 0.06f, Time.deltaTime);
-                animator.SetFloat("V", velocityXZ.z / 4.2f, 0.06f, Time.deltaTime);
+                animator.SetFloat("Speed", velocityXZ.magnitude / 1, 0.08f, Time.deltaTime);
+                //animator.SetFloat("H", velocityXZ.x / 4.2f, 0.06f, Time.deltaTime);
+                //animator.SetFloat("V", velocityXZ.z / 4.2f, 0.06f, Time.deltaTime);
 
                 float speedHeightFactor = 1 + (flatVel * 0.3f);
                 xPos = -(headbobSideMovement / 10) * headbobFade * bobSwayFactor;

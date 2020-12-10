@@ -44,6 +44,8 @@ public class FadeManager : MonoBehaviour
 	/// <summary>フェード色</summary>
 	public Color fadeColor = Color.black;
 
+	private bool fadeFlg;
+
 
 	public void Awake()
 	{
@@ -106,9 +108,11 @@ public class FadeManager : MonoBehaviour
 	/// <param name='interval'>暗転にかかる時間(秒)</param>
 	public void LoadScene(int scene, float interval)
 	{
+		if (fadeFlg) return;
 		StartCoroutine(TransScene(scene, interval));
 		BGMFadeout bgmFadeout = FindObjectOfType<BGMFadeout>();
 		bgmFadeout.FadeoutStart(interval);
+		fadeFlg = true;
 	}
 
 	/// <summary>
@@ -139,5 +143,6 @@ public class FadeManager : MonoBehaviour
 		}
 
 		this.isFading = false;
+		fadeFlg = false;
 	}
 }

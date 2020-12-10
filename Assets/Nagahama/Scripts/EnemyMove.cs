@@ -220,7 +220,7 @@ public class EnemyMove : MonoBehaviour
         // navmeshagentも切っておく。
         agent.enabled = false;
         animWalkSpeed = 0;
-        animator.SetFloat("Speed", animWalkSpeed, 0.06f, Time.deltaTime);
+        animator.SetFloat("Speed", animWalkSpeed, 0.08f, Time.deltaTime);
     }
 
     #region ShinkuuhaLauntch
