@@ -14,6 +14,9 @@ public class GameManager_Net : MonoBehaviour
     public GameObject _camera;      // シーン上のメインカメラ
     public GameObject _fasttext;
     public GameObject[] _candle;    // シーン上のろうそく
+    public GameObject[] _candlefire;    //ろうそくの炎
+    public GameObject[] _candleemission;    //和紙のエミッション
+    public Material _candleoffmaterial;     //和紙の発光してないマテリアル
     public float zoomValue = 20f;   // どのくらいカメラが落ちていくか
     public Result _result;
     public AudioClip _drumCrip1;
@@ -103,8 +106,9 @@ public class GameManager_Net : MonoBehaviour
             audioSource.PlayOneShot(_drumCrip2);
             lightDisableFlg = true;
             for (int i = 0; i < 4; i++) {
-                //ろうそくの火を消す
-                _candle[i].GetComponent<Light>().intensity = 0;
+                _candle[i].GetComponent<Light>().intensity = 0;     //ろうそくの火を消す
+                Destroy(_candlefire[i]);                            //火のパーティクルを消す
+                _candleemission[i].GetComponent<Renderer>().material = _candleoffmaterial;      //和紙のマテリアルを切り替える
             }
         }
     }
