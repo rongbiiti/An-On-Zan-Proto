@@ -10,6 +10,8 @@ public class ReplayManager : MonoBehaviour
     [HideInInspector] public Queue<bool> oldAtkBool = new Queue<bool>(420);
     [HideInInspector] public Queue<bool> oldDeathBool = new Queue<bool>(420);
     [HideInInspector] public Queue<float> oldSpeed = new Queue<float>(420);
+    [HideInInspector] public Queue<float> oldH = new Queue<float>(420);
+    [HideInInspector] public Queue<float> oldV = new Queue<float>(420);
 
     [HideInInspector] public bool isRunning;
     public Transform target_P;
@@ -40,6 +42,8 @@ public class ReplayManager : MonoBehaviour
         oldAtkBool.Enqueue(animator.GetBool("Attack"));
         oldDeathBool.Enqueue(animator.GetBool("Death"));
         oldSpeed.Enqueue(0);
+        oldH.Enqueue(0);
+        oldV.Enqueue(0);
 
         rb = target_P.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
@@ -66,6 +70,8 @@ public class ReplayManager : MonoBehaviour
             oldAtkBool.Enqueue(animator.GetBool("Attack"));
             oldDeathBool.Enqueue(animator.GetBool("Death"));
             oldSpeed.Enqueue(animator.GetFloat("Speed"));
+            oldH.Enqueue(animator.GetFloat("H"));
+            oldV.Enqueue(animator.GetFloat("V"));
 
             if (oldPos.Count > 420)
             {
@@ -77,6 +83,8 @@ public class ReplayManager : MonoBehaviour
             animator.SetBool("Attack", oldAtkBool.Dequeue());
             animator.SetBool("Death", oldDeathBool.Dequeue());
             animator.SetFloat("Speed", oldSpeed.Dequeue());
+            animator.SetFloat("H", oldH.Dequeue());
+            animator.SetFloat("V", oldV.Dequeue());
 
             if (oldPos.Count == 0)
             {
@@ -85,6 +93,7 @@ public class ReplayManager : MonoBehaviour
                 if (!_isCPU)
                 {
                     //firstPerson.enabled = true;
+                    animator.SetBool("Aim", true);
                 }
                 Debug.Log("再生終了");
             }
@@ -98,6 +107,8 @@ public class ReplayManager : MonoBehaviour
         oldAtkBool.Dequeue();
         oldDeathBool.Dequeue();
         oldSpeed.Dequeue();
+        oldH.Dequeue();
+        oldV.Dequeue();
     }
 
     private void OnGUI()
@@ -105,7 +116,7 @@ public class ReplayManager : MonoBehaviour
         if (!isRunning) {
             if (!_isCPU){
                 //GUI.Label(new Rect(500, 700, 500, 100), "記録中:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
-                GUI.Label(new Rect(500, 700, 500, 100), "" + animator.GetFloat("Speed"));
+                //GUI.Label(new Rect(500, 700, 500, 100), "" + animator.GetFloat("Speed"));
             } else {
                 //GUI.Label(new Rect(500, 750, 500, 100), "CPU記録中:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
             }

@@ -55,6 +55,7 @@ public class EnemyMove : MonoBehaviour
 
         // animatorのパラメーターに代入しておく
         animator.SetBool("Grounded", true);
+        animator.SetBool("Aim", true);
     }
 
     public void GetPlayerComponent()
@@ -201,7 +202,7 @@ public class EnemyMove : MonoBehaviour
 
         // 歩行用の速度を代入する。
         agent.speed = startSpeed;
-        animWalkSpeed = 1f;
+        animWalkSpeed = 0.3f;
     }
 
     private void SetSprintSpeed()
@@ -211,7 +212,7 @@ public class EnemyMove : MonoBehaviour
 
         // ダッシュ用の速度を代入する。
         agent.speed = _sprintSpeed;
-        animWalkSpeed = 3.2f;
+        animWalkSpeed = 0.98f;
     }
 
     private void OnDisable()
