@@ -55,6 +55,7 @@ public class EnemyMove : MonoBehaviour
 
         // animatorのパラメーターに代入しておく
         animator.SetBool("Grounded", true);
+        animator.SetBool("Aim", true);
     }
 
     public void GetPlayerComponent()
@@ -149,7 +150,7 @@ public class EnemyMove : MonoBehaviour
             //SetWalkSpeed();
         }
 
-        animator.SetFloat("Speed", animWalkSpeed);
+        animator.SetFloat("Speed", animWalkSpeed, 0.06f, Time.deltaTime);
 
         #region Shinkuuha
         if (isCanShinkuuha && playerAudioSource.isPlaying && Vector3.Distance(transform.position, _player.transform.position) < 10f)
@@ -201,7 +202,7 @@ public class EnemyMove : MonoBehaviour
 
         // 歩行用の速度を代入する。
         agent.speed = startSpeed;
-        animWalkSpeed = 0.2f;
+        animWalkSpeed = 0.3f;
     }
 
     private void SetSprintSpeed()
@@ -211,7 +212,7 @@ public class EnemyMove : MonoBehaviour
 
         // ダッシュ用の速度を代入する。
         agent.speed = _sprintSpeed;
-        animWalkSpeed = 1f;
+        animWalkSpeed = 0.98f;
     }
 
     private void OnDisable()
@@ -220,7 +221,7 @@ public class EnemyMove : MonoBehaviour
         // navmeshagentも切っておく。
         agent.enabled = false;
         animWalkSpeed = 0;
-        animator.SetFloat("Speed", animWalkSpeed);
+        animator.SetFloat("Speed", animWalkSpeed, 0.08f, Time.deltaTime);
     }
 
     #region ShinkuuhaLauntch
@@ -290,7 +291,7 @@ public class EnemyMove : MonoBehaviour
         // 3秒待つ
         yield return new WaitForSeconds(3f);
         // 移動速度をもとに戻す
-        agent.speed = startSpeed;
+        SetWalkSpeed();
 
         // くじを0か1で再抽選する
         int range = Random.Range(0, 1);
