@@ -262,6 +262,9 @@ public class EnemyMove : MonoBehaviour
         // 音がしたプレイヤーの座標を記憶する。
         lastPlayerPos = _player.transform.position;
 
+        // 攻撃反応フラグを立てる
+        isFindAttackingPlayer = true;
+
         yield return new WaitForSeconds(_attackingPlayerFindDelayTime);
 
         // navmeshagentの目的地を音がした座標にする
@@ -269,15 +272,12 @@ public class EnemyMove : MonoBehaviour
             agent.destination = lastPlayerPos;
         }
 
-        // 攻撃反応フラグを立てる
-        isFindAttackingPlayer = true;
-
         // 開始時のくじで2を引いていたら、止めて音がした地点へ向かうようにする。
         StopCoroutine(nameof(DelayStart));
 
         // 行動できるように速度を戻す
-        agent.speed = startSpeed;
-        SetWalkSpeed();
+        agent.speed = _sprintSpeed;
+        SetSprintSpeed();
         Debug.Log("攻撃中のプレイヤー発見：距離" + Vector3.Distance(transform.position, _player.transform.position));
     }
 
@@ -291,6 +291,7 @@ public class EnemyMove : MonoBehaviour
         // 3秒待つ
         yield return new WaitForSeconds(3f);
         // 移動速度をもとに戻す
+        agent.speed = startSpeed;
         SetWalkSpeed();
 
         // くじを0か1で再抽選する

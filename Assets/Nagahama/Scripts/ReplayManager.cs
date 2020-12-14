@@ -89,11 +89,11 @@ public class ReplayManager : MonoBehaviour
             if (oldPos.Count == 0)
             {
                 isRunning = false;
-                animator.SetBool("Replay", false);
+                //animator.SetBool("Replay", false);
                 if (!_isCPU)
                 {
                     //firstPerson.enabled = true;
-                    animator.SetBool("Aim", true);
+                    //animator.SetBool("Aim", true);
                 }
                 Debug.Log("再生終了");
             }

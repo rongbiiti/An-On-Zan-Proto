@@ -657,10 +657,10 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                     //animator.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
                     //Debug.Log(animator.GetFloat("Speed"));
 
-                    animator.SetFloat("Speed", velocityXZ.magnitude / 4.3f, 0.07f, Time.deltaTime);
+                    animator.SetFloat("Speed", velocityXZ.magnitude / 4.3f, 0.05f, Time.deltaTime);
 
-                    animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.07f, Time.deltaTime);
-                    animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.07f, Time.deltaTime);
+                    animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
+                    animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
 
                     Debug.Log("Magnitude：" + velocityXZ.magnitude);
                     Debug.Log("Speed：" + velocityXZ.magnitude / 4.3f);
@@ -673,10 +673,10 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                     if (isSprinting) {
                         //animator.SetFloat("Speed", 1f, 0.2f, Time.deltaTime);
                         
-                        animator.SetFloat("Speed", velocityXZ.magnitude / 4.3f, 0.07f, Time.deltaTime);
+                        animator.SetFloat("Speed", velocityXZ.magnitude / 4.3f, 0.05f, Time.deltaTime);
 
-                        animator.SetFloat("H", Mathf.Clamp(horizontalInput, -1f, 1f), 0.07f, Time.deltaTime);
-                        animator.SetFloat("V", Mathf.Clamp(verticalInput, -1f, 1f), 0.07f, Time.deltaTime);
+                        animator.SetFloat("H", Mathf.Clamp(horizontalInput, -1f, 1f), 0.05f, Time.deltaTime);
+                        animator.SetFloat("V", Mathf.Clamp(verticalInput, -1f, 1f), 0.05f, Time.deltaTime);
 
                         Debug.Log("Magnitude：" + velocityXZ.magnitude);
                         Debug.Log("Speed：" + velocityXZ.magnitude / 4.3f);
@@ -686,9 +686,9 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                     } else {
                         //animator.SetFloat("Speed", 0.18f, 0.06f, Time.deltaTime);
 
-                        animator.SetFloat("Speed", velocityXZ.magnitude / 2.8f, 0.07f, Time.deltaTime);
-                        animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.07f, Time.deltaTime);
-                        animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.07f, Time.deltaTime);
+                        animator.SetFloat("Speed", velocityXZ.magnitude / 2.8f, 0.05f, Time.deltaTime);
+                        animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
+                        animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
 
                         Debug.Log("Magnitude：" + velocityXZ.magnitude);
                         Debug.Log("Speed：" + velocityXZ.magnitude / 2.8f);

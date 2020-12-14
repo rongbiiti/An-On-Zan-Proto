@@ -64,9 +64,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     public void AttackStart()
     {
         weaponCollider.enabled = true;
+        animator.SetBool("Attack", false);
         Debug.Log("攻撃判定ON");
         if (isCPU) return;
-        firstPersonAIO.playerCanMove = false;
         firstPersonAIO.enableCameraMovement = false;
         isAttacking = true;
         if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
@@ -83,14 +83,15 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         weaponCollider.enabled = false;
         Debug.Log("攻撃判定OFF");
         animator.SetBool("Attack", false);
-        
+        isAttacking = false;
     }
 
     public void EffectStart()
     {
         effect.SetActive(true);
         particle.Play(true);
-        animator.SetBool("Attack", false);
+        if (isCPU) return;
+        firstPersonAIO.playerCanMove = false;
     }
 
     public void EffectStop()
@@ -103,7 +104,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             firstPersonAIO.playerCanMove = true;
             firstPersonAIO.enableCameraMovement = true;
         }
-        isAttacking = false;
         if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             GetComponent<FPSMove>().isShinkuuha = false;
         }
