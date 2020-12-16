@@ -647,28 +647,57 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
             xPos = 0;
             zTilt = 0;
             if (jumpLandIntensity > 0 && !advanced.stairMiniHop) { xTilt = -springPosition * (jumpLandIntensity * 5.5f); } else if (!advanced.stairMiniHop) { xTilt = -springPosition; }
+            Vector3 velocityXZ = Vector3.Scale(fps_Rigidbody.velocity, new Vector3(1, 0, 1));
 
             if (IsGrounded) {
                 if (new Vector3(vel.x, 0.0f, vel.z).magnitude < 0.1f) { 
                     // 停止中
                     headbobFade = Mathf.MoveTowards(headbobFade, 0.0f, 0.5f);
+
                     //animator.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
                     //Debug.Log(animator.GetFloat("Speed"));
 
+                    animator.SetFloat("Speed", velocityXZ.magnitude / 4.3f, 0.05f, Time.deltaTime);
+
+                    animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
+                    animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
+
+                    Debug.Log("Magnitude：" + velocityXZ.magnitude);
+                    Debug.Log("Speed：" + velocityXZ.magnitude / 4.3f);
+
+                    Debug.Log("H：" + Mathf.Clamp(horizontalInput, -0.25f, 0.25f));
+                    Debug.Log("V：" + Mathf.Clamp(verticalInput, -0.25f, 0.25f));
+
                 } else {
-                    // 歩行中
                     headbobFade = Mathf.MoveTowards(headbobFade, 1.0f, Time.deltaTime);
                     if (isSprinting) {
                         //animator.SetFloat("Speed", 1f, 0.2f, Time.deltaTime);
+                        
+                        animator.SetFloat("Speed", velocityXZ.magnitude / 4.3f, 0.05f, Time.deltaTime);
+
+                        animator.SetFloat("H", Mathf.Clamp(horizontalInput, -1f, 1f), 0.05f, Time.deltaTime);
+                        animator.SetFloat("V", Mathf.Clamp(verticalInput, -1f, 1f), 0.05f, Time.deltaTime);
+
+                        Debug.Log("Magnitude：" + velocityXZ.magnitude);
+                        Debug.Log("Speed：" + velocityXZ.magnitude / 4.3f);
+
+                        Debug.Log("H：" + Mathf.Clamp(horizontalInput, -1f, 1f));
+                        Debug.Log("V：" + Mathf.Clamp(verticalInput, -1f, 1f));
                     } else {
                         //animator.SetFloat("Speed", 0.18f, 0.06f, Time.deltaTime);
+
+                        animator.SetFloat("Speed", velocityXZ.magnitude / 2.8f, 0.05f, Time.deltaTime);
+                        animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
+                        animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
+
+                        Debug.Log("Magnitude：" + velocityXZ.magnitude);
+                        Debug.Log("Speed：" + velocityXZ.magnitude / 2.8f);
+
+                        Debug.Log("H：" + Mathf.Clamp(horizontalInput, -0.25f, 0.25f));
+                        Debug.Log("V：" + Mathf.Clamp(verticalInput, -0.25f, 0.25f));
                     }
-                    //Debug.Log(animator.GetFloat("Speed"));
+                    
                 }
-                Vector3 velocityXZ = Vector3.Scale(fps_Rigidbody.velocity, new Vector3(1, 0, 1));
-                animator.SetFloat("Speed", velocityXZ.magnitude / 4.5f, 0.08f, Time.deltaTime);
-                animator.SetFloat("H", velocityXZ.x / 4.5f, 0.06f, Time.deltaTime);
-                animator.SetFloat("V", velocityXZ.z / 4.5f, 0.06f, Time.deltaTime);
 
                 float speedHeightFactor = 1 + (flatVel * 0.3f);
                 xPos = -(headbobSideMovement / 10) * headbobFade * bobSwayFactor;

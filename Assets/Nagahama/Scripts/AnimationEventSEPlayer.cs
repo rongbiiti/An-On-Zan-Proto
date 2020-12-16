@@ -32,6 +32,7 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
     private Animator animator;
     private float speed;
     public List<AudioClip> footStepSounds = null;
+    private float sprintPlayInterval;
 
 
     private void Start()
@@ -55,6 +56,13 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
                     return;
                 }
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if(0 < sprintPlayInterval) {
+            sprintPlayInterval -= Time.deltaTime;
         }
     }
 
@@ -92,7 +100,7 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 
     public void PlaySprint(string eventName)
     {
-        if (animator.GetFloat("Speed") > sprintSpeed)
+        if (animator.GetFloat("Speed") > sprintSpeed && sprintPlayInterval < 0)
             audioSource.PlayOneShot(audioSource.clip);
     }
 

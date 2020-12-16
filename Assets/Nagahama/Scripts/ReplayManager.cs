@@ -5,15 +5,24 @@ using UnityEngine;
 
 public class ReplayManager : MonoBehaviour
 {
-    [HideInInspector] public Queue<Vector3> oldPos = new Queue<Vector3>(420);
-    [HideInInspector] public Queue<Quaternion> oldRot = new Queue<Quaternion>(420);
-    [HideInInspector] public Queue<bool> oldAtkBool = new Queue<bool>(420);
-    [HideInInspector] public Queue<bool> oldDeathBool = new Queue<bool>(420);
-    [HideInInspector] public Queue<float> oldSpeed = new Queue<float>(420);
-    [HideInInspector] public Queue<float> oldH = new Queue<float>(420);
-    [HideInInspector] public Queue<float> oldV = new Queue<float>(420);
+    private Queue<Vector3> oldPos = new Queue<Vector3>(420);
+    private Queue<Quaternion> oldRot = new Queue<Quaternion>(420);
+    private Queue<bool> oldAtkBool = new Queue<bool>(420);
+    private Queue<bool> oldDeathBool = new Queue<bool>(420);
+    private Queue<float> oldSpeed = new Queue<float>(420);
+    private Queue<float> oldH = new Queue<float>(420);
+    private Queue<float> oldV = new Queue<float>(420);
+
+    private Queue<Vector3> oldPosMemo = new Queue<Vector3>(420);
+    private Queue<Quaternion> oldRotMemo = new Queue<Quaternion>(420);
+    private Queue<bool> oldAtkBoolMemo = new Queue<bool>(420);
+    private Queue<bool> oldDeathBoolMemo = new Queue<bool>(420);
+    private Queue<float> oldSpeedMemo = new Queue<float>(420);
+    private Queue<float> oldHMemo = new Queue<float>(420);
+    private Queue<float> oldVMemo = new Queue<float>(420);
 
     [HideInInspector] public bool isRunning;
+    private bool isLaunched;
     public Transform target_P;
     public FirstPersonAIO firstPerson;
     public Animator animator;
@@ -27,6 +36,7 @@ public class ReplayManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
+            //ReplayStart();
             Debug.Log("^v^");
         }
     }
@@ -34,6 +44,7 @@ public class ReplayManager : MonoBehaviour
     public void ReplayStart()
     {
         isRunning = true;
+        
 
         animator.SetBool("Replay", true);
 
@@ -53,6 +64,33 @@ public class ReplayManager : MonoBehaviour
             AllDequeue();
         }
 
+        if (!isLaunched) {
+            oldPosMemo = new Queue<Vector3>(oldPos);
+            oldRotMemo = new Queue<Quaternion>(oldRot);
+            oldAtkBoolMemo = new Queue<bool>(oldAtkBool);
+            oldDeathBoolMemo = new Queue<bool>(oldDeathBool);
+            oldSpeedMemo = new Queue<float>(oldSpeed);
+            oldHMemo = new Queue<float>(oldH);
+            oldVMemo = new Queue<float>(oldV);
+
+        } else {
+            oldPos.Clear();
+            oldRot.Clear();
+            oldAtkBool.Clear();
+            oldDeathBool.Clear();
+            oldSpeed.Clear();
+            oldH.Clear();
+            oldV.Clear();
+
+            oldPos = new Queue<Vector3>(oldPosMemo);
+            oldRot = new Queue<Quaternion>(oldRotMemo);
+            oldAtkBool = new Queue<bool>(oldAtkBoolMemo);
+            oldDeathBool = new Queue<bool>(oldDeathBoolMemo);
+            oldSpeed = new Queue<float>(oldSpeedMemo);
+            oldH = new Queue<float>(oldHMemo);
+            oldV = new Queue<float>(oldVMemo);
+        }        
+
         if (!_isCPU)
         {
             firstPerson.enabled = false;
@@ -60,6 +98,8 @@ public class ReplayManager : MonoBehaviour
             playerCamera.SetActive(false);
             _replayCamera.SetActive(true);
         }
+
+        isLaunched = true;
     }
 
     private void FixedUpdate()
@@ -89,11 +129,11 @@ public class ReplayManager : MonoBehaviour
             if (oldPos.Count == 0)
             {
                 isRunning = false;
-                animator.SetBool("Replay", false);
+                //animator.SetBool("Replay", false);
                 if (!_isCPU)
                 {
                     //firstPerson.enabled = true;
-                    animator.SetBool("Aim", true);
+                    //animator.SetBool("Aim", true);
                 }
                 Debug.Log("再生終了");
             }
