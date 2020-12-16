@@ -14,15 +14,23 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     [SerializeField] private string _shinkuuhaPrefabName;
     [SerializeField] private AudioClip _shinkuuhaAudio;
     [SerializeField] private Transform _playerCameraTransform;
+    [SerializeField] private float _attackIntervalResetTime = 2.21f;
 
     AudioSource audioSource;
     FirstPersonAIO firstPersonAIO;
     private Animator animator;
     private bool isAttacking;
+    private bool isAttackInterval;
+    private float attackIntervalTime;
 
     public bool IsAttacking
     {
         get { return isAttacking; }
+    }
+
+    public bool IsAttackInterval
+    {
+        get { return isAttackInterval; }
     }
 
     private void Awake()
@@ -33,9 +41,10 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        
         animator = GetComponent<Animator>();
+
         if (isCPU) return;
+
         firstPersonAIO = GetComponent<FirstPersonAIO>();
         audioSource = GetComponent<AudioSource>();
     }
@@ -61,14 +70,38 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     }
 
+    private void FixedUpdate()
+    {
+        if(0 < attackIntervalTime) {
+            attackIntervalTime -= Time.deltaTime;
+            if(attackIntervalTime <= 0) {
+                isAttackInterval = false;
+            }
+        }
+    }
+
+    public void EffectStart()
+    {
+        effect.SetActive(true);
+        particle.Play(true);
+        if (isCPU) return;
+        firstPersonAIO.playerCanMove = false;
+
+        attackIntervalTime += _attackIntervalResetTime;
+        isAttackInterval = true;
+    }
+
     public void AttackStart()
     {
         weaponCollider.enabled = true;
         animator.SetBool("Attack", false);
         Debug.Log("攻撃判定ON");
+
         if (isCPU) return;
+
         firstPersonAIO.enableCameraMovement = false;
         isAttacking = true;
+
         if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             if (PhotonNetwork.InRoom) {
                 ShinkuuhaLauntch_net();
@@ -86,19 +119,13 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         isAttacking = false;
     }
 
-    public void EffectStart()
-    {
-        effect.SetActive(true);
-        particle.Play(true);
-        if (isCPU) return;
-        firstPersonAIO.playerCanMove = false;
-    }
-
     public void EffectStop()
     {
         effect.SetActive(false);
         particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
         if (isCPU) return;
+
         if(!animator.GetBool("Death"))
         {
             firstPersonAIO.playerCanMove = true;
@@ -108,6 +135,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             GetComponent<FPSMove>().isShinkuuha = false;
         }
     }
+
+    #region Cheats
 
     public void ShinkuuhaLauntch()
     {
@@ -186,5 +215,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         Debug.Log("ミュージックスタート" + photonView.ViewID);
         GameObject.Find("IsyadouTheme").GetComponent<AudioSource>().Play();
     }
+
+    #endregion
 
 }

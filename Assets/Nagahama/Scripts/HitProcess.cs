@@ -91,7 +91,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
     // オフライン用
     private void PlayerDeath(Collider col, bool isTargetCPU)
     {
-        
+        col.GetComponent<Animator>().SetBool("Death", true);
         if (!isTargetCPU) {
             col.GetComponent<PlayerDeathProcess>().KillPlayer_Net();
         } else {
@@ -100,7 +100,6 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
         col.GetComponent<MaterialChanger>().MaterialOn();
         col.GetComponent<AttackProcess>().AttackEnd();
-        col.GetComponent<Animator>().SetBool("Death", true);
 
         PlayHit();
         StartCoroutine("DeathVoice");

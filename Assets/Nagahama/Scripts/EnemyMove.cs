@@ -126,14 +126,23 @@ public class EnemyMove : MonoBehaviour
     private void FixedUpdate()
     {
         // プレイヤーのAudioSourceが再生中で、敵とプレイヤーの現在位置が一定距離以下なら、プレイヤーの現在位置を進行目標地点に設定する。
-        if (playerAudioSource.isPlaying && Vector3.Distance(transform.position, _player.transform.position) < _footStepSearchDistance && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !isAttackDelayStarted) {
+        if (playerAudioSource.isPlaying && 
+            Vector3.Distance(transform.position, _player.transform.position) < _footStepSearchDistance && 
+            !animator.GetBool(Animator.StringToHash("Attack")) && 
+            !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && 
+            !isAttackDelayStarted) {
 
             StartCoroutine(nameof(FindPlayerFootStepDelay));
         }        
 
         // プレイヤーが攻撃中で、自身とプレイヤーの現在地との距離が一定以下でかつ
         // プレイヤーの攻撃反応フラグが折れていたら
-        if (playerAttackProcess.IsAttacking && Vector3.Distance(transform.position, _player.transform.position) < _attackingSearchDistance && !isFindAttackingPlayer && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !isAttackDelayStarted)
+        if (playerAttackProcess.IsAttacking && 
+            Vector3.Distance(transform.position, _player.transform.position) < _attackingSearchDistance && 
+            !isFindAttackingPlayer && 
+            !animator.GetBool(Animator.StringToHash("Attack")) && 
+            !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && 
+            !isAttackDelayStarted)
         {
             StartCoroutine(nameof(FindAttackingPlayer));
         }
@@ -150,7 +159,7 @@ public class EnemyMove : MonoBehaviour
             //SetWalkSpeed();
         }
 
-        animator.SetFloat("Speed", animWalkSpeed, 0.06f, Time.deltaTime);
+        animator.SetFloat("Speed", animWalkSpeed, 0.16f, Time.deltaTime);
 
         #region Shinkuuha
         if (isCanShinkuuha && playerAudioSource.isPlaying && Vector3.Distance(transform.position, _player.transform.position) < 10f)
@@ -181,7 +190,12 @@ public class EnemyMove : MonoBehaviour
             //navmeshagentの目標地点と自信の位置との距離が一定以下でかつ
             //攻撃モーションを再生中でないときかつ
             // 攻撃ディレイが始まっていないとき
-            if ((isFindFootStepingPlayer || isFindAttackingPlayer) && Vector3.Distance(transform.position, agent.destination) < _attackStartDistance && !animator.GetBool(Animator.StringToHash("Attack")) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !isAttackDelayStarted) {
+            if ((isFindFootStepingPlayer || isFindAttackingPlayer) && 
+                Vector3.Distance(transform.position, agent.destination) < _attackStartDistance && 
+                !animator.GetBool(Animator.StringToHash("Attack")) && 
+                !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && 
+                !isAttackDelayStarted) {
+
                 // 攻撃する。
                 StartCoroutine(nameof(Attack));
 
@@ -202,7 +216,7 @@ public class EnemyMove : MonoBehaviour
 
         // 歩行用の速度を代入する。
         agent.speed = startSpeed;
-        animWalkSpeed = 0.3f;
+        animWalkSpeed = 0.25f;
     }
 
     private void SetSprintSpeed()
@@ -220,8 +234,13 @@ public class EnemyMove : MonoBehaviour
         // EnemyMoveコンポーネントが無効化されたとき、移動速度を0にして
         // navmeshagentも切っておく。
         agent.enabled = false;
-        animWalkSpeed = 0;
-        animator.SetFloat("Speed", animWalkSpeed, 0.08f, Time.deltaTime);
+        
+        if (!animator.GetBool("Death")) {
+            animWalkSpeed = 0;
+            animator.SetFloat("Speed", animWalkSpeed);
+        }
+        
+        StopAllCoroutines();
     }
 
     #region ShinkuuhaLauntch
@@ -262,15 +281,15 @@ public class EnemyMove : MonoBehaviour
         // 音がしたプレイヤーの座標を記憶する。
         lastPlayerPos = _player.transform.position;
 
-        // 攻撃反応フラグを立てる
-        isFindAttackingPlayer = true;
-
         yield return new WaitForSeconds(_attackingPlayerFindDelayTime);
 
         // navmeshagentの目的地を音がした座標にする
         if (agent.isActiveAndEnabled) {
             agent.destination = lastPlayerPos;
         }
+
+        // 攻撃反応フラグを立てる
+        isFindAttackingPlayer = true;
 
         // 開始時のくじで2を引いていたら、止めて音がした地点へ向かうようにする。
         StopCoroutine(nameof(DelayStart));
@@ -315,8 +334,7 @@ public class EnemyMove : MonoBehaviour
 
     private IEnumerator Attack()
     {
-        isFindAttackingPlayer = false;
-        isFindFootStepingPlayer = false;
+        
         isAttackDelayStarted = true;
         yield return new WaitForSeconds(_attackDelay);
 
@@ -328,9 +346,10 @@ public class EnemyMove : MonoBehaviour
         isAttackDelayStarted = false;
         CameraScreenShot.CPUAttack = true;
         SetWalkSpeed();
-
         yield return new WaitForSeconds(1f);
         agent.isStopped = false;
+        SetWalkSpeed();
+        
     }
 
     // UnityEditor上でのみ表示されるデバッグ用表示
