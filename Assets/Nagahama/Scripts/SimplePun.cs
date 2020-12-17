@@ -40,7 +40,10 @@ public class SimplePun : MonoBehaviourPunCallbacks
                 FPSMove fpsMove = myplayer.GetComponent<FPSMove>();
                 fpsMove.enabled = true;
 
-                myplayer.GetComponent<MaterialChanger>().enabled = false;
+                MaterialChanger materialChanger = myplayer.GetComponent<MaterialChanger>();
+                materialChanger.Change2pMaterial();
+                materialChanger.enabled = false;
+
                 GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
                 gameManager_Net._player = p;
                 gameManager_Net.PlayerActive();
@@ -68,7 +71,9 @@ public class SimplePun : MonoBehaviourPunCallbacks
             FPSMove fpsMove = myplayer.GetComponent<FPSMove>();
             fpsMove.enabled = true;
 
-            myplayer.GetComponent<MaterialChanger>().enabled = false;
+            MaterialChanger materialChanger = myplayer.GetComponent<MaterialChanger>();
+            materialChanger.Change2pMaterial();
+            materialChanger.enabled = false;
 
             
             Debug.Log("キャラ作成成功" + PhotonNetwork.LocalPlayer.ActorNumber);
@@ -210,7 +215,10 @@ public class SimplePun : MonoBehaviourPunCallbacks
                         FPSMove fpsMove = myplayer.GetComponent<FPSMove>();
                         fpsMove.enabled = true;
 
-                        myplayer.GetComponent<MaterialChanger>().enabled = false;
+                        MaterialChanger materialChanger = myplayer.GetComponent<MaterialChanger>();
+                        materialChanger.Change2pMaterial();
+                        materialChanger.enabled = false;
+
                         GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
                         gameManager_Net._player = p;
                         gameManager_Net.PlayerActive();
@@ -246,7 +254,8 @@ public class SimplePun : MonoBehaviourPunCallbacks
         FPSMove fpsMove = myplayer.GetComponent<FPSMove>();
         fpsMove.enabled = true;
 
-        myplayer.GetComponent<MaterialChanger>().enabled = false;
+        MaterialChanger materialChanger = myplayer.GetComponent<MaterialChanger>();
+        materialChanger.enabled = false;
 
         GameManager_Net gameManager_Net = GameObject.Find("GameManager_Net").GetComponent<GameManager_Net>();
         gameManager_Net._player = myplayer;

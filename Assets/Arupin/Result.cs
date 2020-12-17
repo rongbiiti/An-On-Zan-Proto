@@ -20,5 +20,10 @@ public class Result : MonoBehaviour
         {
             rp.ReplayStart();
         }
+
+        GameObject[] grounds = GameObject.FindGameObjectsWithTag("Ground");
+        foreach(var gr in grounds) {
+            gr.SetActive(true);
+        }
     }
 }

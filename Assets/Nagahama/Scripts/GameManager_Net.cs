@@ -127,7 +127,6 @@ public class GameManager_Net : MonoBehaviour
             scfr.enabled = true;
         }
         
-        
         StartCoroutine(nameof(DelayAudioEnable));        
     }
 

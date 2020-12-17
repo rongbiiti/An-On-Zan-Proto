@@ -8,6 +8,7 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
 {
 
     [SerializeField] private Material material;
+    [SerializeField] private Material _2pMaterial;
     [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
     [SerializeField] private Material swordMaterial;
     [SerializeField] private MeshRenderer swordMeshRenderer;
@@ -18,7 +19,12 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected && !_isCPU) {
             PhotonView photonview = GetComponent<PhotonView>();
+
             if (!photonview.IsMine) {
+
+                if (!photonview.Owner.IsMasterClient) {
+                    skinnedMeshRenderer.material = _2pMaterial;
+                }
                 StartCoroutine("MaterialOff");
             }
         } else {
@@ -35,9 +41,21 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
         }
     }
 
+    public void Change2pMaterial()
+    {
+        if (!_isCPU && !photonView.Owner.IsMasterClient) {
+            skinnedMeshRenderer.material = _2pMaterial;
+        }
+    }
+
     public void MaterialOn()
     {
-        skinnedMeshRenderer.material = material;
+        if (PhotonNetwork.IsConnected && !_isCPU && !photonView.Owner.IsMasterClient) {
+            skinnedMeshRenderer.material = _2pMaterial;
+        } else {
+            skinnedMeshRenderer.material = material;
+        }
+        
         swordMeshRenderer.material = swordMaterial;
         skinnedMeshRenderer.enabled = true;
         swordMeshRenderer.enabled = true;

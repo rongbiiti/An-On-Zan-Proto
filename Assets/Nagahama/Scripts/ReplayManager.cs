@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Realtime;
+using Photon.Pun;
 
-public class ReplayManager : MonoBehaviour
+public class ReplayManager : MonoBehaviourPunCallbacks
 {
     private Queue<Vector3> oldPos = new Queue<Vector3>(420);
     private Queue<Quaternion> oldRot = new Queue<Quaternion>(420);
@@ -44,7 +46,6 @@ public class ReplayManager : MonoBehaviour
     public void ReplayStart()
     {
         isRunning = true;
-        
 
         animator.SetBool("Replay", true);
 
@@ -72,6 +73,15 @@ public class ReplayManager : MonoBehaviour
             oldSpeedMemo = new Queue<float>(oldSpeed);
             oldHMemo = new Queue<float>(oldH);
             oldVMemo = new Queue<float>(oldV);
+
+            if (PhotonNetwork.IsConnected) {
+                PhotonTransformView photonTransformView = target_P.gameObject.GetComponent<PhotonTransformView>();
+                photonTransformView.m_SynchronizePosition = false;
+                photonTransformView.m_SynchronizeRotation = false;
+
+                PhotonAnimatorView photonAnimatorView = target_P.gameObject.GetComponent<PhotonAnimatorView>();
+                photonAnimatorView.enabled = false;
+            }
 
         } else {
             oldPos.Clear();
