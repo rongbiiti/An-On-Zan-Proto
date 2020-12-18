@@ -46,21 +46,21 @@ public class ReplayCamera_Transform : MonoBehaviour
     {
         switch (cameracount)
         {
-            case 0:
+            case 0:     //プレイヤー側斜め上視点
                 gameObject.transform.position = new Vector3(6, 9.98f, -6);
                 gameObject.transform.rotation = Quaternion.Euler(35, -45, 0);
                 break;
-            case 1:
-                gameObject.transform.position = new Vector3(6, 9.98f, 6);
-                gameObject.transform.rotation = Quaternion.Euler(35, -135, 0);
+            case 1:     //正面横
+                gameObject.transform.position = new Vector3(7, 5.2f, 0);
+                gameObject.transform.rotation = Quaternion.Euler(0, -90, 0);
                 break;
-            case 2:
+            case 2:     //相手側斜め上視点
                 gameObject.transform.position = new Vector3(-6, 9.98f, 6);
                 gameObject.transform.rotation = Quaternion.Euler(35, 135, 0);
                 break;
-            case 3:
-                gameObject.transform.position = new Vector3(-6, 9.98f, -6);
-                gameObject.transform.rotation = Quaternion.Euler(35, 45, 0);
+            case 3:     //俯瞰視点
+                gameObject.transform.position = new Vector3(0, 19, -0.9f);
+                gameObject.transform.rotation = Quaternion.Euler(90, 0, 0);
                 break;
         }
     }
