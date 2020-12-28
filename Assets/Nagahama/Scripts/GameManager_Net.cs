@@ -21,6 +21,7 @@ public class GameManager_Net : MonoBehaviour
     public Result _result;
     public AudioClip _drumCrip1;
     public AudioClip _drumCrip2;
+    public GameObject reflectionprobe;  //リフレクションプルーブ
 
     private NavMeshAgent navMesh;
     private EnemyMove enemyMove;
@@ -105,6 +106,7 @@ public class GameManager_Net : MonoBehaviour
             _directionalLight.intensity = 0;
             audioSource.PlayOneShot(_drumCrip2);
             lightDisableFlg = true;
+            reflectionprobe.SetActive(false);
             for (int i = 0; i < 4; i++) {
                 _candle[i].GetComponent<Light>().intensity = 0;     //ろうそくの火を消す
                 Destroy(_candlefire[i]);                            //火のパーティクルを消す

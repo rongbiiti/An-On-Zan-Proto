@@ -5,11 +5,12 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _breathSource: {instanceID: 0}
-  - swordCollider: {instanceID: 0}
+  - _swordCollider: {instanceID: 0}
   - _camera: {instanceID: 0}
   - _bloodEffect: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f,
       type: 3}
-  - _deathVoiceClip: {fileID: 8300000, guid: 5a8873644645c9e4ba4b931b849a4e20, type: 3}
+  - reflectionprobe: {fileID: 5409035373470577992, guid: f06c988a263ab9a4183d861bced0b390,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

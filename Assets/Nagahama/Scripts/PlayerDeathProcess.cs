@@ -23,6 +23,7 @@ public class PlayerDeathProcess : MonoBehaviour
     [SerializeField] GameObject _bloodEffect;
     [SerializeField] public List<AudioClip> _deathVoiceClip = null;
     AudioSource rootAudioSource;
+    public GameObject reflectionprobe;
 
     void Start()
     {
@@ -35,6 +36,7 @@ public class PlayerDeathProcess : MonoBehaviour
         fPSMove = GetComponent<FPSMove>();
         rootAudioSource = GetComponent<AudioSource>();
         _pauseManager = GameObject.Find("Canvas").GetComponent<PauseManager>();
+        reflectionprobe = GameObject.Find("Reflection Probe");
 
         MeshtoOne();
     }
@@ -67,6 +69,7 @@ public class PlayerDeathProcess : MonoBehaviour
         replay.PlayerDeathflg = true;
         _pauseManager.isCanPause = false;
         StartCoroutine("PlayDeathVoice");
+        reflectionprobe.SetActive(true);
     }
 
     // プレイヤー用
@@ -85,6 +88,7 @@ public class PlayerDeathProcess : MonoBehaviour
         rb.velocity = Vector3.zero;
         InstantiateBloodEffect();
         StartCoroutine("PlayDeathVoice");
+        reflectionprobe.SetActive(true);
 
         if (_camera.activeSelf) {
             _camera.GetComponent<ExecutionCamera>().StartCoroutine("Execution");
