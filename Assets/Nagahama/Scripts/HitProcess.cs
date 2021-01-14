@@ -19,6 +19,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
     private AudioSource audioSource;
     private Light directionalLight;
     private KillBGM killBGMComponent;
+    private bool isHit;
 
     void Start()
     {
@@ -34,9 +35,9 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) {
+        if (other.CompareTag("Player") && !isHit) {
             Debug.Log("プレイヤーにヒット");
-
+            isHit = true;
             if (PhotonNetwork.InRoom) {
                 int viewID = other.GetComponent<PhotonView>().ViewID;
                 photonView.RPC("PlayerDeath", RpcTarget.AllViaServer, viewID);
@@ -51,8 +52,10 @@ public class HitProcess : MonoBehaviourPunCallbacks
             transform.root.gameObject.tag = "Untagged";
             transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
 
-        } else if (other.CompareTag("Enemy")) {
+        } else if (other.CompareTag("Enemy") && !isHit) {
+
             Debug.Log("CPUにヒット");
+            isHit = true;
             PlayerDeath(other, true);
             PlayHit();
             directionalLight.intensity = 1;

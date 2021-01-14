@@ -5,11 +5,11 @@ using Photon.Pun;
 
 public class AttackProcess : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private BoxCollider weaponCollider;
-    [SerializeField] private GameObject effect;
-    [SerializeField] ParticleSystem particle;
-    [SerializeField] private bool isCPU;
-    [SerializeField] private bool Shinkuuha;
+    [SerializeField] private GameObject _katana;
+    [SerializeField] private GameObject _effect;
+    [SerializeField] ParticleSystem _particle;
+    [SerializeField] private bool _isCPU;
+    [SerializeField] private bool _Shinkuuha;
     [SerializeField] private GameObject _shinkuuhaPrefab;
     [SerializeField] private string _shinkuuhaPrefabName;
     [SerializeField] private AudioClip _shinkuuhaAudio;
@@ -22,6 +22,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     private bool isAttacking;
     private bool isAttackInterval;
     private float attackIntervalTime;
+    private BoxCollider[] weaponColliders;
 
     public bool IsAttacking
     {
@@ -35,24 +36,26 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        effect.SetActive(false);
-        particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        _effect.SetActive(false);
+        _particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
     }
 
     private void Start()
     {
         animator = GetComponent<Animator>();
+        weaponColliders = _katana.GetComponentsInChildren<BoxCollider>();
 
-        if (isCPU) return;
+        if (_isCPU) return;
 
         firstPersonAIO = GetComponent<FirstPersonAIO>();
         audioSource = GetComponent<AudioSource>();
+        
     }
 
     private void Update()
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F1)) {
-            Shinkuuha = !Shinkuuha;
+            _Shinkuuha = !_Shinkuuha;
         }
         if (Input.GetKey(KeyCode.A) && Input.GetKeyDown(KeyCode.J) && photonView.IsMine) {
             photonView.RPC("Invincible", RpcTarget.AllViaServer, photonView.ViewID);
@@ -82,9 +85,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void EffectStart()
     {
-        effect.SetActive(true);
-        particle.Play(true);
-        if (isCPU) return;
+        _effect.SetActive(true);
+        _particle.Play(true);
+        if (_isCPU) return;
         firstPersonAIO.playerCanMove = false;
 
         attackIntervalTime += _attackIntervalResetTime;
@@ -93,16 +96,19 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void AttackStart()
     {
-        weaponCollider.enabled = true;
+        //weaponCollider.enabled = true;
+        foreach(var wpcol in weaponColliders) {
+            wpcol.enabled = true;
+        }
         animator.SetBool("Attack", false);
         Debug.Log("攻撃判定ON");
 
-        if (isCPU) return;
+        if (_isCPU) return;
 
         firstPersonAIO.enableCameraMovement = false;
         isAttacking = true;
 
-        if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
+        if (_Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             if (PhotonNetwork.InRoom) {
                 ShinkuuhaLauntch_net();
             } else {
@@ -113,7 +119,10 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void AttackEnd()
     {
-        weaponCollider.enabled = false;
+        //weaponCollider.enabled = false;
+        foreach (var wpcol in weaponColliders) {
+            wpcol.enabled = false;
+        }
         Debug.Log("攻撃判定OFF");
         animator.SetBool("Attack", false);
         isAttacking = false;
@@ -121,17 +130,17 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void EffectStop()
     {
-        effect.SetActive(false);
-        particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        _effect.SetActive(false);
+        _particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
 
-        if (isCPU) return;
+        if (_isCPU) return;
 
         if(!animator.GetBool("Death"))
         {
             firstPersonAIO.playerCanMove = true;
             firstPersonAIO.enableCameraMovement = true;
         }
-        if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
+        if (_Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             GetComponent<FPSMove>().isShinkuuha = false;
         }
     }

@@ -662,11 +662,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                     animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
                     animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
 
-                    Debug.Log("Magnitude：" + velocityXZ.magnitude);
-                    Debug.Log("Speed：" + velocityXZ.magnitude / 4.3f);
-
-                    Debug.Log("H：" + Mathf.Clamp(horizontalInput, -0.25f, 0.25f));
-                    Debug.Log("V：" + Mathf.Clamp(verticalInput, -0.25f, 0.25f));
+                    
 
                 } else {
                     headbobFade = Mathf.MoveTowards(headbobFade, 1.0f, Time.deltaTime);
@@ -678,11 +674,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                         animator.SetFloat("H", Mathf.Clamp(horizontalInput, -1f, 1f), 0.05f, Time.deltaTime);
                         animator.SetFloat("V", Mathf.Clamp(verticalInput, -1f, 1f), 0.05f, Time.deltaTime);
 
-                        Debug.Log("Magnitude：" + velocityXZ.magnitude);
-                        Debug.Log("Speed：" + velocityXZ.magnitude / 4.3f);
-
-                        Debug.Log("H：" + Mathf.Clamp(horizontalInput, -1f, 1f));
-                        Debug.Log("V：" + Mathf.Clamp(verticalInput, -1f, 1f));
+                        
                     } else {
                         //animator.SetFloat("Speed", 0.18f, 0.06f, Time.deltaTime);
 
@@ -690,11 +682,7 @@ public class FirstPersonAIO : MonoBehaviourPunCallbacks
                         animator.SetFloat("H", Mathf.Clamp(horizontalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
                         animator.SetFloat("V", Mathf.Clamp(verticalInput, -0.25f, 0.25f), 0.05f, Time.deltaTime);
 
-                        Debug.Log("Magnitude：" + velocityXZ.magnitude);
-                        Debug.Log("Speed：" + velocityXZ.magnitude / 2.8f);
-
-                        Debug.Log("H：" + Mathf.Clamp(horizontalInput, -0.25f, 0.25f));
-                        Debug.Log("V：" + Mathf.Clamp(verticalInput, -0.25f, 0.25f));
+                        
                     }
                     
                 }
