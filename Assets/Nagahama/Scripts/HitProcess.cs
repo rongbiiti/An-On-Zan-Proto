@@ -19,7 +19,6 @@ public class HitProcess : MonoBehaviourPunCallbacks
     private AudioSource audioSource;
     private Light directionalLight;
     private KillBGM killBGMComponent;
-    private bool isHit;
 
     void Start()
     {
@@ -35,29 +34,41 @@ public class HitProcess : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !isHit) {
+        if (other.CompareTag("Player")) {
             Debug.Log("プレイヤーにヒット");
-            isHit = true;
+
+<<<<<<< HEAD
+            isHit = true;   // 多段ヒットしないようにする
+
+=======
+>>>>>>> parent of 5201b18 (刀のコライダーを正確にした。キャラクターのコライダーを小さくした。これによりファイナル判定になりづらくなった。試合開始時光が消えたとき、相手の色が一瞬で消えるのではなく1秒かけてJOJOに消えるように変更した。ネット対戦時のデバッグがまだ)
             if (PhotonNetwork.InRoom) {
+                // オンライン時はオンライン用の関数を呼ぶ
                 int viewID = other.GetComponent<PhotonView>().ViewID;
                 photonView.RPC("PlayerDeath", RpcTarget.AllViaServer, viewID);
                 RoomManager.Instance.isCreatead = false;
+
             } else {
+                // オフライン
                 PlayerDeath(other, false);
                 transform.root.GetComponent<EnemyMove>().enabled = false;
             }
 
-            directionalLight.intensity = 1;
-            killBGMComponent.PlayKillBGM();
-            transform.root.gameObject.tag = "Untagged";
-            transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
+            directionalLight.intensity = 1;             // 太陽光オン
+            killBGMComponent.PlayKillBGM();             // キル時のBGM再生
+            transform.root.gameObject.tag = "Untagged"; // 自分のタグを変えて間違っても刀に当たらないようにする
+            transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");   // 自分のレイヤーを変えて間違っても刀に当たらないようにする
 
-        } else if (other.CompareTag("Enemy") && !isHit) {
-
+        } else if (other.CompareTag("Enemy")) {
             Debug.Log("CPUにヒット");
+<<<<<<< HEAD
+
             isHit = true;
+
+=======
+>>>>>>> parent of 5201b18 (刀のコライダーを正確にした。キャラクターのコライダーを小さくした。これによりファイナル判定になりづらくなった。試合開始時光が消えたとき、相手の色が一瞬で消えるのではなく1秒かけてJOJOに消えるように変更した。ネット対戦時のデバッグがまだ)
             PlayerDeath(other, true);
-            PlayHit();
+
             directionalLight.intensity = 1;
             killBGMComponent.PlayKillBGM();
             transform.root.gameObject.tag = "Untagged";
@@ -71,13 +82,11 @@ public class HitProcess : MonoBehaviourPunCallbacks
     private void PlayerDeath(int viewID)
     {
         PhotonView.Find(viewID).GetComponent<PlayerDeathProcess>().KillPlayer_Net();
-        PhotonView.Find(viewID).GetComponent<MaterialChanger>().MaterialOn();
-        PhotonView.Find(viewID).GetComponent<Animator>().SetBool("Death", true);
-        PhotonView.Find(viewID).GetComponent<AttackProcess>().AttackEnd();
 
         PlayHit();
         StartCoroutine("DeathVoice");
 
+        // MaterialChangerを持つオブジェクトを取得して姿を明かさせる
         MaterialChanger[] materialChangers = FindObjectsOfType<MaterialChanger>();
         foreach(var mc in materialChangers)
         {
@@ -94,15 +103,11 @@ public class HitProcess : MonoBehaviourPunCallbacks
     // オフライン用
     private void PlayerDeath(Collider col, bool isTargetCPU)
     {
-        col.GetComponent<Animator>().SetBool("Death", true);
         if (!isTargetCPU) {
             col.GetComponent<PlayerDeathProcess>().KillPlayer_Net();
         } else {
             col.GetComponent<PlayerDeathProcess>().KillPlayer();            
         }
-
-        col.GetComponent<MaterialChanger>().MaterialOn();
-        col.GetComponent<AttackProcess>().AttackEnd();
 
         PlayHit();
         StartCoroutine("DeathVoice");

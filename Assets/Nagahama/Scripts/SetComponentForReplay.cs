@@ -11,6 +11,7 @@ public class SetComponentForReplay : MonoBehaviourPunCallbacks
 
     private void OnEnable()
     {
+        // ステージ中に配置されたReplayManagerを見つけて変数に自分のコンポーネントなどを入れてセットアップする
         if (photonView.IsMine || SceneManager.GetActiveScene().buildIndex == 3)
         {
             replayManager = GameObject.Find("ReplayManager").GetComponent<ReplayManager>();

@@ -5,11 +5,11 @@ using Photon.Pun;
 
 public class AttackProcess : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private GameObject _katana;
-    [SerializeField] private GameObject _effect;
-    [SerializeField] ParticleSystem _particle;
-    [SerializeField] private bool _isCPU;
-    [SerializeField] private bool _Shinkuuha;
+    [SerializeField] private BoxCollider weaponCollider;
+    [SerializeField] private GameObject effect;
+    [SerializeField] ParticleSystem particle;
+    [SerializeField] private bool isCPU;
+    [SerializeField] private bool Shinkuuha;
     [SerializeField] private GameObject _shinkuuhaPrefab;
     [SerializeField] private string _shinkuuhaPrefabName;
     [SerializeField] private AudioClip _shinkuuhaAudio;
@@ -22,7 +22,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     private bool isAttacking;
     private bool isAttackInterval;
     private float attackIntervalTime;
-    private BoxCollider[] weaponColliders;
 
     public bool IsAttacking
     {
@@ -36,26 +35,24 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        _effect.SetActive(false);
-        _particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        effect.SetActive(false);
+        particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
     }
 
     private void Start()
     {
         animator = GetComponent<Animator>();
-        weaponColliders = _katana.GetComponentsInChildren<BoxCollider>();
 
-        if (_isCPU) return;
+        if (isCPU) return;
 
         firstPersonAIO = GetComponent<FirstPersonAIO>();
         audioSource = GetComponent<AudioSource>();
-        
     }
 
-    private void Update()
+    /* private void Update()
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F1)) {
-            _Shinkuuha = !_Shinkuuha;
+            Shinkuuha = !Shinkuuha;
         }
         if (Input.GetKey(KeyCode.A) && Input.GetKeyDown(KeyCode.J) && photonView.IsMine) {
             photonView.RPC("Invincible", RpcTarget.AllViaServer, photonView.ViewID);
@@ -71,7 +68,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             photonView.RPC("MusicStart", RpcTarget.AllViaServer, photonView.ViewID);
         }
 
-    }
+    } */
 
     private void FixedUpdate()
     {
@@ -85,9 +82,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void EffectStart()
     {
-        _effect.SetActive(true);
-        _particle.Play(true);
-        if (_isCPU) return;
+        effect.SetActive(true);
+        particle.Play(true);
+        if (isCPU) return;
         firstPersonAIO.playerCanMove = false;
 
         attackIntervalTime += _attackIntervalResetTime;
@@ -96,19 +93,22 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void AttackStart()
     {
-        //weaponCollider.enabled = true;
+<<<<<<< HEAD
         foreach(var wpcol in weaponColliders) {
             wpcol.enabled = true;
         }
+=======
+        weaponCollider.enabled = true;
+>>>>>>> parent of 5201b18 (刀のコライダーを正確にした。キャラクターのコライダーを小さくした。これによりファイナル判定になりづらくなった。試合開始時光が消えたとき、相手の色が一瞬で消えるのではなく1秒かけてJOJOに消えるように変更した。ネット対戦時のデバッグがまだ)
         animator.SetBool("Attack", false);
         Debug.Log("攻撃判定ON");
 
-        if (_isCPU) return;
+        if (isCPU) return;
 
         firstPersonAIO.enableCameraMovement = false;
         isAttacking = true;
 
-        if (_Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
+        if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
             if (PhotonNetwork.InRoom) {
                 ShinkuuhaLauntch_net();
             } else {
@@ -119,10 +119,13 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void AttackEnd()
     {
-        //weaponCollider.enabled = false;
+<<<<<<< HEAD
         foreach (var wpcol in weaponColliders) {
             wpcol.enabled = false;
         }
+=======
+        weaponCollider.enabled = false;
+>>>>>>> parent of 5201b18 (刀のコライダーを正確にした。キャラクターのコライダーを小さくした。これによりファイナル判定になりづらくなった。試合開始時光が消えたとき、相手の色が一瞬で消えるのではなく1秒かけてJOJOに消えるように変更した。ネット対戦時のデバッグがまだ)
         Debug.Log("攻撃判定OFF");
         animator.SetBool("Attack", false);
         isAttacking = false;
@@ -130,17 +133,22 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
     public void EffectStop()
     {
-        _effect.SetActive(false);
-        _particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        effect.SetActive(false);
+        particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
 
-        if (_isCPU) return;
+        if (isCPU) return;
 
         if(!animator.GetBool("Death"))
         {
             firstPersonAIO.playerCanMove = true;
             firstPersonAIO.enableCameraMovement = true;
         }
+<<<<<<< HEAD
+
         if (_Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
+=======
+        if (Shinkuuha && GetComponent<FPSMove>().isShinkuuha) {
+>>>>>>> parent of 5201b18 (刀のコライダーを正確にした。キャラクターのコライダーを小さくした。これによりファイナル判定になりづらくなった。試合開始時光が消えたとき、相手の色が一瞬で消えるのではなく1秒かけてJOJOに消えるように変更した。ネット対戦時のデバッグがまだ)
             GetComponent<FPSMove>().isShinkuuha = false;
         }
     }
