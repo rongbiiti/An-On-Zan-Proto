@@ -71,7 +71,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             photonView.RPC("MusicStart", RpcTarget.AllViaServer, photonView.ViewID);
         }
 
-    }
+    } */
 
     private void FixedUpdate()
     {

@@ -71,13 +71,11 @@ public class HitProcess : MonoBehaviourPunCallbacks
     private void PlayerDeath(int viewID)
     {
         PhotonView.Find(viewID).GetComponent<PlayerDeathProcess>().KillPlayer_Net();
-        PhotonView.Find(viewID).GetComponent<MaterialChanger>().MaterialOn();
-        PhotonView.Find(viewID).GetComponent<Animator>().SetBool("Death", true);
-        PhotonView.Find(viewID).GetComponent<AttackProcess>().AttackEnd();
 
         PlayHit();
         StartCoroutine("DeathVoice");
 
+        // MaterialChangerを持つオブジェクトを取得して姿を明かさせる
         MaterialChanger[] materialChangers = FindObjectsOfType<MaterialChanger>();
         foreach(var mc in materialChangers)
         {
@@ -94,15 +92,11 @@ public class HitProcess : MonoBehaviourPunCallbacks
     // オフライン用
     private void PlayerDeath(Collider col, bool isTargetCPU)
     {
-        col.GetComponent<Animator>().SetBool("Death", true);
         if (!isTargetCPU) {
             col.GetComponent<PlayerDeathProcess>().KillPlayer_Net();
         } else {
             col.GetComponent<PlayerDeathProcess>().KillPlayer();            
         }
-
-        col.GetComponent<MaterialChanger>().MaterialOn();
-        col.GetComponent<AttackProcess>().AttackEnd();
 
         PlayHit();
         StartCoroutine("DeathVoice");

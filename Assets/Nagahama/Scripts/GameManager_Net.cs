@@ -90,8 +90,6 @@ public class GameManager_Net : MonoBehaviour
         {
             time += Time.deltaTime;
 
-            // カメラOFF
-            //_camera.SetActive(false);
             if (_fpsCameraLightTime <= time)
             {
                 PlayerActive();
@@ -120,9 +118,9 @@ public class GameManager_Net : MonoBehaviour
     {
         _player.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);   // FPSカメラON
         _player.GetComponent<FirstPersonAIO>().enabled = true;
-        Debug.Log(transform.rotation.eulerAngles);
         _player.GetComponent<FPSMove>().enabled = true;
         _player.GetComponent<PlayerDeathProcess>().MeshtoZero();     // FPS用に足と頭を縮ませる
+
         SetComponentForReplay[] setComponentForReplays = FindObjectsOfType<SetComponentForReplay>();
         foreach(var scfr in setComponentForReplays)
         {

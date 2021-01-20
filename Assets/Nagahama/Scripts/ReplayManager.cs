@@ -7,15 +7,15 @@ using Photon.Pun;
 
 public class ReplayManager : MonoBehaviourPunCallbacks
 {
-    private Queue<Vector3> oldPos = new Queue<Vector3>(420);
-    private Queue<Quaternion> oldRot = new Queue<Quaternion>(420);
-    private Queue<bool> oldAtkBool = new Queue<bool>(420);
-    private Queue<bool> oldDeathBool = new Queue<bool>(420);
-    private Queue<float> oldSpeed = new Queue<float>(420);
-    private Queue<float> oldH = new Queue<float>(420);
-    private Queue<float> oldV = new Queue<float>(420);
+    private Queue<Vector3> oldPos = new Queue<Vector3>(420);            // Positionの配列
+    private Queue<Quaternion> oldRot = new Queue<Quaternion>(420);      // Rotationの配列
+    private Queue<bool> oldAtkBool = new Queue<bool>(420);              // AnimatorのAttackフラグの配列
+    private Queue<bool> oldDeathBool = new Queue<bool>(420);            // AnimatorのDeathフラグの配列
+    private Queue<float> oldSpeed = new Queue<float>(420);              // AnimatorのSpeedの値の配列
+    private Queue<float> oldH = new Queue<float>(420);                  // AnimatorのHの値の配列
+    private Queue<float> oldV = new Queue<float>(420);                  // AnimatorのVの値の配列
 
-    private Queue<Vector3> oldPosMemo = new Queue<Vector3>(420);
+    private Queue<Vector3> oldPosMemo = new Queue<Vector3>(420);        // もう一度再生する用に保存している
     private Queue<Quaternion> oldRotMemo = new Queue<Quaternion>(420);
     private Queue<bool> oldAtkBoolMemo = new Queue<bool>(420);
     private Queue<bool> oldDeathBoolMemo = new Queue<bool>(420);
@@ -23,50 +23,41 @@ public class ReplayManager : MonoBehaviourPunCallbacks
     private Queue<float> oldHMemo = new Queue<float>(420);
     private Queue<float> oldVMemo = new Queue<float>(420);
 
-    [HideInInspector] public bool isRunning;
-    private bool isLaunched;
-    public Transform target_P;
-    public FirstPersonAIO firstPerson;
-    public Animator animator;
-    public bool _isCPU;
-    public GameObject playerCamera;
-    public GameObject _replayCamera;
-    public PlayerDeathProcess _playerDeathProcess;
-    private Rigidbody rb;
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            //ReplayStart();
-            Debug.Log("^v^");
-        }
-    }
+    [HideInInspector] public bool isRunning;        // 他スクリプトから制御する用。trueにするとリプレイ開始
+    private bool isLaunched;                        // 一度でも再生したか
+    public Transform target_P;                      // 値を注入するオブジェクト
+    public FirstPersonAIO firstPerson;              // プレイヤー操作受付スクリプト
+    public Animator animator;                       // Animator
+    public bool _isCPU;                             // ターゲットがCPUか
+    public GameObject playerCamera;                 // プレイヤーのカメラ
+    public GameObject _replayCamera;                // リプレイ用のカメラ
+    public PlayerDeathProcess _playerDeathProcess;  // プレイヤーの死亡スクリプト
+    private Rigidbody rb;                           // RigidBody
 
     public void ReplayStart()
     {
-        isRunning = true;
+        isRunning = true;           // 再生開始
 
-        animator.SetBool("Replay", true);
+        animator.SetBool("Replay", true);   // Animatorのリプレイ用のフラグオン。遷移条件に関係する
 
-        oldPos.Enqueue(target_P.position);
-        oldRot.Enqueue(target_P.rotation);
-        oldAtkBool.Enqueue(animator.GetBool("Attack"));
-        oldDeathBool.Enqueue(animator.GetBool("Death"));
-        oldSpeed.Enqueue(0);
+        oldPos.Enqueue(target_P.position);  // キューに直前の座標を入れる
+        oldRot.Enqueue(target_P.rotation);  // 直前の回転
+        oldAtkBool.Enqueue(animator.GetBool("Attack")); // 直前の攻撃フラグ
+        oldDeathBool.Enqueue(animator.GetBool("Death"));// 直前の死亡フラグ
+        oldSpeed.Enqueue(0);                // 停止させるためにスピードを0にする
         oldH.Enqueue(0);
         oldV.Enqueue(0);
 
         rb = target_P.GetComponent<Rigidbody>();
-        rb.velocity = Vector3.zero;
+        rb.velocity = Vector3.zero;     // 停止させるために運動量0にする
 
         if (oldPos.Count > 420)
         {
-            AllDequeue();
+            AllDequeue();       // キューの最大値を超えてたらデキューする
         }
 
         if (!isLaunched) {
-            oldPosMemo = new Queue<Vector3>(oldPos);
+            oldPosMemo = new Queue<Vector3>(oldPos);            // 初回再生時なら配列を別のものにコピーする
             oldRotMemo = new Queue<Quaternion>(oldRot);
             oldAtkBoolMemo = new Queue<bool>(oldAtkBool);
             oldDeathBoolMemo = new Queue<bool>(oldDeathBool);
@@ -75,6 +66,7 @@ public class ReplayManager : MonoBehaviourPunCallbacks
             oldVMemo = new Queue<float>(oldV);
 
             if (PhotonNetwork.IsConnected) {
+                // リプレイ用に同期を停止させる
                 PhotonTransformView photonTransformView = target_P.gameObject.GetComponent<PhotonTransformView>();
                 photonTransformView.m_SynchronizePosition = false;
                 photonTransformView.m_SynchronizeRotation = false;
@@ -84,6 +76,8 @@ public class ReplayManager : MonoBehaviourPunCallbacks
             }
 
         } else {
+            // もう一度再生する用
+            // キューをクリアして保存していた配列の値をまたコピーする
             oldPos.Clear();
             oldRot.Clear();
             oldAtkBool.Clear();
@@ -115,6 +109,7 @@ public class ReplayManager : MonoBehaviourPunCallbacks
     private void FixedUpdate()
     {
         if (!isRunning) {
+            // 試合中は値を記録する
             oldPos.Enqueue(target_P.position);
             oldRot.Enqueue(target_P.rotation);
             oldAtkBool.Enqueue(animator.GetBool("Attack"));
@@ -125,9 +120,12 @@ public class ReplayManager : MonoBehaviourPunCallbacks
 
             if (oldPos.Count > 420)
             {
+                // 最大値を超えたらデキューする
                 AllDequeue();
             }
+
         } else {
+            // リプレイ中は記録していた値をターゲットに注入する
             target_P.position = oldPos.Dequeue();
             target_P.rotation = oldRot.Dequeue();
             animator.SetBool("Attack", oldAtkBool.Dequeue());
@@ -138,13 +136,8 @@ public class ReplayManager : MonoBehaviourPunCallbacks
 
             if (oldPos.Count == 0)
             {
+                // キューがすべてなくなったらフラグをおる
                 isRunning = false;
-                //animator.SetBool("Replay", false);
-                if (!_isCPU)
-                {
-                    //firstPerson.enabled = true;
-                    //animator.SetBool("Aim", true);
-                }
                 Debug.Log("再生終了");
             }
         }
@@ -159,25 +152,5 @@ public class ReplayManager : MonoBehaviourPunCallbacks
         oldSpeed.Dequeue();
         oldH.Dequeue();
         oldV.Dequeue();
-    }
-
-    private void OnGUI()
-    {
-        if (!isRunning) {
-            if (!_isCPU){
-                //GUI.Label(new Rect(500, 700, 500, 100), "記録中:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
-                //GUI.Label(new Rect(500, 700, 500, 100), "" + animator.GetFloat("Speed"));
-            } else {
-                //GUI.Label(new Rect(500, 750, 500, 100), "CPU記録中:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
-            }
-            
-        } else {
-            if (!_isCPU) {
-                //GUI.Label(new Rect(500, 700, 500, 100), "再生中残り:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
-
-            } else {
-                //GUI.Label(new Rect(500, 750, 500, 100), "CPU再生中残り:" + oldPos.Count / 60 + "秒(" + oldPos.Count + "フレーム)");
-            }
-        }
     }
 }

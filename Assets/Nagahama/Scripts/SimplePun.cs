@@ -23,17 +23,25 @@ public class SimplePun : MonoBehaviourPunCallbacks
     public void CreatePlayer()
     {
         Debug.Log(PhotonNetwork.NetworkingClient.UserId);
-        // シーンの読み込みコールバックを登録.
-        //SceneManager.sceneUnloaded += OnLoadedScene;
+
         //キャラクターを生成
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        Debug.Log("ルーム人数" + players.Length);
+
+        Debug.Log("ルーム人数：" + players.Length);
+
         foreach (var p in players) {
             PhotonView photonView = p.GetPhotonView();
-            Debug.Log(PhotonNetwork.NetworkingClient.UserId);
+
+            Debug.Log( "ユーザーID：" + PhotonNetwork.NetworkingClient.UserId);
+
+            // 一度回線が切れるなどして退出したあと、再入室を試みるときの処理
+            // 操作していたキャラクターがステージに残っていないかチェックする
+            // キャラクターの持つユーザーIDと自分のユーザーIDが一致してたらスクリプトONにして操作再開
             if (photonView.Controller.UserId == PhotonNetwork.NetworkingClient.UserId) {
                 Debug.Log("自分が操作していたキャラを見つけた");
+
                 myplayer = p;
+
                 FirstPersonAIO firstPersonAIO = myplayer.GetComponent<FirstPersonAIO>();
                 firstPersonAIO.enabled = true;
 
@@ -53,15 +61,19 @@ public class SimplePun : MonoBehaviourPunCallbacks
             }
         }
         
+        // キャラクター数が2人以上ならキャラクターを既に作った、ということにする
         if (players.Length >= 2) {
             playerCreatedFlg = true;
             RoomManager.Instance.isCreatead = true;
         }
+
+        // キャラクター数が2人未満なら、キャラクターを生成する
         if (playerCreatedFlg == false) {
             myplayer = PhotonNetwork.Instantiate(_playerPrefabName, _startPosition[PhotonNetwork.LocalPlayer.ActorNumber - 1], Quaternion.Euler(_startRotation[PhotonNetwork.LocalPlayer.ActorNumber - 1]), 0);
         }
 
-        //自分だけが操作できるようにスクリプトを有効にする
+        // 自分だけが操作できるようにスクリプトを有効にする
+        // スクリプトが有効状態は相手に同期されない
         PhotonView photonview = myplayer.GetComponent<PhotonView>();
         if (photonview.IsMine && PhotonNetwork.IsConnected == true) {
 
@@ -75,20 +87,23 @@ public class SimplePun : MonoBehaviourPunCallbacks
             materialChanger.Change2pMaterial();
             materialChanger.enabled = false;
 
-            
             Debug.Log("キャラ作成成功" + PhotonNetwork.LocalPlayer.ActorNumber);
 
         }
 
+        // 試合開始処理を呼ぶ
         if (playerCreatedFlg == false) {
             StartCoroutine(nameof(MatchStart_Net));
         }
+
+        // キャラクターを作ったことにする
         playerCreatedFlg = true;
         RoomManager.Instance.isCreatead = true;
     }
 
     private void FixedUpdate()
     {
+        // タイムアウト処理
         if (timeOutWaitFlg) {
             timeOutWait -= Time.deltaTime;
             _text.text = timeOutWait.ToString("f1");
@@ -131,10 +146,13 @@ public class SimplePun : MonoBehaviourPunCallbacks
         Debug.Log("他のプレイヤーが入室した");
     }
 
+    // 接続が失われたときの処理
+    // 引数に入った情報をもとに処理を分ける
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
         switch (cause) {
+            // 右のコメント文は公式の英語ドキュメントをDeepLによって翻訳した文
             case DisconnectCause.Exception:     // 何らかの内部例外によりソケットコードが失敗しました。これは、ローカルで接続しようとしてもサーバが利用できない場合に発生する可能性があります。疑問がある場合は、Exit Gamesに連絡してください。Exit Gamesに連絡してください。
             case DisconnectCause.ServerTimeout: // タイミングアウト（クライアントからの確認応答がない）のため、サーバーがこのクライアントを切断しました。
             case DisconnectCause.ClientTimeout: // このクライアントは、サーバの応答が期限内に受信されていないことを検出しました。

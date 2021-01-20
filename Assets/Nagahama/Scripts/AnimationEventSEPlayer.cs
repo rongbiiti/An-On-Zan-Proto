@@ -8,33 +8,15 @@ using UnityEngine.Audio;
 
 public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 {
-    [SerializeField]
-    private AudioClip audioClip;
-
-    [SerializeField]
-    private AudioClip slashClip;
-
-    [SerializeField]
-    private AudioMixerGroup audioMixerGroup;
-
-    [SerializeField]
-    private float walkSpeed = 0.2f;
-
-    [SerializeField]
-    private float runSpeed = 0.8f;
-
-    [SerializeField]
-    private float sprintSpeed = 2f;
-
-    [SerializeField]
-    private AudioSource audioSource;
-
-    private Animator animator;
-    private float speed;
+    [SerializeField] private AudioClip slashClip;
+    [SerializeField] private float walkSpeed = 0.2f;
+    [SerializeField] private float sprintSpeed = 2f;
+    [SerializeField] private AudioSource audioSource;
     public List<AudioClip> footStepSounds = null;
-    private float sprintPlayInterval;
 
-
+    private float runSpeed = 5f;
+    private Animator animator;
+    
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -43,7 +25,8 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Z) && Input.GetKeyDown(KeyCode.T)) {
+        // 相手の近くにワープ
+        /* if (Input.GetKey(KeyCode.Z) && Input.GetKeyDown(KeyCode.T) && gameObject.CompareTag("Player")) {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (var p in players) {
                 PhotonView photonView = p.GetPhotonView();
@@ -56,14 +39,7 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
                     return;
                 }
             }
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if(0 < sprintPlayInterval) {
-            sprintPlayInterval -= Time.deltaTime;
-        }
+        } */
     }
 
     public void PlayFootStep()
@@ -100,7 +76,7 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
 
     public void PlaySprint(string eventName)
     {
-        if (animator.GetFloat("Speed") > sprintSpeed && sprintPlayInterval < 0)
+        if (animator.GetFloat("Speed") > sprintSpeed)
             audioSource.PlayOneShot(audioSource.clip);
     }
 
@@ -108,20 +84,5 @@ public class AnimationEventSEPlayer : MonoBehaviourPunCallbacks
     {
         Debug.Log("音再生");
         audioSource.PlayOneShot(slashClip);
-    }
-
-    private AudioSource CreateAudioSource()
-    {
-        var audioGameObject = new GameObject();
-        audioGameObject.name = "AnimationEventSEPlayer";
-        audioGameObject.transform.SetParent(gameObject.transform);
-
-        var audioSource = audioGameObject.AddComponent<AudioSource>();
-        audioSource.clip = audioClip;
-        audioSource.outputAudioMixerGroup = audioMixerGroup;
-
-        return audioSource;
-    }
-
-    
+    }    
 }
