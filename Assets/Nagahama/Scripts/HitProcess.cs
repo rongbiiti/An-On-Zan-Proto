@@ -86,7 +86,10 @@ public class HitProcess : MonoBehaviourPunCallbacks
             Debug.Log("真空波破棄");
             Destroy(gameObject);
         }
-        
+
+        transform.root.gameObject.tag = "Untagged";
+        transform.root.gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
+
     }
 
     // オフライン用

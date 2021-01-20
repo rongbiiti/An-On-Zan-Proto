@@ -52,7 +52,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         
     }
 
-    private void Update()
+    /* private void Update()
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F1)) {
             _Shinkuuha = !_Shinkuuha;

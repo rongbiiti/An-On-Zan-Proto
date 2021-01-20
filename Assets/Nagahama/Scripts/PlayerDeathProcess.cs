@@ -27,21 +27,7 @@ public class PlayerDeathProcess : MonoBehaviour
     [SerializeField] private List<AudioClip> _deathVoiceClip = null;
 
     private AudioSource rootAudioSource;
-    Animator animator;
-    NavMeshAgent meshAgent;
-    Rigidbody rb;
-    CapsuleCollider capsule;
-    EnemyMove enemyMove;
-    FirstPersonAIO firstPersonAIO;
-    FPSMove fPSMove;
-    PauseManager _pauseManager;
-    [SerializeField] AudioSource _breathSource;
-    [SerializeField] GameObject _katana;
-    [SerializeField] GameObject _camera;
-    [SerializeField] Transform[] meshs;
-    [SerializeField] GameObject _bloodEffect;
-    [SerializeField] public List<AudioClip> _deathVoiceClip = null;
-    AudioSource rootAudioSource;
+    
     public GameObject reflectionprobe;
 
     private BoxCollider[] weaponColliders;
@@ -99,7 +85,6 @@ public class PlayerDeathProcess : MonoBehaviour
 
         meshAgent.enabled = false;
         enemyMove.enabled = false;
-        _swordCollider.enabled = false;
         _breathSource.enabled = false;
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
@@ -141,7 +126,6 @@ public class PlayerDeathProcess : MonoBehaviour
         StartCoroutine("PlayDeathVoice");   // 死亡音声うわっ！再生
         gameObject.tag = "Untagged";
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
-        _swordCollider.enabled = false;
         rb.velocity = Vector3.zero;
         InstantiateBloodEffect();
         StartCoroutine("PlayDeathVoice");
