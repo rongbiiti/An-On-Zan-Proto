@@ -128,7 +128,6 @@ public class PlayerDeathProcess : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("DeadBoddy");
         rb.velocity = Vector3.zero;
         InstantiateBloodEffect();
-        StartCoroutine("PlayDeathVoice");
         reflectionprobe.SetActive(true);
 
         // 斬ったときの反転エフェクト出す

@@ -73,7 +73,7 @@ public class HitProcess : MonoBehaviourPunCallbacks
         PhotonView.Find(viewID).GetComponent<PlayerDeathProcess>().KillPlayer_Net();
 
         PlayHit();
-        StartCoroutine("DeathVoice");
+        StartCoroutine("PlayExecutionEffect");
 
         // MaterialChangerを持つオブジェクトを取得して姿を明かさせる
         MaterialChanger[] materialChangers = FindObjectsOfType<MaterialChanger>();
@@ -102,13 +102,13 @@ public class HitProcess : MonoBehaviourPunCallbacks
         }
 
         PlayHit();
-        StartCoroutine("DeathVoice");
+        StartCoroutine("PlayExecutionEffect");
 
         // 自分の姿を明かす
         _parentMaterialChanger.MaterialOn();
     }
 
-    private IEnumerator DeathVoice()
+    private IEnumerator PlayExecutionEffect()
     {
         directionalLight.intensity = 1;
         killBGMComponent.PlayKillBGM();

@@ -13,6 +13,7 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
     [SerializeField] private Material swordMaterial;
     [SerializeField] private MeshRenderer swordMeshRenderer;
     [SerializeField] private float _materialOffWaitTime = 2f;
+    [SerializeField] private float _materialFadeOutTime = 1f;
     [SerializeField] private bool _isCPU;
 
     private void Start()
@@ -63,7 +64,24 @@ public class MaterialChanger : MonoBehaviourPunCallbacks
 
     public IEnumerator MaterialOff()
     {
+        float matFadeOutTime = _materialFadeOutTime;
+        float startRed = skinnedMeshRenderer.material.GetColor("_EmissionColor").r;
+        float startBlue = skinnedMeshRenderer.material.GetColor("_EmissionColor").b;
+
         yield return new WaitForSeconds(_materialOffWaitTime);
+
+        while (0f < matFadeOutTime) {
+            matFadeOutTime -= Time.deltaTime;
+
+            skinnedMeshRenderer.material.EnableKeyword("_EMISSION");
+
+            float newRed = skinnedMeshRenderer.material.GetColor("_EmissionColor").r - startRed / _materialFadeOutTime * Time.deltaTime;
+            float newBlue = skinnedMeshRenderer.material.GetColor("_EmissionColor").b - startBlue / _materialFadeOutTime * Time.deltaTime;
+            skinnedMeshRenderer.material.SetColor("_EmissionColor", new Color(newRed, 0, newBlue));
+
+            yield return 0;
+        }
+
         skinnedMeshRenderer.enabled = false;
         swordMeshRenderer.enabled = false;
         yield return new WaitForSeconds(0.3f);
