@@ -44,6 +44,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     {
         animator = GetComponent<Animator>();
         weaponColliders = _katana.GetComponentsInChildren<BoxCollider>();
+        foreach (var wpcol in weaponColliders) {
+            wpcol.enabled = false;
+        }
 
         if (_isCPU) return;
 
